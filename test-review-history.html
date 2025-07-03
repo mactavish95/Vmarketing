@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review History Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f7fa;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #5a6fd8;
+        }
+        .review-display {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .expand-btn {
+            background: #28a745;
+            margin-top: 10px;
+        }
+        .collapse-btn {
+            background: #dc3545;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Review History Test</h1>
+    
+    <div class="test-section">
+        <h2>Test Data</h2>
+        <button onclick="addTestReviews()">Add Test Reviews</button>
+        <button onclick="clearReviews()">Clear All Reviews</button>
+        <button onclick="showReviews()">Show Current Reviews</button>
+    </div>
+
+    <div class="test-section">
+        <h2>Review Display Test</h2>
+        <div id="reviewDisplay"></div>
+    </div>
+
+    <script>
+        // Test data
+        const testReviews = [
+            {
+                id: Date.now(),
+                type: 'restaurant',
+                rating: 5,
+                review: `⭐⭐⭐⭐⭐
+
+Restaurant Review
+
+This restaurant is excellent. The food was absolutely delicious and the service was outstanding. The atmosphere was perfect for a romantic dinner, with soft lighting and beautiful decor. The chef really knows how to create amazing dishes that are both visually appealing and incredibly tasty. I would definitely recommend this place to anyone looking for a great dining experience.
+
+The menu had a great variety of options, from traditional favorites to innovative new dishes. The wine list was extensive and the sommelier was very knowledgeable. The staff was friendly and attentive without being intrusive. The prices were reasonable for the quality of food and service provided.
+
+📍 Location: 123 Main Street, Downtown
+⭐ Rating: 5/5`,
+                transcript: "I went to this amazing restaurant and the food was incredible. The service was perfect and the atmosphere was beautiful.",
+                timestamp: new Date().toISOString()
+            },
+            {
+                id: Date.now() + 1,
+                type: 'hotel',
+                rating: 4,
+                review: `⭐⭐⭐⭐☆
+
+Hotel Review
+
+This hotel provides a satisfactory experience with good amenities and comfortable accommodations. The rooms are clean and well-maintained, though some areas could use updating. The staff is generally helpful and the location is convenient for business travelers.
+
+The breakfast buffet offers a decent selection, and the fitness center has modern equipment. The Wi-Fi connection is reliable, which is important for work purposes. The parking situation could be improved, but overall this is a solid choice for business or leisure travel.
+
+📍 Location: 456 Business District
+⭐ Rating: 4/5`,
+                transcript: "The hotel was okay, clean rooms but could use some updates. Good for business travel.",
+                timestamp: new Date(Date.now() - 86400000).toISOString() // 1 day ago
+            }
+        ];
+
+        function addTestReviews() {
+            const existingReviews = JSON.parse(localStorage.getItem('voiceReviews') || '[]');
+            const newReviews = [...existingReviews, ...testReviews];
+            localStorage.setItem('voiceReviews', JSON.stringify(newReviews));
+            alert('Test reviews added!');
+            showReviews();
+        }
+
+        function clearReviews() {
+            localStorage.removeItem('voiceReviews');
+            localStorage.removeItem('reviewHistory');
+            alert('All reviews cleared!');
+            showReviews();
+        }
+
+        function showReviews() {
+            const voiceReviews = JSON.parse(localStorage.getItem('voiceReviews') || '[]');
+            const regularReviews = JSON.parse(localStorage.getItem('reviewHistory') || '[]');
+            
+            const display = document.getElementById('reviewDisplay');
+            display.innerHTML = `
+                <h3>Voice Reviews (${voiceReviews.length})</h3>
+                <div class="review-display">${JSON.stringify(voiceReviews, null, 2)}</div>
+                
+                <h3>Regular Reviews (${regularReviews.length})</h3>
+                <div class="review-display">${JSON.stringify(regularReviews, null, 2)}</div>
+            `;
+        }
+
+        // Test expand/collapse functionality
+        function createReviewCard(review) {
+            const isExpanded = false; // This would be managed by React state
+            const shouldShowExpand = review.review.length > 300;
+            
+            return `
+                <div class="review-card">
+                    <h4>${review.type} Review</h4>
+                    <div class="review-content">
+                        ${shouldShowExpand && !isExpanded 
+                            ? `<div>${review.review.substring(0, 300)}...</div>
+                               <button class="expand-btn">📖 Read Full Review</button>`
+                            : `<div>${review.review}</div>
+                               ${shouldShowExpand ? '<button class="collapse-btn">📖 Show Less</button>' : ''}`
+                        }
+                    </div>
+                </div>
+            `;
+        }
+
+        // Initialize
+        showReviews();
+    </script>
+</body>
+</html> 
