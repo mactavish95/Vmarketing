@@ -683,7 +683,9 @@ import apiConfig from '../config/api';
 
 class VoiceService {
   constructor() {
-    this.baseURL = apiConfig.baseURL;
+    // Force production URL if we're on Netlify
+    const isNetlify = typeof window !== 'undefined' && (window.location.hostname.includes('netlify.app') || window.location.hostname.includes('vmarketing.netlify.app'));
+    this.baseURL = isNetlify ? 'https://vmarketing-backend-server.onrender.com/api' : apiConfig.baseURL;
   }
 
   // Analyze voice transcript using NVIDIA Llama

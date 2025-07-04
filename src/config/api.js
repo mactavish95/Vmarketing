@@ -12,8 +12,9 @@ const API_CONFIG = {
   }
 };
 
-// Get current environment
-const environment = process.env.NODE_ENV || 'development';
+// Get current environment - force production if we're on Netlify
+const isNetlify = window.location.hostname.includes('netlify.app') || window.location.hostname.includes('vmarketing.netlify.app');
+const environment = isNetlify ? 'production' : (process.env.NODE_ENV || 'development');
 
 // Export the appropriate config
 export const apiConfig = API_CONFIG[environment];
@@ -22,8 +23,11 @@ export const apiConfig = API_CONFIG[environment];
 export const getApiUrl = (endpoint) => {
   console.log('🔧 API Config Debug:', {
     environment: process.env.NODE_ENV,
+    isNetlify: window.location.hostname.includes('netlify.app') || window.location.hostname.includes('vmarketing.netlify.app'),
+    hostname: window.location.hostname,
     baseURL: apiConfig.baseURL,
-    REACT_APP_API_URL: process.env.REACT_APP_API_URL
+    REACT_APP_API_URL: process.env.REACT_APP_API_URL,
+    selectedEnvironment: environment
   });
   
   if (!apiConfig.baseURL || apiConfig.baseURL.includes('your-render-app')) {

@@ -4,6 +4,7 @@ import apiConfig from '../config/api';
 const ModelInfo = ({ useCase, style = {} }) => {
   const [modelInfo, setModelInfo] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     fetchModelInfo();
@@ -12,10 +13,19 @@ const ModelInfo = ({ useCase, style = {} }) => {
   const fetchModelInfo = async () => {
     try {
       setLoading(true);
+      setError(null);
+      
+      // Debug logging
+      console.log('🔍 ModelInfo Debug:', {
+        environment: process.env.NODE_ENV,
+        baseURL: apiConfig.baseURL,
+        REACT_APP_API_URL: process.env.REACT_APP_API_URL,
+        useCase: useCase
+      });
       
       // Check if API URL is configured
       if (!apiConfig.baseURL || apiConfig.baseURL.includes('your-render-app')) {
-        console.warn('API URL not configured, using fallback model info');
+        console.warn('⚠️ API URL not configured, using fallback model info');
         setModelInfo({
           name: 'Meta Llama 3.1 70B',
           description: 'Advanced AI model for various tasks',
@@ -24,21 +34,45 @@ const ModelInfo = ({ useCase, style = {} }) => {
         return;
       }
 
-      const res = await fetch(`${apiConfig.baseURL}/models`);
+      // Force production URL if we're on Netlify
+      const isNetlify = window.location.hostname.includes('netlify.app') || window.location.hostname.includes('vmarketing.netlify.app');
+      const baseURL = isNetlify ? 'https://vmarketing-backend-server.onrender.com/api' : apiConfig.baseURL;
+
+      const apiUrl = `${baseURL}/models`;
+      console.log('🌐 Making request to:', apiUrl);
+      
+      const res = await fetch(apiUrl);
+      
+      console.log('📡 Response status:', res.status);
+      console.log('📡 Response headers:', Object.fromEntries(res.headers.entries()));
       
       if (!res.ok) {
-        throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+        const errorText = await res.text();
+        console.error('❌ HTTP Error:', res.status, errorText);
+        throw new Error(`HTTP ${res.status}: ${res.statusText} - ${errorText}`);
       }
       
       const data = await res.json();
+      console.log('📦 Response data:', data);
+      
       if (data.success) {
         const model = data.models.find(m => m.useCase === useCase);
-        setModelInfo(model);
+        if (model) {
+          setModelInfo(model);
+        } else {
+          console.warn('⚠️ No model found for use case:', useCase);
+          setModelInfo({
+            name: 'Meta Llama 3.1 70B',
+            description: 'Advanced AI model for various tasks',
+            strengths: ['Natural Language', 'Context Understanding']
+          });
+        }
       } else {
         throw new Error(data.error || 'Failed to fetch model info');
       }
     } catch (error) {
-      console.error('Failed to fetch model info:', error);
+      console.error('❌ Failed to fetch model info:', error);
+      setError(error.message);
       // Set fallback model info
       setModelInfo({
         name: 'Meta Llama 3.1 70B',
@@ -132,6 +166,19 @@ const ModelInfo = ({ useCase, style = {} }) => {
           </span>
         ))}
       </div>
+      {error && (
+        <div style={{
+          marginTop: '8px',
+          padding: '8px',
+          background: '#fef2f2',
+          border: '1px solid #fecaca',
+          borderRadius: '6px',
+          fontSize: '11px',
+          color: '#dc2626'
+        }}>
+          <strong>Debug Error:</strong> {error}
+        </div>
+      )}
       <style jsx>{`
         @keyframes spin {
           0% { transform: rotate(0deg); }

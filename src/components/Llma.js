@@ -61,12 +61,15 @@ const Llma = () => {
   };
 
   const callLlamaAPI = async (text, key, history) => {
-    // Check if API URL is configured
-    if (!apiConfig.baseURL || apiConfig.baseURL.includes('your-render-app')) {
+    // Check if API URL is configured and force production URL if on Netlify
+    const isNetlify = window.location.hostname.includes('netlify.app') || window.location.hostname.includes('vmarketing.netlify.app');
+    const baseURL = isNetlify ? 'https://vmarketing-backend-server.onrender.com/api' : apiConfig.baseURL;
+    
+    if (!baseURL || baseURL.includes('your-render-app')) {
       throw new Error('Backend API not configured. Please set up your Render backend and configure REACT_APP_API_URL.');
     }
     
-    const response = await fetch(`${apiConfig.baseURL}/llama`, {
+    const response = await fetch(`${baseURL}/llama`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
