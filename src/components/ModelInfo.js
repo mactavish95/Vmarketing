@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import apiConfig from '../config/api';
 
 const ModelInfo = ({ useCase, style = {} }) => {
   const [modelInfo, setModelInfo] = useState(null);
@@ -11,14 +12,39 @@ const ModelInfo = ({ useCase, style = {} }) => {
   const fetchModelInfo = async () => {
     try {
       setLoading(true);
-      const res = await fetch('/api/models');
+      
+      // Check if API URL is configured
+      if (!apiConfig.baseURL || apiConfig.baseURL.includes('your-render-app')) {
+        console.warn('API URL not configured, using fallback model info');
+        setModelInfo({
+          name: 'Meta Llama 3.1 70B',
+          description: 'Advanced AI model for various tasks',
+          strengths: ['Natural Language', 'Context Understanding']
+        });
+        return;
+      }
+
+      const res = await fetch(`${apiConfig.baseURL}/models`);
+      
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+      }
+      
       const data = await res.json();
       if (data.success) {
         const model = data.models.find(m => m.useCase === useCase);
         setModelInfo(model);
+      } else {
+        throw new Error(data.error || 'Failed to fetch model info');
       }
     } catch (error) {
-      console.warn('Failed to fetch model info:', error);
+      console.error('Failed to fetch model info:', error);
+      // Set fallback model info
+      setModelInfo({
+        name: 'Meta Llama 3.1 70B',
+        description: 'Advanced AI model for various tasks',
+        strengths: ['Natural Language', 'Context Understanding']
+      });
     } finally {
       setLoading(false);
     }
