@@ -679,9 +679,11 @@ function capitalizeFirst(str) {
 }
 
 // Voice Service for handling voice analysis and review generation
+import apiConfig from '../config/api';
+
 class VoiceService {
   constructor() {
-    this.baseURL = 'http://localhost:3001/api';
+    this.baseURL = apiConfig.baseURL;
   }
 
   // Analyze voice transcript using NVIDIA Llama

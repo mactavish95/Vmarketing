@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './Llma.css';
+import apiConfig from '../config/api';
 
 const Llma = () => {
   const [inputText, setInputText] = useState('');
@@ -64,7 +65,7 @@ const Llma = () => {
     // In a real application, you would need a backend service to handle the API call
     // due to CORS restrictions and to keep the API key secure
     
-    const response = await fetch('http://localhost:3001/api/llama', {
+    const response = await fetch(`${apiConfig.baseURL}/llama`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

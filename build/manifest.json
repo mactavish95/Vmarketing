@@ -1,7 +1,7 @@
 {
   "short_name": "ReviewGen",
   "name": "Review Generator - Create Professional Reviews",
-  "description": "Generate professional reviews for products, services, and experiences with ease",
+  "description": "Generate professional reviews for products, services, and experiences with ease. Voice recognition and AI analysis included.",
   "icons": [
     {
       "src": "favicon.ico",
@@ -11,12 +11,14 @@
     {
       "src": "logo192.png",
       "type": "image/png",
-      "sizes": "192x192"
+      "sizes": "192x192",
+      "purpose": "any maskable"
     },
     {
       "src": "logo512.png",
       "type": "image/png",
-      "sizes": "512x512"
+      "sizes": "512x512",
+      "purpose": "any maskable"
     }
   ],
   "start_url": ".",
@@ -24,6 +26,46 @@
   "theme_color": "#667eea",
   "background_color": "#f5f7fa",
   "orientation": "portrait-primary",
-  "categories": ["productivity", "utilities"],
-  "lang": "en"
+  "categories": ["productivity", "utilities", "business"],
+  "lang": "en",
+  "scope": "/",
+  "prefer_related_applications": false,
+  "shortcuts": [
+    {
+      "name": "Generate Review",
+      "short_name": "Generate",
+      "description": "Create a new review",
+      "url": "/generate",
+      "icons": [
+        {
+          "src": "favicon.ico",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Voice Review",
+      "short_name": "Voice",
+      "description": "Create a review using voice",
+      "url": "/voice",
+      "icons": [
+        {
+          "src": "favicon.ico",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Review History",
+      "short_name": "History",
+      "description": "View your review history",
+      "url": "/history",
+      "icons": [
+        {
+          "src": "favicon.ico",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
 } 
