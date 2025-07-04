@@ -7,7 +7,7 @@ const API_CONFIG = {
   },
   // Production environment (Render backend)
   production: {
-    baseURL: process.env.REACT_APP_API_URL || 'https://reviewgen-backend.onrender.com/api',
+    baseURL: process.env.REACT_APP_API_URL || 'https://vmarketing-backend-server.onrender.com/api',
     timeout: 30000
   }
 };
