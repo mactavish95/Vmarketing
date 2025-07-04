@@ -77,31 +77,19 @@ app.use('*', (req, res) => {
   });
 });
 
-// Only start the server if not running in a Firebase Cloud Function
-defineAppStart();
-
-function defineAppStart() {
-  if (require.main === module) {
-    app.listen(PORT, () => {
-      console.log(`🚀 ReviewGen Backend Server running on port ${PORT}`);
-      console.log(`📊 Health check: http://localhost:${PORT}/api/health`);
-      console.log(`🤖 Llama API: http://localhost:${PORT}/api/llama`);
-      console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
-      if (!process.env.NVIDIA_API_KEY) {
-        console.warn('⚠️  NVIDIA_API_KEY not found in environment variables');
-      }
-    });
+// Start the server
+app.listen(PORT, () => {
+  console.log(`🚀 ReviewGen Backend Server running on port ${PORT}`);
+  console.log(`📊 Health check: http://localhost:${PORT}/api/health`);
+  console.log(`🤖 Llama API: http://localhost:${PORT}/api/llama`);
+  console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
+  if (!process.env.NVIDIA_API_KEY) {
+    console.warn('⚠️  NVIDIA_API_KEY not found in environment variables');
   }
-}
+});
 
-// Export the app for Firebase Functions
+// Export the app for potential external use
 module.exports = app;
-
-// If running in Firebase Functions, create the HTTPS function entry point
-if (process.env.FUNCTION_NAME || process.env.K_SERVICE) {
-  const functions = require('firebase-functions');
-  exports.api = functions.https.onRequest(app);
-}
 
 // Graceful shutdown
 process.on('SIGTERM', () => {
