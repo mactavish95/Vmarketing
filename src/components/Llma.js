@@ -61,9 +61,10 @@ const Llma = () => {
   };
 
   const callLlamaAPI = async (text, key, history) => {
-    // This is a placeholder implementation
-    // In a real application, you would need a backend service to handle the API call
-    // due to CORS restrictions and to keep the API key secure
+    // Check if API URL is configured
+    if (!apiConfig.baseURL || apiConfig.baseURL.includes('your-render-app')) {
+      throw new Error('Backend API not configured. Please set up your Render backend and configure REACT_APP_API_URL.');
+    }
     
     const response = await fetch(`${apiConfig.baseURL}/llama`, {
       method: 'POST',

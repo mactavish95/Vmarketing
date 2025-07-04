@@ -7,7 +7,7 @@ const API_CONFIG = {
   },
   // Production environment (Render backend)
   production: {
-    baseURL: process.env.REACT_APP_API_URL || 'https://your-render-app.onrender.com/api',
+    baseURL: process.env.REACT_APP_API_URL || 'https://reviewgen-backend.onrender.com/api',
     timeout: 30000
   }
 };
@@ -20,6 +20,10 @@ export const apiConfig = API_CONFIG[environment];
 
 // Helper function to get full API URL
 export const getApiUrl = (endpoint) => {
+  if (!apiConfig.baseURL || apiConfig.baseURL.includes('your-render-app')) {
+    console.warn('⚠️ API URL not configured. Please set REACT_APP_API_URL environment variable.');
+    return null;
+  }
   return `${apiConfig.baseURL}${endpoint}`;
 };
 
