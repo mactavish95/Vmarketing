@@ -20,6 +20,12 @@ export const apiConfig = API_CONFIG[environment];
 
 // Helper function to get full API URL
 export const getApiUrl = (endpoint) => {
+  console.log('🔧 API Config Debug:', {
+    environment: process.env.NODE_ENV,
+    baseURL: apiConfig.baseURL,
+    REACT_APP_API_URL: process.env.REACT_APP_API_URL
+  });
+  
   if (!apiConfig.baseURL || apiConfig.baseURL.includes('your-render-app')) {
     console.warn('⚠️ API URL not configured. Please set REACT_APP_API_URL environment variable.');
     return null;
