@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import VoiceAnalysis from '../components/VoiceAnalysis';
 import LocationAttachment from '../components/LocationAttachment';
 import llmService from '../services/llmService';
+import apiConfig from '../config/api';
 import './ReviewGenerator.css';
 
 const ReviewGenerator = () => {
@@ -31,7 +32,11 @@ const ReviewGenerator = () => {
 
     const fetchModelInfo = async () => {
         try {
-            const res = await fetch('/api/models');
+            // Force production URL if we're on Netlify
+            const isNetlify = window.location.hostname.includes('netlify.app') || window.location.hostname.includes('vmarketing.netlify.app');
+            const baseURL = isNetlify ? 'https://vmarketing-backend-server.onrender.com/api' : apiConfig.baseURL;
+            
+            const res = await fetch(`${baseURL}/models`);
             const data = await res.json();
             if (data.success) {
                 const reviewModel = data.models.find(m => m.useCase === 'review_generation');

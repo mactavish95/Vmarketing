@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import apiConfig from '../config/api';
 
 export default function CustomerServiceResponse() {
   const [review, setReview] = useState('');
@@ -16,7 +17,11 @@ export default function CustomerServiceResponse() {
 
   const fetchModelInfo = async () => {
     try {
-      const res = await fetch('/api/models');
+      // Force production URL if we're on Netlify
+      const isNetlify = window.location.hostname.includes('netlify.app') || window.location.hostname.includes('vmarketing.netlify.app');
+      const baseURL = isNetlify ? 'https://vmarketing-backend-server.onrender.com/api' : apiConfig.baseURL;
+      
+      const res = await fetch(`${baseURL}/models`);
       const data = await res.json();
       if (data.success) {
         const customerServiceModel = data.models.find(m => m.useCase === 'customer_service');
@@ -35,7 +40,11 @@ export default function CustomerServiceResponse() {
     setStaffName('');
     try {
       const apiKey = process.env.REACT_APP_NVIDIA_API_KEY || '';
-      const res = await fetch('/api/voice/customer-service-response', {
+      // Force production URL if we're on Netlify
+      const isNetlify = window.location.hostname.includes('netlify.app') || window.location.hostname.includes('vmarketing.netlify.app');
+      const baseURL = isNetlify ? 'https://vmarketing-backend-server.onrender.com/api' : apiConfig.baseURL;
+      
+      const res = await fetch(`${baseURL}/voice/customer-service-response`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ review, sentiment, apiKey }),

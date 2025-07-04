@@ -164,7 +164,11 @@ class LocationService {
      */
     static async getLocationSuggestions(transcript, apiKey, currentLocation = null) {
         try {
-            const response = await fetch('/api/voice/suggest-location', {
+            // Force production URL if we're on Netlify
+            const isNetlify = typeof window !== 'undefined' && (window.location.hostname.includes('netlify.app') || window.location.hostname.includes('vmarketing.netlify.app'));
+            const baseURL = isNetlify ? 'https://vmarketing-backend-server.onrender.com/api' : 'http://localhost:10000/api';
+            
+            const response = await fetch(`${baseURL}/voice/suggest-location`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

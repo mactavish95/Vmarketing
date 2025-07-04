@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ModelInfo from '../components/ModelInfo';
+import apiConfig from '../config/api';
 
 const BlogCreator = () => {
   const [blogData, setBlogData] = useState({
@@ -29,7 +30,11 @@ const BlogCreator = () => {
 
   const fetchModelInfo = async () => {
     try {
-      const res = await fetch('/api/models');
+      // Force production URL if we're on Netlify
+      const isNetlify = window.location.hostname.includes('netlify.app') || window.location.hostname.includes('vmarketing.netlify.app');
+      const baseURL = isNetlify ? 'https://vmarketing-backend-server.onrender.com/api' : apiConfig.baseURL;
+      
+      const res = await fetch(`${baseURL}/models`);
       const data = await res.json();
       if (data.success) {
         const blogModel = data.models.find(m => m.useCase === 'review_generation');
@@ -113,7 +118,11 @@ const BlogCreator = () => {
     setGeneratedBlog('');
 
     try {
-      const res = await fetch('/api/blog/generate', {
+      // Force production URL if we're on Netlify
+      const isNetlify = window.location.hostname.includes('netlify.app') || window.location.hostname.includes('vmarketing.netlify.app');
+      const baseURL = isNetlify ? 'https://vmarketing-backend-server.onrender.com/api' : apiConfig.baseURL;
+      
+      const res = await fetch(`${baseURL}/blog/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
