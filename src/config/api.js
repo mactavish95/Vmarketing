@@ -2,7 +2,7 @@
 const API_CONFIG = {
   // Development environment
   development: {
-    baseURL: 'http://localhost:10000/api',
+    baseURL: 'http://localhost:3001/api',
     timeout: 30000
   },
   // Production environment (Render backend)

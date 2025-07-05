@@ -27,9 +27,14 @@ const ModelInfo = ({ useCase, style = {} }) => {
       if (!apiConfig.baseURL || apiConfig.baseURL.includes('your-render-app')) {
         console.warn('⚠️ API URL not configured, using fallback model info');
         setModelInfo({
-          name: 'Meta Llama 3.1 70B',
-          description: 'Advanced AI model for various tasks',
-          strengths: ['Natural Language', 'Context Understanding']
+          name: 'NVIDIA Llama 3.3 Nemotron Super 49B',
+          description: 'Advanced AI model for various tasks with detailed thinking',
+          strengths: ['Long-form content generation', 'Detailed reasoning', 'SEO optimization'],
+          modelInfo: {
+            provider: 'NVIDIA',
+            parameters: '49B',
+            maxContextLength: '4096 tokens'
+          }
         });
         return;
       }
@@ -38,7 +43,14 @@ const ModelInfo = ({ useCase, style = {} }) => {
       const isNetlify = window.location.hostname.includes('netlify.app') || window.location.hostname.includes('vmarketing.netlify.app');
       const baseURL = isNetlify ? 'https://vmarketing-backend-server.onrender.com/api' : apiConfig.baseURL;
 
-      const apiUrl = `${baseURL}/models`;
+      // Use the blog model endpoint for blog-related use cases
+      let apiUrl;
+      if (useCase === 'blog_generation' || useCase === 'review_generation') {
+        apiUrl = `${baseURL}/blog/model`;
+      } else {
+        apiUrl = `${baseURL}/models`;
+      }
+      
       console.log('🌐 Making request to:', apiUrl);
       
       const res = await fetch(apiUrl);
@@ -56,15 +68,28 @@ const ModelInfo = ({ useCase, style = {} }) => {
       console.log('📦 Response data:', data);
       
       if (data.success) {
-        const model = data.models.find(m => m.useCase === useCase);
+        let model;
+        if (useCase === 'blog_generation' || useCase === 'review_generation') {
+          // Use the blog model data directly
+          model = data.model;
+        } else {
+          // Use the models endpoint for other use cases
+          model = data.models.find(m => m.useCase === useCase);
+        }
+        
         if (model) {
           setModelInfo(model);
         } else {
           console.warn('⚠️ No model found for use case:', useCase);
           setModelInfo({
-            name: 'Meta Llama 3.1 70B',
-            description: 'Advanced AI model for various tasks',
-            strengths: ['Natural Language', 'Context Understanding']
+            name: 'NVIDIA Llama 3.3 Nemotron Super 49B',
+            description: 'Advanced AI model for various tasks with detailed thinking',
+            strengths: ['Long-form content generation', 'Detailed reasoning', 'SEO optimization'],
+            modelInfo: {
+              provider: 'NVIDIA',
+              parameters: '49B',
+              maxContextLength: '4096 tokens'
+            }
           });
         }
       } else {
@@ -75,9 +100,14 @@ const ModelInfo = ({ useCase, style = {} }) => {
       setError(error.message);
       // Set fallback model info
       setModelInfo({
-        name: 'Meta Llama 3.1 70B',
-        description: 'Advanced AI model for various tasks',
-        strengths: ['Natural Language', 'Context Understanding']
+        name: 'NVIDIA Llama 3.3 Nemotron Super 49B',
+        description: 'Advanced AI model for various tasks with detailed thinking',
+        strengths: ['Long-form content generation', 'Detailed reasoning', 'SEO optimization'],
+        modelInfo: {
+          provider: 'NVIDIA',
+          parameters: '49B',
+          maxContextLength: '4096 tokens'
+        }
       });
     } finally {
       setLoading(false);
@@ -140,6 +170,74 @@ const ModelInfo = ({ useCase, style = {} }) => {
           AI Model: {modelInfo.name}
         </h4>
       </div>
+      
+      {/* Enhanced Model Information */}
+      {modelInfo.modelInfo && (
+        <div style={{
+          marginBottom: '8px',
+          padding: '8px',
+          background: 'rgba(14, 165, 233, 0.1)',
+          borderRadius: '8px',
+          border: '1px solid rgba(14, 165, 233, 0.2)'
+        }}>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '4px'
+          }}>
+            <span style={{
+              fontSize: '11px',
+              color: '#0c4a6e',
+              fontWeight: '600'
+            }}>
+              {modelInfo.modelInfo.provider} • {modelInfo.modelInfo.parameters}
+            </span>
+            <span style={{
+              fontSize: '11px',
+              color: '#0369a1',
+              fontWeight: '500'
+            }}>
+              {modelInfo.modelInfo.maxContextLength}
+            </span>
+          </div>
+          
+          {modelInfo.modelInfo.capabilities && (
+            <div style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: '2px',
+              marginTop: '4px'
+            }}>
+              {modelInfo.modelInfo.capabilities.slice(0, 3).map((capability, index) => (
+                <span key={index} style={{
+                  background: '#0ea5e9',
+                  color: '#fff',
+                  padding: '1px 4px',
+                  borderRadius: '4px',
+                  fontSize: '9px',
+                  fontWeight: '500'
+                }}>
+                  {capability}
+                </span>
+              ))}
+              {modelInfo.modelInfo.capabilities.length > 3 && (
+                <span style={{
+                  background: '#6b7280',
+                  color: '#fff',
+                  padding: '1px 4px',
+                  borderRadius: '4px',
+                  fontSize: '9px',
+                  fontWeight: '500'
+                }}>
+                  +{modelInfo.modelInfo.capabilities.length - 3} more
+                </span>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+      
       <p style={{ 
         margin: '0 0 8px 0', 
         color: '#0369a1', 
@@ -148,6 +246,7 @@ const ModelInfo = ({ useCase, style = {} }) => {
       }}>
         {modelInfo.description}
       </p>
+      
       <div style={{
         display: 'flex',
         flexWrap: 'wrap',
@@ -166,6 +265,29 @@ const ModelInfo = ({ useCase, style = {} }) => {
           </span>
         ))}
       </div>
+      
+      {/* Performance Metrics */}
+      {modelInfo.modelInfo?.performance && (
+        <div style={{
+          marginTop: '8px',
+          padding: '6px',
+          background: 'rgba(34, 197, 94, 0.1)',
+          borderRadius: '6px',
+          border: '1px solid rgba(34, 197, 94, 0.2)'
+        }}>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            fontSize: '10px',
+            color: '#166534'
+          }}>
+            <span>⚡ {modelInfo.modelInfo.performance.responseTime}</span>
+            <span>🎯 {modelInfo.modelInfo.performance.contentQuality}</span>
+            <span>🔄 {modelInfo.modelInfo.performance.consistency}</span>
+          </div>
+        </div>
+      )}
+      
       {error && (
         <div style={{
           marginTop: '8px',

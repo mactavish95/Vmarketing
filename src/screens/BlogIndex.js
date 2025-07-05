@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import EnhancedModelInfo from '../components/EnhancedModelInfo';
 
 const BlogIndex = () => {
   const [activeTab, setActiveTab] = useState('published');
@@ -191,6 +192,9 @@ const BlogIndex = () => {
 
         {/* Content */}
         <div style={{ padding: '40px 32px' }}>
+          {/* Enhanced Model Information */}
+          <EnhancedModelInfo style={{ marginBottom: '32px' }} />
+          
           {/* Tab Navigation */}
           <div style={{
             display: 'flex',
@@ -627,7 +631,7 @@ const BlogIndex = () => {
                           fontSize: '12px',
                           fontWeight: '500'
                         }}>
-                          {getRestaurantTypeIcon(blog.restaurantType)} {blog.restaurantType}
+                          {blog.restaurantType}
                         </span>
                         <span style={{
                           background: '#e9ecef',
@@ -637,7 +641,7 @@ const BlogIndex = () => {
                           fontSize: '12px',
                           fontWeight: '500'
                         }}>
-                          {getToneIcon(blog.tone)} {blog.tone}
+                          {blog.tone}
                         </span>
                         <span style={{
                           background: '#e9ecef',
@@ -647,8 +651,20 @@ const BlogIndex = () => {
                           fontSize: '12px',
                           fontWeight: '500'
                         }}>
-                          📊 {getWordCount(blog.blogPost)} words
+                          {getWordCount(blog.blogPost)} words
                         </span>
+                        {blog.images && blog.images.length > 0 && (
+                          <span style={{
+                            background: '#e9ecef',
+                            color: '#495057',
+                            padding: '4px 8px',
+                            borderRadius: '12px',
+                            fontSize: '12px',
+                            fontWeight: '500'
+                          }}>
+                            {blog.images.length} image{blog.images.length !== 1 ? 's' : ''}
+                          </span>
+                        )}
                       </div>
 
                       <div style={{
@@ -659,17 +675,37 @@ const BlogIndex = () => {
                         color: '#6c757d'
                       }}>
                         <span>{formatDate(blog.timestamp)}</span>
-                        <Link
-                          to="/blog-creator"
-                          style={{
-                            color: '#667eea',
-                            textDecoration: 'none',
-                            fontWeight: '600',
-                            fontSize: '12px'
-                          }}
-                        >
-                          ✍️ Create Similar
-                        </Link>
+                        <div style={{
+                          display: 'flex',
+                          gap: '8px'
+                        }}>
+                          <Link
+                            to={`/blog/generated-${blog.id}`}
+                            style={{
+                              color: '#667eea',
+                              textDecoration: 'none',
+                              fontWeight: '600',
+                              fontSize: '12px',
+                              background: '#f8f9fa',
+                              padding: '4px 8px',
+                              borderRadius: '6px',
+                              border: '1px solid #e9ecef'
+                            }}
+                          >
+                            👁️ View Full Post
+                          </Link>
+                          <Link
+                            to="/blog-creator"
+                            style={{
+                              color: '#667eea',
+                              textDecoration: 'none',
+                              fontWeight: '600',
+                              fontSize: '12px'
+                            }}
+                          >
+                            ✍️ Create Similar
+                          </Link>
+                        </div>
                       </div>
                     </div>
                   ))}

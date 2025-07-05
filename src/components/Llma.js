@@ -6,30 +6,14 @@ const Llma = () => {
   const [inputText, setInputText] = useState('');
   const [response, setResponse] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [apiKey, setApiKey] = useState(() => {
-    // Load API key from localStorage on component mount
-    return localStorage.getItem('nvidiaApiKey') || '';
-  });
   const [error, setError] = useState('');
   const [conversationHistory, setConversationHistory] = useState([]);
 
-  // Save API key to localStorage whenever it changes
-  const handleApiKeyChange = (newApiKey) => {
-    setApiKey(newApiKey);
-    if (newApiKey.trim()) {
-      localStorage.setItem('nvidiaApiKey', newApiKey);
-    } else {
-      localStorage.removeItem('nvidiaApiKey');
-    }
-  };
+  // Get API key from environment variable
+  const apiKey = process.env.REACT_APP_NVIDIA_API_KEY || '';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    if (!apiKey) {
-      setError('Please enter your NVIDIA API key');
-      return;
-    }
 
     if (!inputText.trim()) {
       setError('Please enter some text to process');
@@ -45,8 +29,7 @@ const Llma = () => {
       const userMessage = { role: 'user', content: inputText, timestamp: new Date() };
       setConversationHistory(prev => [...prev, userMessage]);
 
-      // Note: This would need to be implemented with a backend service
-      // due to CORS restrictions and API key security
+      // Use API key from env
       const result = await callLlamaAPI(inputText, apiKey, conversationHistory);
       setResponse(result);
       
@@ -115,29 +98,6 @@ const Llma = () => {
       </div>
 
       <div className="llma-content">
-        <div className="api-key-section">
-          <label htmlFor="apiKey">NVIDIA API Key:</label>
-          <input
-            type="password"
-            id="apiKey"
-            value={apiKey}
-            onChange={(e) => handleApiKeyChange(e.target.value)}
-            placeholder="Enter your NVIDIA API key"
-            className="api-key-input"
-          />
-          <small>
-            Get your API key from{' '}
-            <a 
-              href="https://integrate.api.nvidia.com" 
-              target="_blank" 
-              rel="noopener noreferrer"
-            >
-              NVIDIA API Portal
-            </a>
-            {' '}• This key is shared across all AI features
-          </small>
-        </div>
-
         {/* Conversation History */}
         {conversationHistory.length > 0 && (
           <div className="conversation-history">
@@ -193,7 +153,7 @@ const Llma = () => {
 
           <button 
             type="submit" 
-            disabled={isLoading || !inputText.trim() || !apiKey}
+            disabled={isLoading || !inputText.trim()}
             className="submit-btn"
           >
             {isLoading ? '🤔 Thinking...' : '💬 Send Message'}
