@@ -434,9 +434,10 @@ Format as JSON with these fields:
     return 'Poor';
   };
 
+  // Calculate derived values for display
   const selectedPlatform = platforms.find(p => p.value === platform);
   const characterCount = enhancedContent.length;
-  const isOverLimit = characterCount > selectedPlatform.maxLength;
+  const isOverLimit = characterCount > (selectedPlatform?.maxLength || 1000);
 
   // Follow-up question suggestions based on user selections
   const getFollowUpSuggestions = () => {
@@ -1287,15 +1288,71 @@ Format as JSON with these fields:
           {/* Generation History */}
           {generationHistory.length > 0 && (
             <div className="section history-section">
-              <h2>📚 Generation History</h2>
+              <div style={{ 
+                display: 'flex', 
+                justifyContent: 'space-between', 
+                alignItems: 'center', 
+                marginBottom: '16px' 
+              }}>
+                <div>
+                  <h2>📚 Previous Posts</h2>
+                  <p style={{ 
+                    margin: '0', 
+                    color: '#666', 
+                    fontSize: '14px',
+                    fontStyle: 'italic'
+                  }}>
+                    Your recently generated posts. Click on any post to view the full content and copy it.
+                  </p>
+                </div>
+                <button 
+                  onClick={() => {
+                    if (window.confirm('Are you sure you want to clear all previous posts? This action cannot be undone.')) {
+                      setGenerationHistory([]);
+                    }
+                  }}
+                  style={{
+                    background: '#ef4444',
+                    color: '#fff',
+                    border: 'none',
+                    padding: '8px 16px',
+                    borderRadius: '8px',
+                    fontSize: '12px',
+                    fontWeight: '600',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '4px'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.background = '#dc2626';
+                    e.target.style.transform = 'translateY(-1px)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.background = '#ef4444';
+                    e.target.style.transform = 'translateY(0)';
+                  }}
+                >
+                  🗑️ Clear History
+                </button>
+              </div>
+              
               <div className="history-list">
-                {generationHistory.map(item => (
+                {generationHistory.map((item, index) => (
                   <div key={item.id} className="history-item">
                     <div className="history-meta">
-                      <span className="history-platform">{getPlatformIcon(item.platform)} {platforms.find(p => p.value === item.platform)?.label}</span>
-                      <span className="history-type">{postTypes.find(pt => pt.value === item.postType)?.label}</span>
-                      <span className="history-time">{new Date(item.timestamp).toLocaleString()}</span>
+                      <span className="history-platform">
+                        {getPlatformIcon(item.platform)} {platforms.find(p => p.value === item.platform)?.label}
+                      </span>
+                      <span className="history-type">
+                        {postTypes.find(pt => pt.value === item.postType)?.label}
+                      </span>
+                      <span className="history-time">
+                        {new Date(item.timestamp).toLocaleString()}
+                      </span>
                     </div>
+                    
                     <div className="history-content">
                       <div className="history-original">
                         <strong>Original:</strong> {item.original.substring(0, 100)}...
@@ -1315,13 +1372,221 @@ Format as JSON with these fields:
                         </div>
                       </div>
                     </div>
+                    
                     <div className="history-actions">
-                      <button onClick={() => copyToClipboard(item.enhanced)} className="history-btn">
+                      <button 
+                        onClick={() => {
+                          setContent(item.original);
+                          setEnhancedContent(item.enhanced);
+                          setPlatform(item.platform);
+                          setPostType(item.postType);
+                          setTone(item.tone);
+                          setTargetAudience(item.targetAudience);
+                          setContentStructure(item.contentStructure);
+                          setEngagementGoal(item.engagementGoal);
+                          setContentLength(item.contentLength || 'optimal');
+                          setBrandVoiceIntensity(item.brandVoiceIntensity);
+                          setEngagementUrgency(item.engagementUrgency);
+                          setSituation(item.situation);
+                          // Scroll to top
+                          window.scrollTo({ top: 0, behavior: 'smooth' });
+                        }} 
+                        className="history-btn"
+                        style={{ marginRight: '8px' }}
+                      >
+                        🔄 Load
+                      </button>
+                      <button 
+                        onClick={() => copyToClipboard(item.enhanced)} 
+                        className="history-btn"
+                      >
                         📋 Copy
                       </button>
                     </div>
                   </div>
                 ))}
+              </div>
+              
+              {/* Full Post Viewer */}
+              <div style={{ marginTop: '20px' }}>
+                <h3 style={{ 
+                  marginBottom: '16px', 
+                  color: '#2d3748',
+                  fontSize: '18px',
+                  fontWeight: '600'
+                }}>
+                  📖 View Full Previous Posts
+                </h3>
+                <p style={{ 
+                  marginBottom: '16px', 
+                  color: '#666', 
+                  fontSize: '13px',
+                  fontStyle: 'italic'
+                }}>
+                  Click on any card below to open the full post in a new window for easy reading and copying.
+                </p>
+                <div style={{ 
+                  display: 'grid', 
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', 
+                  gap: '16px' 
+                }}>
+                  {generationHistory.slice(0, 6).map((item, index) => (
+                    <div key={item.id} style={{
+                      background: '#f8f9fa',
+                      border: '1px solid #e9ecef',
+                      borderRadius: '12px',
+                      padding: '16px',
+                      cursor: 'pointer',
+                      transition: 'all 0.3s ease',
+                      position: 'relative',
+                      overflow: 'hidden'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.transform = 'translateY(-2px)';
+                      e.target.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.transform = 'translateY(0)';
+                      e.target.style.boxShadow = 'none';
+                    }}
+                    onClick={() => {
+                      // Show full post in a modal-like view
+                      const fullPost = window.open('', '_blank', 'width=600,height=800');
+                      fullPost.document.write(`
+                        <html>
+                          <head>
+                            <title>Previous Post - ${new Date(item.timestamp).toLocaleDateString()}</title>
+                            <style>
+                              body { 
+                                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+                                margin: 20px; 
+                                line-height: 1.6;
+                                background: #f8f9fa;
+                              }
+                              .post-container {
+                                background: white;
+                                padding: 24px;
+                                border-radius: 12px;
+                                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+                                max-width: 500px;
+                                margin: 0 auto;
+                              }
+                              .post-header {
+                                border-bottom: 1px solid #e9ecef;
+                                padding-bottom: 12px;
+                                margin-bottom: 16px;
+                              }
+                              .post-meta {
+                                font-size: 12px;
+                                color: #6c757d;
+                                margin-bottom: 8px;
+                              }
+                              .post-content {
+                                white-space: pre-wrap;
+                                font-size: 14px;
+                                color: #2d3748;
+                              }
+                              .post-actions {
+                                margin-top: 16px;
+                                padding-top: 12px;
+                                border-top: 1px solid #e9ecef;
+                              }
+                              .action-btn {
+                                background: #667eea;
+                                color: white;
+                                border: none;
+                                padding: 8px 16px;
+                                border-radius: 6px;
+                                cursor: pointer;
+                                margin-right: 8px;
+                                font-size: 12px;
+                              }
+                              .action-btn:hover {
+                                background: #5a67d8;
+                              }
+                            </style>
+                          </head>
+                          <body>
+                            <div class="post-container">
+                              <div class="post-header">
+                                <div class="post-meta">
+                                  ${getPlatformIcon(item.platform)} ${platforms.find(p => p.value === item.platform)?.label} • 
+                                  ${postTypes.find(pt => pt.value === item.postType)?.label} • 
+                                  ${new Date(item.timestamp).toLocaleString()}
+                                </div>
+                                <h3>Generated Post</h3>
+                              </div>
+                              <div class="post-content">${item.enhanced}</div>
+                              <div class="post-actions">
+                                <button class="action-btn" onclick="navigator.clipboard.writeText('${item.enhanced.replace(/'/g, "\\'")}').then(() => alert('Copied!'))">
+                                  📋 Copy Post
+                                </button>
+                                <button class="action-btn" onclick="window.close()">
+                                  ❌ Close
+                                </button>
+                              </div>
+                            </div>
+                          </body>
+                        </html>
+                      `);
+                    }}
+                    >
+                      <div style={{
+                        position: 'absolute',
+                        top: '8px',
+                        right: '8px',
+                        background: '#667eea',
+                        color: 'white',
+                        padding: '2px 6px',
+                        borderRadius: '4px',
+                        fontSize: '10px',
+                        fontWeight: '600'
+                      }}>
+                        #{index + 1}
+                      </div>
+                      
+                      <div style={{ marginBottom: '8px' }}>
+                        <span style={{ 
+                          fontSize: '12px', 
+                          color: '#6c757d',
+                          fontWeight: '500'
+                        }}>
+                          {getPlatformIcon(item.platform)} {platforms.find(p => p.value === item.platform)?.label}
+                        </span>
+                        <span style={{ 
+                          fontSize: '12px', 
+                          color: '#6c757d',
+                          marginLeft: '8px'
+                        }}>
+                          {new Date(item.timestamp).toLocaleDateString()}
+                        </span>
+                      </div>
+                      
+                      <div style={{
+                        fontSize: '13px',
+                        color: '#495057',
+                        lineHeight: '1.4',
+                        maxHeight: '60px',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        display: '-webkit-box',
+                        WebkitLineClamp: 3,
+                        WebkitBoxOrient: 'vertical'
+                      }}>
+                        {item.enhanced}
+                      </div>
+                      
+                      <div style={{
+                        marginTop: '8px',
+                        fontSize: '11px',
+                        color: '#6c757d'
+                      }}>
+                        📏 {item.length || 'N/A'} words • 
+                        🎭 {brandVoiceIntensities.find(bv => bv.value === item.brandVoiceIntensity)?.label || 'N/A'}
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           )}
