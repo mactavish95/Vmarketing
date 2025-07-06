@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ModelInfo from '../components/ModelInfo';
 import apiConfig from '../config/api';
+import { useTranslation } from 'react-i18next';
 
 const BlogCreator = () => {
   const [blogData, setBlogData] = useState({
@@ -27,6 +28,8 @@ const BlogCreator = () => {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [imageAnalysis, setImageAnalysis] = useState(null);
+
+  const { t } = useTranslation();
 
   // Image handling functions
   const handleImageUpload = (event) => {
@@ -330,10 +333,9 @@ const BlogCreator = () => {
     // Remove excessive emojis while preserving strategic ones
     cleanedContent = cleanedContent
       // Remove excessive decorative emojis
-      .replace(/[🔍🎯📝📊📈📉📋✅❌⚠️🚨💡💭💬💪🎈🎁🎂🎄🎃🎅🎆🎇🎈🎉🎊🎋🎌🎍🎎🎏🎐🎑🎒🎓🎔🎕🎖️🎗️🎘️🎙️🎚️🎛️🎜️🎝️🎞️🎟️🎠🎡🎢🎣🎤🎥🎦🎧🎨🎩🎪🎫🎬🎭🎮🎯🎰🎱🎲🎳🎴🎵🎶🎷🎸🎹🎺🎻🎼🎽🎾🎿🏀🏁🏂🏃🏄🏅🏆🏇🏈🏉🏊🏋️🏌️🏍️🏎️🏏🏐🏑🏒🏓🏔️🏕️🏖️🏗️🏘️🏙️🏚️🏛️🏜️🏝️🏞️🏟️🏠🏡🏢🏣🏤🏥🏦🏧🏨🏩🏪🏫🏬🏭🏮🏯🏰🏱🏲🏳️🏴🏵️🏶🏷️🏸🏹🏺🏻🏼🏽🏾🏿🐀🐁🐂🐃🐄🐅🐆🐇🐈🐉🐊🐋🐌🐍🐎🐏🐐🐑🐒🐓🐔🐕🐖🐗🐘🐙🐚🐛🐜🐝🐞🐟🐠🐡🐢🐣🐤🐥🐦🐧🐨🐩🐪🐫🐬🐭🐮🐯🐰🐱🐲🐳🐴🐵🐶🐷🐸🐹🐺🐻🐼🐽🐾🐿️👀👁️👂👃👄👅👆👇👈👉👊👋👌👍👎👏👐👑👒👓👔👕👖👗👘👙👚👛👜👝👞👟👠👡👢👣👤👥👦👧👨👩👪👫👬👭👮👯👰👱👲👳👴👵👶👷👸👹👺👻👼👽👾👿💀💁💂💃💄💅💆💇💈💉💊💋💌💍💎💏💐💑💒💓💔💕💖💗💘💙💚💛💜💝💞💟💠💡💢💣💤💥💦💧💨💩💪💫💬💭💮💯💰💱💲💳💴💵💶💷💸💹💺💻💼💽💾💿📀📁📂📃📄📅📆📇📈📉📊📋📌📍📎📏📐📑📒📓📔📕📖📗📘📙📚📛📜📝📞📟📠📡📢📣📤📥📦📧📨📩📪📫📬📭📮📯📰📱📲📳📴📵📶📷📸📹📺📻📼📽️📾📿🔀🔁🔂🔃🔄🔅🔆🔇🔈🔉🔊🔋🔌🔍🔎🔏🔐🔑🔒🔓🔔🔕🔖🔗🔘🔙🔚🔛🔜🔝🔞🔟🔠🔡🔢🔣🔤🔥🔦🔧🔨🔩🔪🔫🔬🔭🔮🔯🔰🔱🔲🔳🔴🔵🔶🔷🔸🔹🔺🔻🔼🔽🔾🔿🕀🕁🕂🕃🕄🕅🕆🕇🕈🕉🕊️🕋🕌🕍🕎🕏🕐🕑🕒🕓🕔🕕🕖🕗🕘🕙🕚🕛🕜🕝🕞🕟🕠🕡🕢🕣🕤🕥🕦🕧🕨🕩🕪🕫🕬🕭🕮🕯🕰🕱🕲🕳🕴️🕵️🕶️🕷️🕸️🕹️🕺🕻🕼🕽🕾🕿🖀🖁🖂🖃🖄🖅🖆🖇️🖈🖉🖊️🖋️🖌️🖍️🖎️🖏️🖐️🖑🖒🖓🖔🖕🖖🖗🖘🖙🖚🖛🖜🖝🖞🖟🖠🖡🖢🖣🖤🖥️🖦🖧🖨🖩🖪🖫🖬🖭🖮🖯🖰🖱🖲🖳🖴🖵🖶🖷🖸🖹🖺🖻🖼️🖽🖾🖿🗀🗁🗂🗃🗄🗅🗆🗇🗈🗉🗊🗋🗌🗍🗎🗏🗐🗑🗒🗓🗔🗕🗖🗗🗘🗙🗚🗛🗜🗝🗞🗟🗠🗡🗢🗣🗤🗥🗦🗧🗨🗩🗪🗫🗬🗭🗮🗯🗰🗱🗲🗳🗴🗵🗶🗷🗸🗹🗺🗻🗼🗽🗾🗿😀😁😂🤣😃😄😅😆😇😈😉😊😋😌😍😎😏😐😑😒😓😔😕😖😗😘😙😚😛😜😝😞😟😠😡😢😣😤😥😦😧😨😩😪😫😬😭😮😯😰😱😲😳😴😵😶😷😸😹😺😻😼😽😾😿🙀🙁🙂🙃🙄🙅🙆🙇🙈🙉🙊🙋🙌🙍🙎🙏]/g, '')
+      .replace(/[🔍🎯📝📊📈📉📋✅❌⚠️🚨💡💭💬💪🎈🎁🎂🎄🎃🎅🎆🎇🎈🎉🎊🎋🎌🎍🎎🎏🎐🎑🎒🎓🎔🎕🎖️🎗️🎘️🎙️🎚️🎛️🎜️🎝️🎞️🎟️🎠🎡🎢🎣🎤🎥🎦🎧🎨🎩🎪🎫🎬🎭🎮🎯🎰🎱🎲🎳🎴🎵🎶🎷🎸🎹🎺🎻🎼🎽🎾🎿🏀🏁🏂🏃🏄🏅🏆🏇🏈🏉🏊🏋️🏌️🏍️🏎️🏏🏐🏑🏒🏓🏔️🏕️🏖️🏗️🏘️🏙️🏚️🏛️🏜️🏝️🏞️🏟️🏠🏡🏢🏣🏤🏥🏦🏧🏨🏩🏪🏫🏬🏭🏮🏯🏰🏱🏲🏳️🏴🏵️🏷️🏸🏹🏺🏻🏼🏽🏾🏿]/g, '')
       // Remove excessive decorative symbols
       .replace(/[⚡✨🌟💫⭐]/g, '')
-      .replace(/[🎯🎪🎨🎭🎬🎤🎧🎵🎶🎷🎸🎹🎺🎻🎼🎽🎾🎿🏀🏁🏂🏃🏄🏅🏆🏇🏈🏉🏊🏋️🏌️🏍️🏎️🏏🏐🏑🏒🏓🏔️🏕️🏖️🏗️🏘️🏙️🏚️🏛️🏜️🏝️🏞️🏟️🏠🏡🏢🏣🏤🏥🏦🏧🏨🏩🏪🏫🏬🏭🏮🏯🏰🏱🏲🏳️🏴🏵️🏶🏷️🏸🏹🏺🏻🏼🏽🏾🏿]/g, '')
       // Remove excessive food emojis but keep strategic ones
       .replace(/[🍟🍖🍗🍘🍙🍚🍛🍝🍞🍟🍠🍡🍢🍤🍥🍦🍧🍨🍩🍪🍫🍬🍭🍮🍯🍱🍲🍳🍴🍵🍶🍸🍹🍻🍼🍾🍿]/g, '')
       // Remove excessive building emojis
@@ -780,7 +782,7 @@ const BlogCreator = () => {
             color: '#fff',
             textShadow: '0 2px 4px rgba(0,0,0,0.1)'
           }}>
-            Restaurant Blog Creator
+            {t('restaurantBlogCreator')}
           </h1>
           <p style={{ 
             margin: '0', 
@@ -788,7 +790,7 @@ const BlogCreator = () => {
             color: '#fff',
             opacity: '0.95'
           }}>
-            Generate engaging blog content for your restaurant business with AI
+            {t('generateEngagingBlogContent')}
           </p>
         </div>
 
@@ -817,13 +819,13 @@ const BlogCreator = () => {
                   color: '#0c4a6e',
                   fontSize: '16px'
                 }}>
-                  🔑 NVIDIA API Key:
+                  🔑 {t('nvidiaApiKey')}
                 </label>
                 <input
                   type="password"
                   value={apiKey}
                   onChange={(e) => handleApiKeyChange(e.target.value)}
-                  placeholder="Enter your NVIDIA API key"
+                  placeholder={t('enterYourNvidiaApiKey')}
                   style={{
                     width: '100%',
                     padding: '12px 16px',
@@ -834,14 +836,14 @@ const BlogCreator = () => {
                   }}
                 />
                 <small style={{ color: '#0369a1', fontSize: '14px' }}>
-                  Get your API key from{' '}
+                  {t('getYourApiKeyFrom')}
                   <a 
                     href="https://integrate.api.nvidia.com" 
                     target="_blank" 
                     rel="noopener noreferrer"
                     style={{ color: '#0ea5e9', textDecoration: 'none' }}
                   >
-                    NVIDIA API Portal
+                    {t('nvidiaApiPortal')}
                   </a>
                 </small>
               </div>
@@ -863,7 +865,7 @@ const BlogCreator = () => {
                   alignItems: 'center',
                   gap: '8px'
                 }}>
-                  📸 Blog Images
+                  📸 {t('blogImages')}
                 </h3>
                 
                 <div style={{
@@ -877,7 +879,7 @@ const BlogCreator = () => {
                 }}>
                   <div style={{ fontSize: '48px', marginBottom: '12px' }}>📁</div>
                   <p style={{ margin: '0 0 16px 0', color: '#0c4a6e', fontSize: '16px' }}>
-                    Upload images to enhance your blog post
+                    {t('uploadImagesToEnhanceYourBlogPost')}
                   </p>
                   <input
                     type="file"
@@ -900,10 +902,10 @@ const BlogCreator = () => {
                       transition: 'all 0.3s ease'
                     }}
                   >
-                    📤 Choose Images
+                    📤 {t('chooseImages')}
                   </label>
                   <p style={{ margin: '8px 0 0 0', color: '#0369a1', fontSize: '14px' }}>
-                    Supports JPEG, PNG, GIF, WebP (max 5MB each)
+                    {t('supportsJpegPngGifWebp')}
                   </p>
                 </div>
 
@@ -931,7 +933,7 @@ const BlogCreator = () => {
                         animation: 'spin 1s linear infinite'
                       }}></div>
                       <span style={{ color: '#0c4a6e', fontWeight: '600' }}>
-                        Uploading images...
+                        {t('uploadingImages')}
                       </span>
                     </div>
                     <div style={{
@@ -960,7 +962,7 @@ const BlogCreator = () => {
                       fontSize: '16px',
                       fontWeight: '600'
                     }}>
-                      📷 Uploaded Images ({images.length})
+                      📷 {t('uploadedImages')} ({images.length})
                     </h4>
                     <div style={{
                       display: 'grid',
@@ -1022,7 +1024,7 @@ const BlogCreator = () => {
                                 fontWeight: '500'
                               }}
                             >
-                              🗑️ Remove
+                              🗑️ {t('remove')}
                             </button>
                             {index > 0 && (
                               <button
@@ -1038,7 +1040,7 @@ const BlogCreator = () => {
                                   fontWeight: '500'
                                 }}
                               >
-                                ⬆️ Up
+                                ⬆️ {t('up')}
                               </button>
                             )}
                             {index < images.length - 1 && (
@@ -1055,7 +1057,7 @@ const BlogCreator = () => {
                                   fontWeight: '500'
                                 }}
                               >
-                                ⬇️ Down
+                                ⬇️ {t('down')}
                               </button>
                             )}
                           </div>
@@ -1069,7 +1071,7 @@ const BlogCreator = () => {
                       fontSize: '14px',
                       color: '#0c4a6e'
                     }}>
-                      💡 <strong>Tip:</strong> Images will be automatically integrated into your blog post. The AI will suggest optimal placement and captions based on your content.
+                      💡 <strong>{t('tip')}:</strong> {t('imagesWillBeAutomaticallyIntegratedIntoYourBlogPost')}
                     </div>
                   </div>
                 )}
@@ -1095,7 +1097,7 @@ const BlogCreator = () => {
                     fontSize: '20px',
                     fontWeight: '700'
                   }}>
-                    📋 Basic Information
+                    📋 {t('basicInformation')}
                   </h3>
                   
                   <div style={{ marginBottom: '16px' }}>
@@ -1105,13 +1107,13 @@ const BlogCreator = () => {
                       fontWeight: '600',
                       color: '#495057'
                     }}>
-                      Blog Topic *
+                      {t('blogTopic')} *
                     </label>
                     <input
                       type="text"
                       value={blogData.topic}
                       onChange={(e) => handleInputChange('topic', e.target.value)}
-                      placeholder="e.g., Our New Seasonal Menu, Behind the Scenes, Local Ingredients"
+                      placeholder={t('e.g.,OurNewSeasonalMenuBehindTheScenesLocalIngredients')}
                       style={{
                         width: '100%',
                         padding: '12px 16px',
@@ -1129,13 +1131,13 @@ const BlogCreator = () => {
                       fontWeight: '600',
                       color: '#495057'
                     }}>
-                      Restaurant Name *
+                      {t('restaurantName')} *
                     </label>
                     <input
                       type="text"
                       value={blogData.restaurantName}
                       onChange={(e) => handleInputChange('restaurantName', e.target.value)}
-                      placeholder="Your restaurant name"
+                      placeholder={t('yourRestaurantName')}
                       style={{
                         width: '100%',
                         padding: '12px 16px',
@@ -1153,7 +1155,7 @@ const BlogCreator = () => {
                       fontWeight: '600',
                       color: '#495057'
                     }}>
-                      Restaurant Type
+                      {t('restaurantType')}
                     </label>
                     <select
                       value={blogData.restaurantType}
@@ -1181,13 +1183,13 @@ const BlogCreator = () => {
                       fontWeight: '600',
                       color: '#495057'
                     }}>
-                      Cuisine Type
+                      {t('cuisineType')}
                     </label>
                     <input
                       type="text"
                       value={blogData.cuisine}
                       onChange={(e) => handleInputChange('cuisine', e.target.value)}
-                      placeholder="e.g., Italian, Mexican, Fusion, American"
+                      placeholder={t('e.g.,ItalianMexicanFusionAmerican')}
                       style={{
                         width: '100%',
                         padding: '12px 16px',
@@ -1205,13 +1207,13 @@ const BlogCreator = () => {
                       fontWeight: '600',
                       color: '#495057'
                     }}>
-                      Location
+                      {t('location')}
                     </label>
                     <input
                       type="text"
                       value={blogData.location}
                       onChange={(e) => handleInputChange('location', e.target.value)}
-                      placeholder="e.g., Downtown Seattle, West Village, etc."
+                      placeholder={t('e.g.,DowntownSeattleWestVillageEtc')}
                       style={{
                         width: '100%',
                         padding: '12px 16px',
@@ -1236,7 +1238,7 @@ const BlogCreator = () => {
                     fontSize: '20px',
                     fontWeight: '700'
                   }}>
-                    🎯 Content Preferences
+                    🎯 {t('contentPreferences')}
                   </h3>
 
                   <div style={{ marginBottom: '20px' }}>
@@ -1246,7 +1248,7 @@ const BlogCreator = () => {
                       fontWeight: '600',
                       color: '#495057'
                     }}>
-                      Target Audience
+                      {t('targetAudience')}
                     </label>
                     <div style={{
                       display: 'grid',
@@ -1283,7 +1285,7 @@ const BlogCreator = () => {
                       fontWeight: '600',
                       color: '#495057'
                     }}>
-                      Writing Tone
+                      {t('writingTone')}
                     </label>
                     <div style={{
                       display: 'grid',
@@ -1320,7 +1322,7 @@ const BlogCreator = () => {
                       fontWeight: '600',
                       color: '#495057'
                     }}>
-                      Blog Length
+                      {t('blogLength')}
                     </label>
                     <div style={{
                       display: 'grid',
@@ -1367,7 +1369,7 @@ const BlogCreator = () => {
                   fontSize: '20px',
                   fontWeight: '700'
                 }}>
-                  📝 Additional Details
+                  📝 {t('additionalDetails')}
                 </h3>
                 
                 <div style={{ marginBottom: '20px' }}>
@@ -1377,12 +1379,12 @@ const BlogCreator = () => {
                     fontWeight: '600',
                     color: '#495057'
                   }}>
-                    Key Points to Include
+                    {t('keyPointsToInclude')}
                   </label>
                   <textarea
                     value={blogData.keyPoints}
                     onChange={(e) => handleInputChange('keyPoints', e.target.value)}
-                    placeholder="List specific points, events, or features you want highlighted in the blog post..."
+                    placeholder={t('listSpecificPointsEventsOrFeaturesYouWantHighlightedInTheBlogPost')}
                     rows="4"
                     style={{
                       width: '100%',
@@ -1402,12 +1404,12 @@ const BlogCreator = () => {
                     fontWeight: '600',
                     color: '#495057'
                   }}>
-                    Special Features or Highlights
+                    {t('specialFeaturesOrHighlights')}
                   </label>
                   <textarea
                     value={blogData.specialFeatures}
                     onChange={(e) => handleInputChange('specialFeatures', e.target.value)}
-                    placeholder="Mention any special features, awards, unique aspects, or recent news about your restaurant..."
+                    placeholder={t('mentionAnySpecialFeaturesAwardsUniqueAspectsOrRecentNewsAboutYourRestaurant')}
                     rows="4"
                     style={{
                       width: '100%',
@@ -1441,19 +1443,14 @@ const BlogCreator = () => {
                   }}
                 >
                   {isGenerating ? (
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px' }}>
-                      <div style={{
-                        width: '20px',
-                        height: '20px',
-                        border: '2px solid rgba(255,255,255,0.3)',
-                        borderTop: '2px solid #fff',
-                        borderRadius: '50%',
-                        animation: 'spin 1s linear infinite'
-                      }}></div>
-                      Generating Blog Post...
+                    <div style={{
+                      display: 'flex', alignItems: 'center', gap: '8px', color: '#667eea', fontWeight: '700', fontSize: '16px', marginTop: '12px'
+                    }}>
+                      <div style={{ width: '24px', height: '24px', border: '4px solid #e2e8f0', borderTop: '4px solid #667eea', borderRadius: '50%', animation: 'spin 1s linear infinite', marginRight: '8px' }}></div>
+                      {t('generatingBlogPost')}
                     </div>
                   ) : (
-                    '🚀 Generate Blog Post'
+                    <span>🚀 {t('generateBlogPost')}</span>
                   )}
                 </button>
               </div>
@@ -1480,7 +1477,7 @@ const BlogCreator = () => {
                     fontSize: '24px',
                     fontWeight: '700'
                   }}>
-                    ✨ Your Generated Blog Post
+                    ✨ {t('yourGeneratedBlogPost')}
                   </h3>
                   <div style={{
                     display: 'flex',
@@ -1499,7 +1496,7 @@ const BlogCreator = () => {
                         fontSize: '14px'
                       }}
                     >
-                      📋 Copy
+                      📋 {t('copy')}
                     </button>
                     <button
                       onClick={resetForm}
@@ -1514,7 +1511,7 @@ const BlogCreator = () => {
                         fontSize: '14px'
                       }}
                     >
-                      🔄 New Post
+                      🔄 {t('newPost')}
                     </button>
                   </div>
                 </div>
@@ -1539,10 +1536,10 @@ const BlogCreator = () => {
                   fontSize: '14px',
                   color: '#6c757d'
                 }}>
-                  <span>📊 Word Count: {getWordCount()} words</span>
-                  <span>📸 Images: {images.length}</span>
-                  <span>🤖 Model: NVIDIA Llama 3.3 Nemotron Super 49B</span>
-                  <span>📅 Generated: {new Date().toLocaleString()}</span>
+                  <span>📊 {t('wordCount')}: {getWordCount()} words</span>
+                  <span>📸 {t('images')}: {images.length}</span>
+                  <span>🤖 {t('model')}: NVIDIA Llama 3.3 Nemotron Super 49B</span>
+                  <span>📅 {t('generated')}: {new Date().toLocaleString()}</span>
                 </div>
                 
                 {/* Image Analysis Information */}
@@ -1560,7 +1557,7 @@ const BlogCreator = () => {
                       fontSize: '16px',
                       fontWeight: '600'
                     }}>
-                      📸 Image Integration Analysis
+                      📸 {t('imageIntegrationAnalysis')}
                     </h4>
                     <div style={{
                       display: 'grid',
@@ -1586,14 +1583,14 @@ const BlogCreator = () => {
                             color: '#0369a1',
                             marginBottom: '4px'
                           }}>
-                            📍 Placement: {img.suggestedPlacement}
+                            📍 {t('placement')}: {img.suggestedPlacement}
                           </div>
                           <div style={{
                             fontSize: '12px',
                             color: '#0369a1',
                             fontStyle: 'italic'
                           }}>
-                            💬 Caption: {img.suggestedCaption}
+                            💬 {t('caption')}: {img.suggestedCaption}
                           </div>
                         </div>
                       ))}
@@ -1612,7 +1609,7 @@ const BlogCreator = () => {
                           marginBottom: '8px',
                           fontSize: '14px'
                         }}>
-                          💡 Integration Suggestions:
+                          💡 {t('integrationSuggestions')}:
                         </div>
                         <ul style={{
                           margin: '0',

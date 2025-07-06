@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import LocationService from '../services/locationService';
 import './LocationSuggestions.css';
+import { useTranslation } from 'react-i18next';
 
 const LocationSuggestions = ({ 
     transcript, 
@@ -16,6 +17,7 @@ const LocationSuggestions = ({
     const [searchQuery, setSearchQuery] = useState('');
     const [searchResults, setSearchResults] = useState([]);
     const [isSearching, setIsSearching] = useState(false);
+    const { t } = useTranslation();
 
     useEffect(() => {
         if (transcript && apiKey) {
@@ -110,7 +112,7 @@ const LocationSuggestions = ({
     return (
         <div className="location-suggestions">
             <div className="suggestions-header">
-                <h3>📍 Location Suggestions</h3>
+                <h3>📍 {t('locationSuggestions.suggestions')}</h3>
                 <button className="close-btn" onClick={onClose}>
                     ✕
                 </button>
@@ -119,7 +121,7 @@ const LocationSuggestions = ({
             {error && (
                 <div className="suggestions-error">
                     <span className="error-icon">⚠️</span>
-                    {error}
+                    {t('locationSuggestions.error')}
                 </div>
             )}
 
@@ -135,14 +137,14 @@ const LocationSuggestions = ({
                     <h4>📊 AI Analysis</h4>
                     <div className="analysis-details">
                         <div className="analysis-item">
-                            <span className="analysis-label">Location Mentioned:</span>
+                            <span className="analysis-label">{t('locationSuggestions.locationMentioned')}:</span>
                             <span className={`analysis-value ${analysis.locationMentioned ? 'positive' : 'negative'}`}>
                                 {analysis.locationMentioned ? 'Yes' : 'No'}
                             </span>
                         </div>
                         {analysis.locationType && analysis.locationType !== 'unknown' && (
                             <div className="analysis-item">
-                                <span className="analysis-label">Type:</span>
+                                <span className="analysis-label">{t('locationSuggestions.type')}:</span>
                                 <span className="analysis-value">
                                     {getLocationIcon(analysis.locationType)} {analysis.locationType}
                                 </span>
@@ -150,18 +152,18 @@ const LocationSuggestions = ({
                         )}
                         {analysis.specificPlace && (
                             <div className="analysis-item">
-                                <span className="analysis-label">Specific Place:</span>
+                                <span className="analysis-label">{t('locationSuggestions.specificPlace')}:</span>
                                 <span className="analysis-value">{analysis.specificPlace}</span>
                             </div>
                         )}
                         {analysis.cityOrArea && (
                             <div className="analysis-item">
-                                <span className="analysis-label">Area:</span>
+                                <span className="analysis-label">{t('locationSuggestions.area')}:</span>
                                 <span className="analysis-value">{analysis.cityOrArea}</span>
                             </div>
                         )}
                         <div className="analysis-item">
-                            <span className="analysis-label">Confidence:</span>
+                            <span className="analysis-label">{t('locationSuggestions.confidence')}:</span>
                             <span 
                                 className="analysis-value"
                                 style={{ color: getConfidenceColor(analysis.confidence) }}
@@ -221,7 +223,7 @@ const LocationSuggestions = ({
                                         source: 'ai-suggestion'
                                     })}
                                 >
-                                    Select This Location
+                                    {t('locationSuggestions.selectThisLocation')}
                                 </button>
                             </div>
                         ))}
@@ -237,7 +239,7 @@ const LocationSuggestions = ({
                             type="text"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            placeholder="Search for a location..."
+                            placeholder={t('locationSuggestions.searchForALocation')}
                             className="search-input"
                         />
                         <button 
@@ -245,7 +247,7 @@ const LocationSuggestions = ({
                             className="search-btn"
                             disabled={isSearching || !searchQuery.trim()}
                         >
-                            {isSearching ? '🔍' : 'Search'}
+                            {isSearching ? '🔍' : t('locationSuggestions.search')}
                         </button>
                     </div>
                 </form>
@@ -271,7 +273,7 @@ const LocationSuggestions = ({
                                             source: 'manual-search'
                                         })}
                                     >
-                                        Select
+                                        {t('locationSuggestions.select')}
                                     </button>
                                 </div>
                             ))}

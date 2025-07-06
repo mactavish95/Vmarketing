@@ -3,6 +3,7 @@ import VoiceRecognition from './VoiceRecognition';
 import VoiceAnalysis from './VoiceAnalysis';
 import VoiceService from '../services/VoiceService';
 import './VoiceReview.css';
+import { useTranslation } from 'react-i18next';
 
 const VoiceReview = () => {
     const [transcript, setTranscript] = useState('');
@@ -10,6 +11,7 @@ const VoiceReview = () => {
     const [isAnalyzing, setIsAnalyzing] = useState(false);
     const [apiKey, setApiKey] = useState('');
     const [error, setError] = useState('');
+    const { t } = useTranslation();
 
     const handleTranscript = (newTranscript) => {
         setTranscript(newTranscript);
@@ -19,12 +21,12 @@ const VoiceReview = () => {
 
     const handleAnalyzeVoice = async () => {
         if (!transcript.trim()) {
-            setError('Please record some voice input first');
+            setError(t('voiceReview.pleaseRecordSomeVoiceInputFirst'));
             return;
         }
 
         if (!apiKey.trim()) {
-            setError('Please enter your NVIDIA API key');
+            setError(t('voiceReview.pleaseEnterYourNVIDIAAPIKey'));
             return;
         }
 
@@ -37,11 +39,11 @@ const VoiceReview = () => {
             setAnalysis(analysisResult);
             
             if (!analysisResult.success) {
-                setError(analysisResult.error || 'Analysis failed');
+                setError(analysisResult.error || t('voiceReview.analysisFailed'));
             }
         } catch (error) {
             console.error('Voice analysis error:', error);
-            setError(error.message || 'Failed to analyze voice input');
+            setError(error.message || t('voiceReview.failedToAnalyzeVoiceInput'));
         } finally {
             setIsAnalyzing(false);
         }
@@ -49,7 +51,7 @@ const VoiceReview = () => {
 
     const handleGenerateReview = async (transcript, analysisData, reviewType) => {
         if (!apiKey.trim()) {
-            throw new Error('Please enter your NVIDIA API key');
+            throw new Error(t('voiceReview.pleaseEnterYourNVIDIAAPIKey'));
         }
 
         try {
@@ -72,7 +74,7 @@ const VoiceReview = () => {
         localStorage.setItem('voiceAnalyses', JSON.stringify(savedAnalyses));
         
         // Show success message
-        alert('Analysis saved successfully!');
+        alert(t('voiceReview.analysisSavedSuccessfully'));
     };
 
     const clearAll = () => {
@@ -84,40 +86,40 @@ const VoiceReview = () => {
     return (
         <div className="voice-review-container">
             <div className="voice-review-header">
-                <h2>🎤 Voice Review Generator</h2>
-                <p>Record your voice and get AI-powered analysis and review generation</p>
+                <h2>{t('voiceReview.title')}</h2>
+                <p>{t('voiceReview.recordAndGetAIPoweredAnalysisAndReviewGeneration')}</p>
             </div>
 
             <div className="voice-review-content">
                 {/* API Key Section */}
                 <div className="api-key-section">
-                    <label htmlFor="voiceApiKey">NVIDIA API Key:</label>
+                    <label htmlFor="voiceApiKey">{t('voiceReview.nVIDIAApiKey')}:</label>
                     <input
                         type="password"
                         id="voiceApiKey"
                         value={apiKey}
                         onChange={(e) => setApiKey(e.target.value)}
-                        placeholder="Enter your NVIDIA API key"
+                        placeholder={t('voiceReview.enterYourNVIDIAAPIKey')}
                         className="api-key-input"
                     />
                     <small>
-                        Get your API key from{' '}
+                        {t('voiceReview.getYourAPIKeyFrom')}
                         <a 
                             href="https://integrate.api.nvidia.com" 
                             target="_blank" 
                             rel="noopener noreferrer"
                         >
-                            NVIDIA API Portal
+                            {t('voiceReview.nVIDIAPortal')}
                         </a>
                     </small>
                 </div>
 
                 {/* Voice Recognition Section */}
                 <div className="voice-section">
-                    <h3>🎤 Voice Input</h3>
+                    <h3>{t('voiceReview.voiceInput')}</h3>
                     <VoiceRecognition 
                         onTranscript={handleTranscript}
-                        placeholder="Tap to start speaking and record your review..."
+                        placeholder={t('voiceReview.tapToStartSpeakingAndRecordYourReview')}
                     />
                 </div>
 
@@ -135,7 +137,7 @@ const VoiceReview = () => {
                             onClick={clearAll}
                             className="clear-btn"
                         >
-                            🗑️ Clear All
+                            🗑️ {t('voiceReview.clearAll')}
                         </button>
                     </div>
                 )}
@@ -151,7 +153,7 @@ const VoiceReview = () => {
                 {/* Voice Analysis Section */}
                 {analysis && (
                     <div className="analysis-section">
-                        <h3>📊 AI Analysis</h3>
+                        <h3>{t('voiceReview.aiAnalysis')}</h3>
                         <VoiceAnalysis 
                             analysis={analysis}
                             onGenerateReview={handleGenerateReview}
@@ -162,23 +164,23 @@ const VoiceReview = () => {
 
                 {/* Instructions */}
                 <div className="instructions">
-                    <h4>💡 How to Use:</h4>
+                    <h4>{t('voiceReview.howToUse')}:</h4>
                     <ol>
-                        <li>Enter your NVIDIA API key above</li>
-                        <li>Click the microphone button to start recording</li>
-                        <li>Speak your review, feedback, or thoughts</li>
-                        <li>Click "Analyze Voice" to get AI-powered insights</li>
-                        <li>Generate professional reviews from your voice input</li>
+                        <li>{t('voiceReview.enterYourNVIDIAAPIKey')}</li>
+                        <li>{t('voiceReview.clickTheMicrophoneButtonToStartRecording')}</li>
+                        <li>{t('voiceReview.speakYourReviewFeedbackOrThoughts')}</li>
+                        <li>{t('voiceReview.clickAnalyzeVoiceToGetAIPoweredInsights')}</li>
+                        <li>{t('voiceReview.generateProfessionalReviewsFromYourVoiceInput')}</li>
                     </ol>
                     
                     <div className="tips">
-                        <h5>🎯 Tips for Better Results:</h5>
+                        <h5>{t('voiceReview.tipsForBetterResults')}:</h5>
                         <ul>
-                            <li>Speak clearly and at a normal pace</li>
-                            <li>Use a quiet environment for better recognition</li>
-                            <li>Be specific about what you're reviewing</li>
-                            <li>Include both positive and negative points</li>
-                            <li>Mention specific features or experiences</li>
+                            <li>{t('voiceReview.speakClearlyAndAtANormalPace')}</li>
+                            <li>{t('voiceReview.useAQuietEnvironmentForBetterRecognition')}</li>
+                            <li>{t('voiceReview.beSpecificAboutWhatYoureReviewing')}</li>
+                            <li>{t('voiceReview.includeBothPositiveAndNegativePoints')}</li>
+                            <li>{t('voiceReview.mentionSpecificFeaturesOrExperiences')}</li>
                         </ul>
                     </div>
                 </div>

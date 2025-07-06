@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import LocationService from '../services/locationService';
 import LocationSuggestions from './LocationSuggestions';
 import './LocationAttachment.css';
+import { useTranslation } from 'react-i18next';
 
 const LocationAttachment = ({ 
     onLocationChange, 
@@ -14,6 +15,7 @@ const LocationAttachment = ({
   const [error, setError] = useState(null);
   const [permissionStatus, setPermissionStatus] = useState('prompt');
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
     // Check if geolocation is supported
@@ -149,21 +151,21 @@ const LocationAttachment = ({
                 className="btn btn-secondary"
                 onClick={clearLocation}
               >
-                Remove Location
+                {t('locationAttachment.removeLocation')}
               </button>
               <button 
                 className="btn btn-primary"
                 onClick={getCurrentLocation}
                 disabled={isLoading}
               >
-                Update Location
+                {t('locationAttachment.updateLocation')}
               </button>
               {transcript && apiKey && (
                 <button 
                   className="btn btn-suggest"
                   onClick={() => setShowSuggestions(true)}
                 >
-                  🤖 Get AI Suggestions
+                  🤖 {t('locationAttachment.getAISuggestions')}
                 </button>
               )}
             </div>
@@ -172,8 +174,8 @@ const LocationAttachment = ({
           <div className="location-empty">
             <div className="location-placeholder">
               <span className="location-icon">📍</span>
-              <p>No location attached</p>
-              <p className="location-hint">Add your current location or get AI suggestions based on your voice input</p>
+              <p>{t('locationAttachment.noLocationAttached')}</p>
+              <p className="location-hint">{t('locationAttachment.addCurrentLocationHint')}</p>
             </div>
             <div className="location-buttons">
               <button 
@@ -181,14 +183,14 @@ const LocationAttachment = ({
                 onClick={getCurrentLocation}
                 disabled={isLoading || permissionStatus === 'denied'}
               >
-                {isLoading ? 'Getting Location...' : '📍 Attach Current Location'}
+                {isLoading ? t('locationAttachment.gettingLocation') : t('locationAttachment.attachCurrentLocation')}
               </button>
               {transcript && apiKey && (
                 <button 
                   className="btn btn-suggest location-btn"
                   onClick={() => setShowSuggestions(true)}
                 >
-                  🤖 AI Location Suggestions
+                  🤖 {t('locationAttachment.aiLocationSuggestions')}
                 </button>
               )}
             </div>
@@ -201,11 +203,11 @@ const LocationAttachment = ({
             <p>{error}</p>
             {permissionStatus === 'denied' && (
               <div className="permission-help">
-                <p>To enable location access:</p>
+                <p>{t('locationAttachment.enableLocationAccess')}</p>
                 <ul>
-                  <li>Click the location icon in your browser's address bar</li>
-                  <li>Select "Allow" for location access</li>
-                  <li>Refresh the page and try again</li>
+                  <li>{t('locationAttachment.clickLocationIcon')}</li>
+                  <li>{t('locationAttachment.selectAllow')}</li>
+                  <li>{t('locationAttachment.refreshPage')} {t('locationAttachment.tryAgain')}</li>
                 </ul>
               </div>
             )}
@@ -215,7 +217,7 @@ const LocationAttachment = ({
         {isLoading && (
           <div className="location-loading">
             <div className="loading-spinner"></div>
-            <p>Getting your location...</p>
+            <p>{t('locationAttachment.gettingLocation')}</p>
           </div>
         )}
       </div>

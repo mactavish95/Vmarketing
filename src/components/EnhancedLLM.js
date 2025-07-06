@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './EnhancedLLM.css';
+import { useTranslation } from 'react-i18next';
 
 const EnhancedLLM = () => {
   const [input, setInput] = useState('');
@@ -12,6 +13,7 @@ const EnhancedLLM = () => {
   const [availableModels, setAvailableModels] = useState([]);
   const [selectedModel, setSelectedModel] = useState('auto');
   const [conversationHistory, setConversationHistory] = useState([]);
+  const { t } = useTranslation();
 
   // Load API key from environment or localStorage
   useEffect(() => {

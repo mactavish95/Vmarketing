@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import apiConfig from '../config/api';
+import { useTranslation } from 'react-i18next';
 
 const EnhancedModelInfo = ({ style = {} }) => {
   const [modelInfo, setModelInfo] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     fetchModelInfo();
@@ -94,7 +96,7 @@ const EnhancedModelInfo = ({ style = {} }) => {
             animation: 'spin 1s linear infinite'
           }}></div>
           <span style={{ color: '#0c4a6e', fontSize: '16px', fontWeight: '600' }}>
-            Loading AI Model Information...
+            {t('enhancedModelInfo.loading')}
           </span>
         </div>
       </div>
@@ -173,7 +175,7 @@ const EnhancedModelInfo = ({ style = {} }) => {
             fontSize: '16px',
             fontWeight: '600'
           }}>
-            🚀 Key Capabilities
+            🚀 {t('enhancedModelInfo.keyCapabilities')}
           </h4>
           <div style={{
             display: 'grid',
@@ -206,7 +208,7 @@ const EnhancedModelInfo = ({ style = {} }) => {
             fontSize: '16px',
             fontWeight: '600'
           }}>
-            📊 Performance Metrics
+            📊 {t('enhancedModelInfo.performanceMetrics')}
           </h4>
           <div style={{
             display: 'grid',
@@ -224,7 +226,7 @@ const EnhancedModelInfo = ({ style = {} }) => {
               <div style={{ fontSize: '12px', fontWeight: '600', color: '#166534' }}>
                 {modelInfo.modelInfo.performance.responseTime}
               </div>
-              <div style={{ fontSize: '10px', color: '#16a34a' }}>Response Time</div>
+              <div style={{ fontSize: '10px', color: '#16a34a' }}>{t('enhancedModelInfo.responseTime')}</div>
             </div>
             <div style={{
               background: 'rgba(59, 130, 246, 0.1)',
@@ -237,7 +239,7 @@ const EnhancedModelInfo = ({ style = {} }) => {
               <div style={{ fontSize: '12px', fontWeight: '600', color: '#1e40af' }}>
                 {modelInfo.modelInfo.performance.contentQuality}
               </div>
-              <div style={{ fontSize: '10px', color: '#3b82f6' }}>Content Quality</div>
+              <div style={{ fontSize: '10px', color: '#3b82f6' }}>{t('enhancedModelInfo.contentQuality')}</div>
             </div>
             <div style={{
               background: 'rgba(168, 85, 247, 0.1)',
@@ -250,7 +252,7 @@ const EnhancedModelInfo = ({ style = {} }) => {
               <div style={{ fontSize: '12px', fontWeight: '600', color: '#7c3aed' }}>
                 {modelInfo.modelInfo.performance.consistency}
               </div>
-              <div style={{ fontSize: '10px', color: '#a855f7' }}>Consistency</div>
+              <div style={{ fontSize: '10px', color: '#a855f7' }}>{t('enhancedModelInfo.consistency')}</div>
             </div>
             <div style={{
               background: 'rgba(245, 158, 11, 0.1)',
@@ -263,7 +265,7 @@ const EnhancedModelInfo = ({ style = {} }) => {
               <div style={{ fontSize: '12px', fontWeight: '600', color: '#d97706' }}>
                 {modelInfo.modelInfo.performance.creativity}
               </div>
-              <div style={{ fontSize: '10px', color: '#f59e0b' }}>Creativity</div>
+              <div style={{ fontSize: '10px', color: '#f59e0b' }}>{t('enhancedModelInfo.creativity')}</div>
             </div>
           </div>
         </div>
@@ -278,7 +280,7 @@ const EnhancedModelInfo = ({ style = {} }) => {
             fontSize: '16px',
             fontWeight: '600'
           }}>
-            ⚙️ Technical Specifications
+            ⚙️ {t('enhancedModelInfo.technicalSpecs')}
           </h4>
           <div style={{
             display: 'grid',
@@ -292,7 +294,7 @@ const EnhancedModelInfo = ({ style = {} }) => {
               padding: '8px 12px',
               fontSize: '12px'
             }}>
-              <div style={{ color: '#374151', fontWeight: '600' }}>Temperature</div>
+              <div style={{ color: '#374151', fontWeight: '600' }}>{t('enhancedModelInfo.temperature')}</div>
               <div style={{ color: '#6b7280' }}>{modelInfo.parameters.temperature}</div>
             </div>
             <div style={{
@@ -302,7 +304,7 @@ const EnhancedModelInfo = ({ style = {} }) => {
               padding: '8px 12px',
               fontSize: '12px'
             }}>
-              <div style={{ color: '#374151', fontWeight: '600' }}>Max Tokens</div>
+              <div style={{ color: '#374151', fontWeight: '600' }}>{t('enhancedModelInfo.maxTokens')}</div>
               <div style={{ color: '#6b7280' }}>{modelInfo.parameters.maxTokens.toLocaleString()}</div>
             </div>
             <div style={{
@@ -312,7 +314,7 @@ const EnhancedModelInfo = ({ style = {} }) => {
               padding: '8px 12px',
               fontSize: '12px'
             }}>
-              <div style={{ color: '#374151', fontWeight: '600' }}>Top P</div>
+              <div style={{ color: '#374151', fontWeight: '600' }}>{t('enhancedModelInfo.topP')}</div>
               <div style={{ color: '#6b7280' }}>{modelInfo.parameters.topP}</div>
             </div>
           </div>
@@ -327,7 +329,7 @@ const EnhancedModelInfo = ({ style = {} }) => {
           fontSize: '16px',
           fontWeight: '600'
         }}>
-          💪 Model Strengths
+          💪 {t('enhancedModelInfo.modelStrengths')}
         </h4>
         <div style={{
           display: 'flex',
@@ -359,7 +361,7 @@ const EnhancedModelInfo = ({ style = {} }) => {
           fontSize: '12px',
           color: '#dc2626'
         }}>
-          <strong>Error:</strong> {error}
+          <strong>{t('enhancedModelInfo.error')}:</strong> {error}
         </div>
       )}
 

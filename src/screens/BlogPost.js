@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const blogPosts = {
   overview: {
@@ -178,6 +179,7 @@ const BlogPost = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const [copyStatus, setCopyStatus] = useState('');
+  const { t } = useTranslation();
 
   useEffect(() => {
     loadGeneratedPost();
@@ -838,7 +840,7 @@ Generated on: ${new Date(generatedPost.timestamp).toLocaleString()}`;
           animation: 'spin 1s linear infinite',
           marginBottom: '16px'
         }}></div>
-        <p style={{ fontSize: '1.1rem' }}>Loading blog post...</p>
+        <p style={{ fontSize: '1.1rem' }}>{t('loading_blog_post')}</p>
       </div>
     );
   }
@@ -858,7 +860,7 @@ Generated on: ${new Date(generatedPost.timestamp).toLocaleString()}`;
         flexDirection: 'column'
       }}>
         <h1 style={{ fontSize: '3rem', marginBottom: '16px' }}>404</h1>
-        <p style={{ fontSize: '1.3rem', marginBottom: '24px' }}>Blog post not found.</p>
+        <p style={{ fontSize: '1.3rem', marginBottom: '24px' }}>{t('blog_post_not_found')}</p>
         <Link to="/blog" style={{
           background: '#fff',
           color: '#667eea',
@@ -866,7 +868,7 @@ Generated on: ${new Date(generatedPost.timestamp).toLocaleString()}`;
           borderRadius: '8px',
           textDecoration: 'none',
           fontWeight: '600',
-        }}>← Back to Blog</Link>
+        }}>{t('back_to_blog')}</Link>
       </div>
     );
   }
@@ -960,7 +962,7 @@ Generated on: ${new Date(generatedPost.timestamp).toLocaleString()}`;
                   whiteSpace: 'nowrap'
                 }}
               >
-                📋 Copy Content
+                📋 {t('copy')}
               </button>
               
               {/* Edit Mode Controls */}
@@ -983,7 +985,7 @@ Generated on: ${new Date(generatedPost.timestamp).toLocaleString()}`;
                     whiteSpace: 'nowrap'
                   }}
                 >
-                  ✏️ Edit Content
+                  ✏️ {t('edit')}
                 </button>
               ) : (
                 <>
@@ -1007,7 +1009,7 @@ Generated on: ${new Date(generatedPost.timestamp).toLocaleString()}`;
                       whiteSpace: 'nowrap'
                     }}
                   >
-                    {isSaving ? '💾 Saving...' : '💾 Save'}
+                    {isSaving ? '💾 ' + t('saving') : '💾 ' + t('save')}
                   </button>
                   <button
                     onClick={discardChanges}
@@ -1027,7 +1029,7 @@ Generated on: ${new Date(generatedPost.timestamp).toLocaleString()}`;
                       whiteSpace: 'nowrap'
                     }}
                   >
-                    ❌ Cancel
+                    ❌ {t('cancel')}
                   </button>
                 </>
               )}
@@ -1048,7 +1050,7 @@ Generated on: ${new Date(generatedPost.timestamp).toLocaleString()}`;
             color: copyStatus.includes('✅') ? '#22543d' : '#c53030',
             border: `1px solid ${copyStatus.includes('✅') ? '#9ae6b4' : '#feb2b2'}`
           }}>
-            {copyStatus}
+            {copyStatus.includes('✅') ? t('content_copied') : t('content_copy_failed')}
           </div>
         )}
 
@@ -1239,7 +1241,7 @@ Generated on: ${new Date(generatedPost.timestamp).toLocaleString()}`;
             fontSize: '1rem',
             transition: 'all 0.2s',
             boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
-          }}>← Back to Blog</Link>
+          }}>{t('back_to_blog')}</Link>
         </div>
       </div>
 

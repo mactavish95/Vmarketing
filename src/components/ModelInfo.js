@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import apiConfig from '../config/api';
+import { useTranslation } from 'react-i18next';
 
 const ModelInfo = ({ useCase, style = {} }) => {
   const [modelInfo, setModelInfo] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     fetchModelInfo();
@@ -136,7 +138,7 @@ const ModelInfo = ({ useCase, style = {} }) => {
             borderRadius: '50%',
             animation: 'spin 1s linear infinite'
           }}></div>
-          <span style={{ color: '#0c4a6e', fontSize: '14px' }}>Loading model info...</span>
+          <span style={{ color: '#0c4a6e', fontSize: '14px' }}>{t('modelInfo.loading')}</span>
         </div>
       </div>
     );
@@ -167,7 +169,7 @@ const ModelInfo = ({ useCase, style = {} }) => {
           fontSize: '14px',
           fontWeight: '600'
         }}>
-          AI Model: {modelInfo.name}
+          {t('modelInfo.aiModel')}: {modelInfo.name}
         </h4>
       </div>
       
@@ -298,7 +300,7 @@ const ModelInfo = ({ useCase, style = {} }) => {
           fontSize: '11px',
           color: '#dc2626'
         }}>
-          <strong>Debug Error:</strong> {error}
+          <strong>{t('modelInfo.debugError')}:</strong> {error}
         </div>
       )}
       <style jsx>{`

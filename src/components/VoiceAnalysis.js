@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import './VoiceAnalysis.css';
+import { useTranslation } from 'react-i18next';
 
 const VoiceAnalysis = ({ analysis, onGenerateReview, onSaveAnalysis, parentReviewType = 'general' }) => {
     const [isExpanded, setIsExpanded] = useState(false);
     const [isGeneratingReview, setIsGeneratingReview] = useState(false);
     const [generatedReview, setGeneratedReview] = useState('');
     const [reviewType, setReviewType] = useState(parentReviewType);
+    const { t } = useTranslation();
 
     // Update reviewType when parentReviewType changes
     useEffect(() => {
@@ -17,7 +19,7 @@ const VoiceAnalysis = ({ analysis, onGenerateReview, onSaveAnalysis, parentRevie
             <div className="voice-analysis-container">
                 <div className="analysis-error">
                     <div className="error-icon">⚠️</div>
-                    <h3>Analysis Failed</h3>
+                    <h3>{t('voiceAnalysis.analysisFailed')}</h3>
                     <p>{analysis?.error || 'Unable to analyze voice input'}</p>
                 </div>
             </div>
@@ -121,7 +123,7 @@ const VoiceAnalysis = ({ analysis, onGenerateReview, onSaveAnalysis, parentRevie
                         <span className="sentiment-text">{sentiment.toUpperCase()}</span>
                     </div>
                     <div className="confidence-meter">
-                        <div className="confidence-label">Confidence</div>
+                        <div className="confidence-label">{t('voiceAnalysis.confidence')}</div>
                         <div className="confidence-bar">
                             <div 
                                 className="confidence-fill" 
@@ -137,19 +139,19 @@ const VoiceAnalysis = ({ analysis, onGenerateReview, onSaveAnalysis, parentRevie
 
                 <div className="stats-grid">
                     <div className="stat-item">
-                        <div className="stat-label">Words</div>
+                        <div className="stat-label">{t('voiceAnalysis.words')}</div>
                         <div className="stat-value">{wordCount}</div>
                     </div>
                     <div className="stat-item">
-                        <div className="stat-label">Pace</div>
+                        <div className="stat-label">{t('voiceAnalysis.pace')}</div>
                         <div className="stat-value">{speakingPace}</div>
                     </div>
                     <div className="stat-item">
-                        <div className="stat-label">Tone</div>
+                        <div className="stat-label">{t('voiceAnalysis.tone')}</div>
                         <div className="stat-value">{tone}</div>
                     </div>
                     <div className="stat-item">
-                        <div className="stat-label">Topics</div>
+                        <div className="stat-label">{t('voiceAnalysis.topics')}</div>
                         <div className="stat-value">{topics?.length || 0}</div>
                     </div>
                 </div>
@@ -157,13 +159,13 @@ const VoiceAnalysis = ({ analysis, onGenerateReview, onSaveAnalysis, parentRevie
 
             <div className="analysis-content">
                 <div className="content-section">
-                    <h3>📝 Summary</h3>
+                    <h3>{t('voiceAnalysis.summary')}</h3>
                     <p className="summary-text">{summary}</p>
                 </div>
 
                 {keyPoints && keyPoints.length > 0 && (
                     <div className="content-section">
-                        <h3>🎯 Key Points</h3>
+                        <h3>{t('voiceAnalysis.keyPoints')}</h3>
                         <ul className="key-points-list">
                             {keyPoints.map((point, index) => (
                                 <li key={index} className="key-point-item">
@@ -177,7 +179,7 @@ const VoiceAnalysis = ({ analysis, onGenerateReview, onSaveAnalysis, parentRevie
 
                 {topics && topics.length > 0 && (
                     <div className="content-section">
-                        <h3>🏷️ Topics</h3>
+                        <h3>{t('voiceAnalysis.topics')}</h3>
                         <div className="topics-tags">
                             {topics.map((topic, index) => (
                                 <span key={index} className="topic-tag">
@@ -192,7 +194,7 @@ const VoiceAnalysis = ({ analysis, onGenerateReview, onSaveAnalysis, parentRevie
                     <>
                         {suggestions && suggestions.length > 0 && (
                             <div className="content-section">
-                                <h3>💡 Suggestions</h3>
+                                <h3>{t('voiceAnalysis.suggestions')}</h3>
                                 <ul className="suggestions-list">
                                     {suggestions.map((suggestion, index) => (
                                         <li key={index} className="suggestion-item">
@@ -206,7 +208,7 @@ const VoiceAnalysis = ({ analysis, onGenerateReview, onSaveAnalysis, parentRevie
 
                         {actionItems && actionItems.length > 0 && (
                             <div className="content-section">
-                                <h3>✅ Action Items</h3>
+                                <h3>{t('voiceAnalysis.actionItems')}</h3>
                                 <ul className="action-items-list">
                                     {actionItems.map((item, index) => (
                                         <li key={index} className="action-item">
@@ -219,7 +221,7 @@ const VoiceAnalysis = ({ analysis, onGenerateReview, onSaveAnalysis, parentRevie
                         )}
 
                         <div className="content-section">
-                            <h3>🎤 Original Transcript</h3>
+                            <h3>{t('voiceAnalysis.originalTranscript')}</h3>
                             <div className="transcript-display">
                                 <p>{originalTranscript}</p>
                             </div>
@@ -256,7 +258,7 @@ const VoiceAnalysis = ({ analysis, onGenerateReview, onSaveAnalysis, parentRevie
 
                 {generatedReview && (
                     <div className="generated-review">
-                        <h3>📝 Generated Review</h3>
+                        <h3>{t('voiceAnalysis.generatedReview')}</h3>
                         <div className="review-content">
                             <p>{generatedReview}</p>
                         </div>

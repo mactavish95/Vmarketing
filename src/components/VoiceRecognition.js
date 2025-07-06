@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './VoiceRecognition.css';
+import { useTranslation } from 'react-i18next';
 
 const VoiceRecognition = ({ onTranscript, placeholder = "Tap to start speaking...", disabled = false, enableLLMEnhancement = true }) => {
     const [isListening, setIsListening] = useState(false);
@@ -20,6 +21,7 @@ const VoiceRecognition = ({ onTranscript, placeholder = "Tap to start speaking..
     });
     const recognitionRef = useRef(null);
     const timeoutRef = useRef(null);
+    const { t } = useTranslation();
 
     useEffect(() => {
         // Detect mobile device and browser
@@ -515,20 +517,20 @@ Corrected transcript:`;
         return (
             <div className="voice-recognition-error">
                 <div className="error-icon">🎤</div>
-                <h3>Speech Recognition Not Supported</h3>
+                <h3>{t('voiceRecognition.speechRecognitionNotSupported')}</h3>
                 <p>{error}</p>
                 <div className="error-actions">
                     <button onClick={retryInitialization} className="retry-btn">
-                        🔄 Try Again
+                        🔄 {t('voiceRecognition.tryAgain')}
                     </button>
                 </div>
                 <div className="mobile-tips">
-                    <h4>Mobile Tips:</h4>
+                    <h4>{t('voiceRecognition.mobileTips')}:</h4>
                     <ul>
-                        <li>Use Chrome or Safari on your mobile device</li>
-                        <li>Allow microphone permissions when prompted</li>
-                        <li>Speak clearly and in a quiet environment</li>
-                        <li>Hold your device close to your mouth</li>
+                        <li>{t('voiceRecognition.useChromeOrSafari')}</li>
+                        <li>{t('voiceRecognition.allowMicrophonePermissions')}</li>
+                        <li>{t('voiceRecognition.speakClearly')}</li>
+                        <li>{t('voiceRecognition.holdDeviceClose')}</li>
                     </ul>
                 </div>
             </div>
@@ -559,9 +561,9 @@ Corrected transcript:`;
                         <button
                             onClick={() => enhanceTranscriptWithLLM(transcript)}
                             className="test-enhancement-btn"
-                            title="Test LLM enhancement"
+                            title={t('voiceRecognition.testEnhancement')}
                         >
-                            🧪 Test Enhancement
+                            🧪 {t('voiceRecognition.testEnhancement')}
                         </button>
                     )}
                 </div>
@@ -585,10 +587,10 @@ Corrected transcript:`;
                 <button
                     onClick={toggleManualInput}
                     className="action-btn manual-btn"
-                    title="Type manually"
-                    aria-label="Type text manually"
+                    title={t('voiceRecognition.typeManually')}
+                    aria-label={t('voiceRecognition.typeTextManually')}
                 >
-                    ✏️ Type
+                    ✏️ {t('voiceRecognition.type')}
                 </button>
                 
                 {(transcript || interimTranscript) && (
@@ -596,18 +598,18 @@ Corrected transcript:`;
                         <button
                             onClick={copyToClipboard}
                             className="action-btn copy-btn"
-                            title="Copy to clipboard"
-                            aria-label="Copy transcript to clipboard"
+                            title={t('voiceRecognition.copyToClipboard')}
+                            aria-label={t('voiceRecognition.copyTranscriptToClipboard')}
                         >
-                            📋 Copy
+                            📋 {t('voiceRecognition.copy')}
                         </button>
                         <button
                             onClick={clearTranscript}
                             className="action-btn clear-btn"
-                            title="Clear transcript"
-                            aria-label="Clear transcript"
+                            title={t('voiceRecognition.clearTranscript')}
+                            aria-label={t('voiceRecognition.clearTranscript')}
                         >
-                            🗑️ Clear
+                            🗑️ {t('voiceRecognition.clear')}
                         </button>
                     </div>
                 )}
@@ -619,7 +621,7 @@ Corrected transcript:`;
                     <textarea
                         value={manualText}
                         onChange={(e) => setManualText(e.target.value)}
-                        placeholder="Type your review here..."
+                        placeholder={t('voiceRecognition.typeYourReviewHere')}
                         className="manual-textarea"
                         rows="3"
                         autoFocus
@@ -636,7 +638,7 @@ Corrected transcript:`;
                             onClick={toggleManualInput}
                             className="action-btn cancel-btn"
                         >
-                            ❌ Cancel
+                            ❌ {t('voiceRecognition.cancel')}
                         </button>
                     </div>
                 </div>
@@ -649,13 +651,13 @@ Corrected transcript:`;
                 {isListening && (
                     <div className="listening-indicator">
                         <div className="pulse-dot"></div>
-                        <span>Listening...</span>
+                        <span>{t('voiceRecognition.listening')}</span>
                     </div>
                 )}
                 {isEnhancing && (
                     <div className="enhancing-indicator">
                         <div className="enhancing-spinner"></div>
-                        <span>🤖 AI is enhancing your transcript...</span>
+                        <span>🤖 {t('voiceRecognition.aiIsEnhancingYourTranscript')}</span>
                     </div>
                 )}
             </div>
@@ -675,13 +677,13 @@ Corrected transcript:`;
                             }}
                             className="action-btn use-enhanced-btn"
                         >
-                            ✅ Use Enhanced Version
+                            ✅ {t('voiceRecognition.useEnhancedVersion')}
                         </button>
                         <button
                             onClick={() => setEnhancedTranscript('')}
                             className="action-btn keep-original-btn"
                         >
-                            🔄 Keep Original
+                            🔄 {t('voiceRecognition.keepOriginal')}
                         </button>
                     </div>
                 </div>
@@ -693,10 +695,10 @@ Corrected transcript:`;
                     <span>{error}</span>
                     <div className="error-actions">
                         <button onClick={retryInitialization} className="retry-link">
-                            Try Again
+                            {t('voiceRecognition.tryAgain')}
                         </button>
                         <button onClick={toggleManualInput} className="manual-link">
-                            Type Instead
+                            {t('voiceRecognition.typeInstead')}
                         </button>
                     </div>
                 </div>
@@ -704,10 +706,10 @@ Corrected transcript:`;
 
             {isMobile && (
                 <div className="mobile-hints">
-                    <p>💡 <strong>Mobile Tips:</strong> Speak clearly, hold device close, and ensure microphone permissions are enabled.</p>
-                    <p>📝 <strong>Alternative:</strong> If voice doesn't work, use the "Type" button to enter text manually.</p>
+                    <p>💡 <strong>{t('voiceRecognition.mobileTips')}:</strong> {t('voiceRecognition.speakClearly')}, {t('voiceRecognition.holdDeviceClose')} {t('voiceRecognition.andEnsureMicrophonePermissions')}.</p>
+                    <p>📝 <strong>{t('voiceRecognition.alternative')}:</strong> {t('voiceRecognition.ifVoiceDoesntWork')}</p>
                     {enableLLMEnhancement && (
-                        <p>🤖 <strong>AI Enhancement:</strong> Your transcript will be automatically improved with AI for better accuracy.</p>
+                        <p>🤖 <strong>{t('voiceRecognition.aiEnhancement')}:</strong> {t('voiceRecognition.yourTranscriptWillBeAutomaticallyImprovedWithAIForBetterAccuracy')}</p>
                     )}
                 </div>
             )}

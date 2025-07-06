@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import EnhancedModelInfo from '../components/EnhancedModelInfo';
+import { useTranslation } from 'react-i18next';
 
 const BlogIndex = () => {
   const [activeTab, setActiveTab] = useState('published');
   const [blogHistory, setBlogHistory] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('all');
+  const { t } = useTranslation();
 
   useEffect(() => {
     loadBlogHistory();
@@ -178,7 +180,7 @@ const BlogIndex = () => {
             color: '#fff',
             textShadow: '0 2px 4px rgba(0,0,0,0.1)'
           }}>
-            ReviewGen Blog
+            {t('reviewGenBlog')}
           </h1>
           <p style={{ 
             margin: '0', 
@@ -186,7 +188,7 @@ const BlogIndex = () => {
             color: '#fff',
             opacity: '0.95'
           }}>
-            Insights, tips, and guides for AI-powered review generation
+            {t('insightsTipsGuides')}
           </p>
         </div>
 
@@ -219,7 +221,7 @@ const BlogIndex = () => {
                 transition: 'all 0.3s ease'
               }}
             >
-              📚 Published Articles ({blogPosts.length})
+              {t('publishedArticles')} ({blogPosts.length})
             </button>
             <button
               onClick={() => setActiveTab('history')}
@@ -235,7 +237,7 @@ const BlogIndex = () => {
                 transition: 'all 0.3s ease'
               }}
             >
-              ✍️ Your Blog Posts ({blogHistory.length})
+              {t('yourBlogPosts')} ({blogHistory.length})
             </button>
           </div>
 
@@ -248,7 +250,7 @@ const BlogIndex = () => {
                 fontSize: '24px',
                 fontWeight: '700'
               }}>
-                Latest Articles
+                {t('latestArticles')}
               </h2>
               <div style={{
                 display: 'grid',
@@ -385,7 +387,7 @@ const BlogIndex = () => {
                 }}>
                   <div style={{ fontSize: '32px', marginBottom: '8px' }}>📝</div>
                   <div style={{ fontSize: '24px', fontWeight: '700' }}>{blogHistory.length}</div>
-                  <div style={{ fontSize: '14px', opacity: '0.9' }}>Total Posts</div>
+                  <div style={{ fontSize: '14px', opacity: '0.9' }}>{t('totalPosts')}</div>
                 </div>
                 <div style={{
                   background: 'linear-gradient(135deg, #20c997 0%, #14a085 100%)',
@@ -398,7 +400,7 @@ const BlogIndex = () => {
                   <div style={{ fontSize: '24px', fontWeight: '700' }}>
                     {blogHistory.reduce((total, blog) => total + getWordCount(blog.blogPost), 0).toLocaleString()}
                   </div>
-                  <div style={{ fontSize: '14px', opacity: '0.9' }}>Total Words</div>
+                  <div style={{ fontSize: '14px', opacity: '0.9' }}>{t('totalWords')}</div>
                 </div>
                 <div style={{
                   background: 'linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%)',
@@ -411,7 +413,7 @@ const BlogIndex = () => {
                   <div style={{ fontSize: '24px', fontWeight: '700' }}>
                     {new Set(blogHistory.map(blog => blog.restaurantName)).size}
                   </div>
-                  <div style={{ fontSize: '14px', opacity: '0.9' }}>Restaurants</div>
+                  <div style={{ fontSize: '14px', opacity: '0.9' }}>{t('restaurants')}</div>
                 </div>
               </div>
 
@@ -426,7 +428,7 @@ const BlogIndex = () => {
                 <div style={{ flex: 1, minWidth: '250px' }}>
                   <input
                     type="text"
-                    placeholder="Search by topic or restaurant name..."
+                    placeholder={t('searchByTopicOrRestaurantName')}
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     style={{
@@ -449,15 +451,15 @@ const BlogIndex = () => {
                     minWidth: '150px'
                   }}
                 >
-                  <option value="all">All Types</option>
-                  <option value="restaurant">Restaurant</option>
-                  <option value="cafe">Café</option>
-                  <option value="pizzeria">Pizzeria</option>
-                  <option value="bakery">Bakery</option>
-                  <option value="bar">Bar/Pub</option>
-                  <option value="food-truck">Food Truck</option>
-                  <option value="fine-dining">Fine Dining</option>
-                  <option value="fast-casual">Fast Casual</option>
+                  <option value="all">{t('allTypes')}</option>
+                  <option value="restaurant">{t('restaurant')}</option>
+                  <option value="cafe">{t('cafe')}</option>
+                  <option value="pizzeria">{t('pizzeria')}</option>
+                  <option value="bakery">{t('bakery')}</option>
+                  <option value="bar">{t('barPub')}</option>
+                  <option value="food-truck">{t('foodTruck')}</option>
+                  <option value="fine-dining">{t('fineDining')}</option>
+                  <option value="fast-casual">{t('fastCasual')}</option>
                 </select>
                 <button
                   onClick={loadBlogHistory}
@@ -471,7 +473,7 @@ const BlogIndex = () => {
                     cursor: 'pointer'
                   }}
                 >
-                  🔄 Refresh
+                  🔄 {t('refresh')}
                 </button>
               </div>
 
@@ -484,12 +486,12 @@ const BlogIndex = () => {
                 }}>
                   <div style={{ fontSize: '64px', marginBottom: '16px' }}>📝</div>
                   <h3 style={{ margin: '0 0 12px 0', fontSize: '24px' }}>
-                    {blogHistory.length === 0 ? 'No blog posts yet' : 'No posts match your search'}
+                    {blogHistory.length === 0 ? t('noBlogPostsYet') : t('noPostsMatchYourSearch')}
                   </h3>
                   <p style={{ margin: '0 0 24px 0', fontSize: '16px' }}>
                     {blogHistory.length === 0 
-                      ? 'Create your first blog post to get started!' 
-                      : 'Try adjusting your search or filter criteria.'
+                      ? t('createYourFirstBlogPostToGetStarted') 
+                      : t('tryAdjustingYourSearchOrFilterCriteria')
                     }
                   </p>
                   {blogHistory.length === 0 && (
@@ -505,7 +507,7 @@ const BlogIndex = () => {
                         display: 'inline-block'
                       }}
                     >
-                      ✍️ Create Your First Blog Post
+                      ✍️ {t('createYourFirstBlogPost')}
                     </Link>
                   )}
                 </div>
@@ -563,7 +565,7 @@ const BlogIndex = () => {
                               fontSize: '12px',
                               cursor: 'pointer'
                             }}
-                            title="Copy blog post"
+                            title={t('copyBlogPost')}
                           >
                             📋
                           </button>
@@ -578,7 +580,7 @@ const BlogIndex = () => {
                               fontSize: '12px',
                               cursor: 'pointer'
                             }}
-                            title="Delete blog post"
+                            title={t('deleteBlogPost')}
                           >
                             🗑️
                           </button>
@@ -651,7 +653,7 @@ const BlogIndex = () => {
                           fontSize: '12px',
                           fontWeight: '500'
                         }}>
-                          {getWordCount(blog.blogPost)} words
+                          {getWordCount(blog.blogPost)} {t('words')}
                         </span>
                         {blog.images && blog.images.length > 0 && (
                           <span style={{
@@ -662,7 +664,7 @@ const BlogIndex = () => {
                             fontSize: '12px',
                             fontWeight: '500'
                           }}>
-                            {blog.images.length} image{blog.images.length !== 1 ? 's' : ''}
+                            {blog.images.length} {t('image')}
                           </span>
                         )}
                       </div>
@@ -692,7 +694,7 @@ const BlogIndex = () => {
                               border: '1px solid #e9ecef'
                             }}
                           >
-                            👁️ View Full Post
+                            👁️ {t('viewFullPost')}
                           </Link>
                           <Link
                             to="/blog-creator"
@@ -703,7 +705,7 @@ const BlogIndex = () => {
                               fontSize: '12px'
                             }}
                           >
-                            ✍️ Create Similar
+                            ✍️ {t('createSimilar')}
                           </Link>
                         </div>
                       </div>
@@ -729,14 +731,14 @@ const BlogIndex = () => {
               fontSize: '20px',
               fontWeight: '700'
             }}>
-              Stay Updated
+              {t('stayUpdated')}
             </h3>
             <p style={{
               margin: '0 0 20px 0',
               color: '#0369a1',
               lineHeight: '1.6'
             }}>
-              Get the latest tips and insights on AI-powered review generation
+              {t('getLatestTipsInsights')}
             </p>
             <div style={{
               display: 'flex',
@@ -764,7 +766,7 @@ const BlogIndex = () => {
                   e.target.style.boxShadow = 'none';
                 }}
               >
-                Create Your Blog Post
+                {t('createYourBlogPost')}
               </Link>
               <Link 
                 to="/generate"
@@ -786,7 +788,7 @@ const BlogIndex = () => {
                   e.target.style.transform = 'translateY(0)';
                 }}
               >
-                Try ReviewGen Now
+                {t('tryReviewGenNow')}
               </Link>
               <Link 
                 to="/models"
@@ -808,7 +810,7 @@ const BlogIndex = () => {
                   e.target.style.transform = 'translateY(0)';
                 }}
               >
-                Explore AI Models
+                {t('exploreAIModels')}
               </Link>
             </div>
           </div>

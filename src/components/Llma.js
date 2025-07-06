@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './Llma.css';
 import apiConfig from '../config/api';
+import { useTranslation } from 'react-i18next';
 
 const Llma = () => {
   const [inputText, setInputText] = useState('');
@@ -8,6 +9,7 @@ const Llma = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [conversationHistory, setConversationHistory] = useState([]);
+  const { t } = useTranslation();
 
   // Get API key from environment variable
   const apiKey = process.env.REACT_APP_NVIDIA_API_KEY || '';
@@ -16,7 +18,7 @@ const Llma = () => {
     e.preventDefault();
 
     if (!inputText.trim()) {
-      setError('Please enter some text to process');
+      setError(t('llma.enterText'));
       return;
     }
 
@@ -74,10 +76,10 @@ const Llma = () => {
   };
 
   const examplePrompts = [
-    "Hey, what's up? How's your day going?",
-    "Can you help me understand something?",
-    "What do you think about AI and the future?",
-    "Tell me a funny story or joke"
+    t('llma.example1'),
+    t('llma.example2'),
+    t('llma.example3'),
+    t('llma.example4')
   ];
 
   const handleExampleClick = (example) => {
@@ -93,8 +95,8 @@ const Llma = () => {
   return (
     <div className="llma-container">
       <div className="llma-header">
-        <h2>💬 Chat with AI</h2>
-        <p>Have a natural conversation with NVIDIA's advanced AI</p>
+        <h2>💬 {t('llma.chatWithAI')}</h2>
+        <p>{t('llma.naturalConversation')}</p>
       </div>
 
       <div className="llma-content">
@@ -102,9 +104,9 @@ const Llma = () => {
         {conversationHistory.length > 0 && (
           <div className="conversation-history">
             <div className="history-header">
-              <h4>💬 Conversation</h4>
+              <h4>💬 {t('llma.conversation')}</h4>
               <button onClick={clearConversation} className="clear-conversation-btn">
-                🗑️ Clear Chat
+                🗑️ {t('llma.clearChat')}
               </button>
             </div>
             <div className="messages-container">
@@ -124,19 +126,19 @@ const Llma = () => {
 
         <form onSubmit={handleSubmit} className="llma-form">
           <div className="input-section">
-            <label htmlFor="userInput">Your Message:</label>
+            <label htmlFor="userInput">{t('llma.yourMessage')}</label>
             <textarea
               id="userInput"
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
-              placeholder="Type your message here... Just chat naturally!"
+              placeholder={t('llma.typeMessagePlaceholder')}
               rows="3"
               className="text-input"
             />
           </div>
 
           <div className="example-prompts">
-            <h4>💡 Conversation Starters:</h4>
+            <h4>💡 {t('llma.conversationStarters')}</h4>
             <div className="prompt-buttons">
               {examplePrompts.map((prompt, index) => (
                 <button
@@ -156,7 +158,7 @@ const Llma = () => {
             disabled={isLoading || !inputText.trim()}
             className="submit-btn"
           >
-            {isLoading ? '🤔 Thinking...' : '💬 Send Message'}
+            {isLoading ? t('llma.thinking') : '💬 ' + t('llma.sendMessage')}
           </button>
         </form>
 
@@ -170,13 +172,13 @@ const Llma = () => {
         {isLoading && (
           <div className="loading-indicator">
             <div className="loading-spinner"></div>
-            <p>AI is thinking...</p>
+            <p>{t('llma.aiThinking')}</p>
           </div>
         )}
 
         {response && conversationHistory.length === 0 && (
           <div className="response-section">
-            <h3>💬 AI Response:</h3>
+            <h3>💬 {t('llma.aiResponse')}</h3>
             <div className="response-content">
               <pre>{response}</pre>
             </div>
@@ -184,23 +186,23 @@ const Llma = () => {
               onClick={() => navigator.clipboard.writeText(response)}
               className="copy-btn"
             >
-              📋 Copy Response
+              📋 {t('llma.copyResponse')}
             </button>
           </div>
         )}
       </div>
 
       <div className="llma-info">
-        <h4>ℹ️ About This Chat</h4>
+        <h4>ℹ️ {t('llma.aboutThisChat')}</h4>
         <ul>
-          <li><strong>Model:</strong> Meta Llama 3.1 70B Instruct</li>
-          <li><strong>Style:</strong> Natural, conversational responses</li>
-          <li><strong>Capabilities:</strong> Casual chat, questions, storytelling</li>
-          <li><strong>Tone:</strong> Friendly and approachable</li>
+          <li><strong>{t('llma.model')}</strong> Meta Llama 3.1 70B Instruct</li>
+          <li><strong>{t('llma.style')}</strong> {t('llma.naturalStyle')}</li>
+          <li><strong>{t('llma.capabilities')}</strong> {t('llma.capabilitiesList')}</li>
+          <li><strong>{t('llma.tone')}</strong> {t('llma.friendlyTone')}</li>
         </ul>
         
         <div className="api-info">
-          <h5>🔧 Chat Configuration:</h5>
+          <h5>🔧 {t('llma.chatConfig')}</h5>
           <pre className="api-config">
 {`{
   "model": "meta/llama-3.1-70b-instruct",

@@ -5,6 +5,7 @@ import LocationAttachment from '../components/LocationAttachment';
 import llmService from '../services/llmService';
 import apiConfig from '../config/api';
 import './ReviewGenerator.css';
+import { useTranslation } from 'react-i18next';
 
 const ReviewGenerator = () => {
     const [reviewData, setReviewData] = useState({
@@ -24,6 +25,7 @@ const ReviewGenerator = () => {
     const history = useHistory();
     const [ratingAutoAdjusted, setRatingAutoAdjusted] = useState(false);
     const [modelInfo, setModelInfo] = useState(null);
+    const { t } = useTranslation();
 
     // Load model information on component mount
     useEffect(() => {
@@ -725,8 +727,8 @@ const ReviewGenerator = () => {
                 <div className="review-header">
                     <div className="header-content">
                         <div className="header-icon">✨</div>
-                        <h1>AI-Powered Review Generator</h1>
-                        <p>Create professional, engaging reviews with advanced AI analysis</p>
+                        <h1>{t('reviewGenerator.title')}</h1>
+                        <p>{t('reviewGenerator.subtitle')}</p>
                         <div className="header-features">
                             <span className="feature-badge">🤖 {modelInfo?.name || 'Meta Llama 3.1 70B'}</span>
                             <span className="feature-badge">🎯 Smart Analysis</span>
@@ -777,15 +779,15 @@ const ReviewGenerator = () => {
                         {/* Review Settings Section */}
                         <div className="form-section settings-section">
                             <div className="section-header">
-                                <h2>🎯 Review Settings</h2>
-                                <p>Configure your review preferences</p>
+                                <h2>{t('reviewGenerator.settingsSection.title')}</h2>
+                                <p>{t('reviewGenerator.settingsSection.subtitle')}</p>
                             </div>
                             
                             <div className="settings-grid">
                                 <div className="setting-group">
                                     <label className="setting-label">
                                         <span className="label-icon">📝</span>
-                                        Review Type
+                                        {t('reviewGenerator.settingsSection.reviewType')}
                                     </label>
                                     <div className="type-options">
                                         {reviewTypes.map(type => (
@@ -807,7 +809,7 @@ const ReviewGenerator = () => {
                                 <div className="setting-group">
                                     <label className="setting-label">
                                         <span className="label-icon">🎭</span>
-                                        Writing Tone
+                                        {t('reviewGenerator.settingsSection.writingTone')}
                                     </label>
                                     <div className="tone-options">
                                         {tones.map(tone => (
@@ -831,13 +833,13 @@ const ReviewGenerator = () => {
                         {/* Rating Section */}
                         <div className="form-section rating-section">
                             <div className="section-header">
-                                <h2>⭐ Rating</h2>
-                                <p>Set your overall rating</p>
+                                <h2>{t('reviewGenerator.ratingSection.title')}</h2>
+                                <p>{t('reviewGenerator.ratingSection.subtitle')}</p>
                             </div>
                             
                             <div className="rating-container">
                                 <div className="rating-display">
-                                    <span className="rating-label">Rating: {reviewData.rating}/5</span>
+                                    <span className="rating-label">{t('reviewGenerator.ratingSection.ratingLabel')} {reviewData.rating}/5</span>
                                     <div className="rating-stars">
                                         {[1, 2, 3, 4, 5].map(star => (
                                             <button
@@ -855,7 +857,7 @@ const ReviewGenerator = () => {
                                     {ratingAutoAdjusted && (
                                         <div className="auto-adjusted-indicator">
                                             <span className="ai-badge">🤖 AI Suggested</span>
-                                            <span className="adjustment-note">Rating adjusted based on your content</span>
+                                            <span className="adjustment-note">{t('reviewGenerator.ratingSection.ratingAdjusted')}</span>
                                         </div>
                                     )}
                                 </div>
@@ -865,21 +867,21 @@ const ReviewGenerator = () => {
                         {/* Content Section */}
                         <div className="form-section content-section">
                             <div className="section-header">
-                                <h2>✍️ Review Content</h2>
-                                <p>Share your experience and thoughts</p>
+                                <h2>{t('reviewGenerator.contentSection.title')}</h2>
+                                <p>{t('reviewGenerator.contentSection.subtitle')}</p>
                             </div>
                             
                             <div className="content-grid">
                                 <div className="content-group positive-group">
                                     <label className="content-label">
                                         <span className="label-icon">✅</span>
-                                        What did you like? (Pros)
+                                        {t('reviewGenerator.contentSection.prosLabel')}
                                     </label>
                                     <div className="input-field">
                                         <textarea
                                             value={reviewData.pros}
                                             onChange={(e) => handleInputChange('pros', e.target.value)}
-                                            placeholder="Describe what you liked about this experience..."
+                                            placeholder={t('reviewGenerator.contentSection.prosPlaceholder')}
                                             rows="4"
                                             className="content-textarea positive-textarea"
                                         />
@@ -889,13 +891,13 @@ const ReviewGenerator = () => {
                                 <div className="content-group negative-group">
                                     <label className="content-label">
                                         <span className="label-icon">⚠️</span>
-                                        What could be improved? (Cons)
+                                        {t('reviewGenerator.contentSection.consLabel')}
                                     </label>
                                     <div className="input-field">
                                         <textarea
                                             value={reviewData.cons}
                                             onChange={(e) => handleInputChange('cons', e.target.value)}
-                                            placeholder="Describe areas for improvement..."
+                                            placeholder={t('reviewGenerator.contentSection.consPlaceholder')}
                                             rows="4"
                                             className="content-textarea negative-textarea"
                                         />
@@ -905,13 +907,13 @@ const ReviewGenerator = () => {
                                 <div className="content-group full-width experience-group">
                                     <label className="content-label">
                                         <span className="label-icon">💭</span>
-                                        Additional Experience Details
+                                        {t('reviewGenerator.contentSection.experienceLabel')}
                                     </label>
                                     <div className="input-field">
                                         <textarea
                                             value={reviewData.experience}
                                             onChange={(e) => handleInputChange('experience', e.target.value)}
-                                            placeholder="Share your overall experience and thoughts..."
+                                            placeholder={t('reviewGenerator.contentSection.experiencePlaceholder')}
                                             rows="5"
                                             className="content-textarea experience-textarea"
                                         />
@@ -923,8 +925,8 @@ const ReviewGenerator = () => {
                         {/* Location Section */}
                         <div className="form-section location-section">
                             <div className="section-header">
-                                <h2>📍 Location Attachment</h2>
-                                <p>Add location context to your review</p>
+                                <h2>{t('reviewGenerator.locationSection.title')}</h2>
+                                <p>{t('reviewGenerator.locationSection.subtitle')}</p>
                             </div>
                             <LocationAttachment 
                                 onLocationChange={handleLocationChange}
@@ -945,12 +947,12 @@ const ReviewGenerator = () => {
                                     {isGenerating ? (
                                         <>
                                             <span className="loading-spinner"></span>
-                                            <span>Generating AI Review...</span>
+                                            <span>{t('reviewGenerator.actionButtons.aiGenerate')}</span>
                                         </>
                                     ) : (
                                         <>
                                             <span className="btn-icon">🤖</span>
-                                            <span>Generate AI Review</span>
+                                            <span>{t('reviewGenerator.actionButtons.aiGenerate')}</span>
                                             <span className="btn-badge">Advanced</span>
                                         </>
                                     )}
@@ -964,12 +966,12 @@ const ReviewGenerator = () => {
                                     {isGenerating ? (
                                         <>
                                             <span className="loading-spinner"></span>
-                                            <span>Generating Review...</span>
+                                            <span>{t('reviewGenerator.actionButtons.regularGenerate')}</span>
                                         </>
                                     ) : (
                                         <>
                                             <span className="btn-icon">✨</span>
-                                            <span>Generate Regular Review</span>
+                                            <span>{t('reviewGenerator.actionButtons.regularGenerate')}</span>
                                             <span className="btn-badge">Quick</span>
                                         </>
                                     )}
@@ -977,7 +979,7 @@ const ReviewGenerator = () => {
                                 
                                 <button className="reset-btn" onClick={resetReview}>
                                     <span className="btn-icon">🔄</span>
-                                    <span>Reset Form</span>
+                                    <span>{t('reviewGenerator.actionButtons.reset')}</span>
                                 </button>
                             </div>
                         </div>
@@ -985,24 +987,24 @@ const ReviewGenerator = () => {
                         {/* Help Section */}
                         <div className="help-section">
                             <div className="help-card">
-                                <h3>💡 How it works</h3>
+                                <h3>{t('reviewGenerator.helpSection.title')}</h3>
                                 <div className="help-content">
                                     <div className="help-item">
                                         <span className="help-icon">🤖</span>
                                         <div>
-                                            <strong>AI Review:</strong> Uses Meta Llama 3.1 70B for sophisticated, context-aware review generation
+                                            <strong>{t('reviewGenerator.helpSection.aiReview')}</strong> {t('reviewGenerator.helpSection.aiReviewDescription')}
                                         </div>
                                     </div>
                                     <div className="help-item">
                                         <span className="help-icon">✨</span>
                                         <div>
-                                            <strong>Regular Review:</strong> Uses template-based generation for quick, consistent results
+                                            <strong>{t('reviewGenerator.helpSection.regularReview')}</strong> {t('reviewGenerator.helpSection.regularReviewDescription')}
                                         </div>
                                     </div>
                                     <div className="help-item">
                                         <span className="help-icon">🎯</span>
                                         <div>
-                                            <strong>Smart Rating:</strong> AI automatically suggests ratings based on your content
+                                            <strong>{t('reviewGenerator.helpSection.smartRating')}</strong> {t('reviewGenerator.helpSection.smartRatingDescription')}
                                         </div>
                                     </div>
                                 </div>
@@ -1013,24 +1015,24 @@ const ReviewGenerator = () => {
                     <div className="result-section">
                         <div className="result-header">
                             <div className="result-title">
-                                <h2>🎉 Your Review is Ready!</h2>
-                                <p>Generated with {analysis?.provider || 'AI'} analysis</p>
+                                <h2>{t('reviewGenerator.resultSection.title')}</h2>
+                                <p>{t('reviewGenerator.resultSection.subtitle')} {analysis?.provider || 'AI'}</p>
                             </div>
                             <div className="result-actions">
                                 <button onClick={copyToClipboard} className="action-btn copy-btn">
                                     <span className="btn-icon">📋</span>
-                                    <span>Copy Review</span>
+                                    <span>{t('reviewGenerator.resultSection.copyReview')}</span>
                                 </button>
                                 <button 
                                     onClick={() => setShowAnalysis(!showAnalysis)} 
                                     className="action-btn analysis-btn"
                                 >
                                     <span className="btn-icon">🧠</span>
-                                    <span>{showAnalysis ? 'Hide Analysis' : 'Show AI Analysis'}</span>
+                                    <span>{showAnalysis ? t('reviewGenerator.resultSection.hideAnalysis') : t('reviewGenerator.resultSection.showAnalysis')}</span>
                                 </button>
                                 <button onClick={resetReview} className="action-btn new-btn">
                                     <span className="btn-icon">🎤</span>
-                                    <span>Create Another Review</span>
+                                    <span>{t('reviewGenerator.resultSection.createAnother')}</span>
                                 </button>
                             </div>
                         </div>
@@ -1044,13 +1046,13 @@ const ReviewGenerator = () => {
                         {isAnalyzing && (
                             <div className="analyzing-indicator">
                                 <div className="loading-spinner"></div>
-                                <p>🤖 AI is analyzing your review...</p>
+                                <p>{t('reviewGenerator.resultSection.analyzing')}</p>
                             </div>
                         )}
 
                         {showAnalysis && analysis && (
                             <div className="analysis-section">
-                                <h3>🧠 AI Analysis of Your Review</h3>
+                                <h3>{t('reviewGenerator.resultSection.analysisTitle')}</h3>
                                 <VoiceAnalysis
                                     analysis={analysis}
                                     onGenerateReview={handleGenerateReviewFromAnalysis}

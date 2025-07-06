@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './ReviewHistory.css';
+import { useTranslation } from 'react-i18next';
 
 const ReviewHistory = () => {
     const [reviews, setReviews] = useState([]);
@@ -8,6 +9,7 @@ const ReviewHistory = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [filterType, setFilterType] = useState('all');
     const [expandedReviews, setExpandedReviews] = useState(new Set());
+    const { t } = useTranslation();
 
     useEffect(() => {
         loadReviews();
@@ -165,14 +167,14 @@ const ReviewHistory = () => {
         <div className="review-history">
             <div className="history-container">
                 <div className="history-header">
-                    <h1>Review History</h1>
-                    <p>Your previously generated reviews</p>
+                    <h1>{t('reviewHistory.title')}</h1>
+                    <p>{t('reviewHistory.description')}</p>
                     <button 
                         onClick={loadReviews} 
                         className="refresh-btn"
-                        title="Refresh reviews"
+                        title={t('reviewHistory.refreshBtnTitle')}
                     >
-                        🔄 Refresh
+                        🔄 {t('reviewHistory.refreshBtn')}
                     </button>
                 </div>
 
@@ -180,7 +182,7 @@ const ReviewHistory = () => {
                     <div className="search-box">
                         <input
                             type="text"
-                            placeholder="Search reviews..."
+                            placeholder={t('reviewHistory.searchPlaceholder')}
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
@@ -192,55 +194,55 @@ const ReviewHistory = () => {
                             className={`filter-btn ${filterType === 'all' ? 'active' : ''}`}
                             onClick={() => setFilterType('all')}
                         >
-                            All
+                            {t('reviewHistory.allFilter')}
                         </button>
                         <button
                             className={`filter-btn ${filterType === 'restaurant' ? 'active' : ''}`}
                             onClick={() => setFilterType('restaurant')}
                         >
-                            🍽️ Restaurants
+                            🍽️ {t('reviewHistory.restaurantFilter')}
                         </button>
                         <button
                             className={`filter-btn ${filterType === 'hotel' ? 'active' : ''}`}
                             onClick={() => setFilterType('hotel')}
                         >
-                            🏨 Hotels
+                            🏨 {t('reviewHistory.hotelFilter')}
                         </button>
                         <button
                             className={`filter-btn ${filterType === 'product' ? 'active' : ''}`}
                             onClick={() => setFilterType('product')}
                         >
-                            📱 Products
+                            📱 {t('reviewHistory.productFilter')}
                         </button>
                         <button
                             className={`filter-btn ${filterType === 'service' ? 'active' : ''}`}
                             onClick={() => setFilterType('service')}
                         >
-                            🛠️ Services
+                            🛠️ {t('reviewHistory.serviceFilter')}
                         </button>
                         <button
                             className={`filter-btn ${filterType === 'experience' ? 'active' : ''}`}
                             onClick={() => setFilterType('experience')}
                         >
-                            🎯 Experiences
+                            🎯 {t('reviewHistory.experienceFilter')}
                         </button>
                         <button
                             className={`filter-btn ${filterType === 'app' ? 'active' : ''}`}
                             onClick={() => setFilterType('app')}
                         >
-                            💻 Apps
+                            💻 {t('reviewHistory.appFilter')}
                         </button>
                         <button
                             className={`filter-btn ${filterType === 'place' ? 'active' : ''}`}
                             onClick={() => setFilterType('place')}
                         >
-                            📍 Places
+                            📍 {t('reviewHistory.placeFilter')}
                         </button>
                         <button
                             className={`filter-btn ${filterType === 'general' ? 'active' : ''}`}
                             onClick={() => setFilterType('general')}
                         >
-                            📝 General
+                            📝 {t('reviewHistory.generalFilter')}
                         </button>
                     </div>
                 </div>
@@ -248,15 +250,15 @@ const ReviewHistory = () => {
                 {filteredReviews.length === 0 ? (
                     <div className="empty-state colorful">
                         <div className="empty-icon">📝</div>
-                        <h3>No reviews found</h3>
+                        <h3>{t('reviewHistory.noReviewsTitle')}</h3>
                         <p>
                             {reviews.length === 0 
-                                ? "You haven't generated any reviews yet. Start by creating your first review!"
-                                : "No reviews match your current search or filter criteria."
+                                ? t('reviewHistory.noReviewsFirst')
+                                : t('reviewHistory.noReviewsSecond')
                             }
                         </p>
                         {reviews.length === 0 && (
-                            <Link to="/generate" className="cta-button">✨ Generate Your First Review</Link>
+                            <Link to="/generate" className="cta-button">✨ {t('reviewHistory.ctaButton')}</Link>
                         )}
                     </div>
                 ) : (
@@ -277,14 +279,14 @@ const ReviewHistory = () => {
                                             ? (
                                                 <>
                                                     {review.review.substring(0, 180)}... 
-                                                    <button onClick={() => toggleReviewExpansion(review.id)} className="expand-btn" title="Read full review">Read more</button>
+                                                    <button onClick={() => toggleReviewExpansion(review.id)} className="expand-btn" title={t('reviewHistory.readMore')}>{t('reviewHistory.readMore')}</button>
                                                 </>
                                             )
                                             : (
                                                 <>
                                                     {review.review}
                                                     {review.review.length > 180 && expandedReviews.has(review.id) && (
-                                                        <button onClick={() => toggleReviewExpansion(review.id)} className="collapse-btn" title="Show less">Show less</button>
+                                                        <button onClick={() => toggleReviewExpansion(review.id)} className="collapse-btn" title={t('reviewHistory.showLess')}>{t('reviewHistory.showLess')}</button>
                                                     )}
                                                 </>
                                             )
@@ -301,8 +303,8 @@ const ReviewHistory = () => {
                                     <span className="review-date">{formatDate(review.timestamp)}</span>
                                     <span className="review-tone">{review.tone}</span>
                                     <div className="review-actions">
-                                        <button onClick={() => copyReview(review)} className="action-btn copy" title="Copy review">📋</button>
-                                        <button onClick={() => deleteReview(review.id)} className="action-btn delete" title="Delete review">🗑️</button>
+                                        <button onClick={() => copyReview(review)} className="action-btn copy" title={t('reviewHistory.copyBtn')}>📋</button>
+                                        <button onClick={() => deleteReview(review.id)} className="action-btn delete" title={t('reviewHistory.deleteBtn')}>🗑️</button>
                                     </div>
                                 </div>
                             </div>
@@ -313,7 +315,7 @@ const ReviewHistory = () => {
                 {filteredReviews.length > 0 && (
                     <div className="history-stats">
                         <p>
-                            Showing {filteredReviews.length} of {reviews.length} reviews
+                            {t('reviewHistory.showing')} {filteredReviews.length} {t('reviewHistory.of')} {reviews.length} {t('reviewHistory.reviews')}
                         </p>
                     </div>
                 )}

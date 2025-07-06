@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import VoiceRecognition from './VoiceRecognition';
 import './VoiceDemo.css';
+import { useTranslation } from 'react-i18next';
 
 const VoiceDemo = () => {
     const [demoText, setDemoText] = useState('');
+    const { t } = useTranslation();
 
     const handleTranscript = (transcript) => {
         setDemoText(transcript);
@@ -12,8 +14,8 @@ const VoiceDemo = () => {
     return (
         <div className="voice-demo">
             <div className="demo-container">
-                <h2>🎤 Voice Recognition Demo</h2>
-                <p>Try speaking to see how voice recognition works!</p>
+                <h2>{t('voiceDemo.title')}</h2>
+                <p>{t('voiceDemo.subtitle')}</p>
                 
                 <VoiceRecognition
                     onTranscript={handleTranscript}
