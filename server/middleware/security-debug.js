@@ -3,7 +3,7 @@ const rateLimit = require('express-rate-limit');
 const compression = require('compression');
 const morgan = require('morgan');
 
-// Security middleware
+// Security middleware (debug version with permissive CORS)
 const securityMiddleware = helmet({
   contentSecurityPolicy: {
     directives: {
@@ -15,10 +15,10 @@ const securityMiddleware = helmet({
   },
 });
 
-// Rate limiting
+// Rate limiting (more permissive for debugging)
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
+  max: 200, // Increased limit for debugging
   message: {
     error: 'Too many requests from this IP, please try again later.',
     retryAfter: '15 minutes'
@@ -27,20 +27,27 @@ const limiter = rateLimit({
   legacyHeaders: false,
 });
 
-// DEBUG CORS configuration - ALLOWS ALL ORIGINS
+// CORS configuration (debug version - very permissive)
 const corsOptions = {
-  origin: true, // Allow all origins for debugging
+  origin: function (origin, callback) {
+    // Allow all origins for debugging
+    console.log('DEBUG CORS: Allowing all origins for debugging');
+    console.log('DEBUG CORS: Origin:', origin);
+    callback(null, true);
+  },
   credentials: true,
   optionsSuccessStatus: 200,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Origin', 'Accept'],
+  preflightContinue: false,
+  maxAge: 86400 // Cache preflight for 24 hours
 };
 
 // Compression middleware
 const compressionMiddleware = compression();
 
-// Logging middleware
-const loggingMiddleware = morgan('combined');
+// Logging middleware (more verbose for debugging)
+const loggingMiddleware = morgan('dev');
 
 module.exports = {
   securityMiddleware,

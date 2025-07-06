@@ -7,9 +7,10 @@ const { connectToMongoDB } = require('./config/database');
 const { 
   securityMiddleware, 
   limiter, 
+  corsOptions, 
   compressionMiddleware, 
   loggingMiddleware 
-} = require('./middleware/security');
+} = require('./middleware/security-debug');
 
 // Import routes
 const llamaRoutes = require('./routes/llama');
@@ -35,27 +36,37 @@ app.use(securityMiddleware);
 // Apply rate limiting to API routes
 app.use('/api/', limiter);
 
-// DEBUG: Apply permissive CORS for troubleshooting
-app.use(cors({
-  origin: true, // Allow all origins
-  credentials: true,
-  optionsSuccessStatus: 200,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Origin', 'Accept'],
-  preflightContinue: false,
-  maxAge: 86400
-}));
+// Apply CORS with debug logging
+app.use((req, res, next) => {
+  console.log('🌐 DEBUG CORS middleware processing request:', {
+    method: req.method,
+    origin: req.headers.origin,
+    url: req.url,
+    headers: req.headers
+  });
+  
+  // Apply CORS
+  cors(corsOptions)(req, res, (err) => {
+    if (err) {
+      console.error('DEBUG CORS error:', err);
+      return res.status(500).json({
+        success: false,
+        error: 'CORS configuration error',
+        code: 'CORS_ERROR',
+        details: err.message
+      });
+    }
+    next();
+  });
+});
 
 // Handle preflight requests explicitly
-app.options('*', cors({
-  origin: true,
-  credentials: true,
-  optionsSuccessStatus: 200,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Origin', 'Accept'],
-  preflightContinue: false,
-  maxAge: 86400
-}));
+app.options('*', (req, res) => {
+  console.log('🔄 DEBUG Handling preflight request for:', req.url);
+  cors(corsOptions)(req, res, () => {
+    res.status(200).end();
+  });
+});
 
 // Apply compression
 app.use(compressionMiddleware);
@@ -78,11 +89,12 @@ app.use('/api', blogRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-  console.error('Unhandled error:', err);
+  console.error('DEBUG Unhandled error:', err);
   res.status(500).json({
     success: false,
     error: 'Internal server error',
-    code: 'INTERNAL_ERROR'
+    code: 'INTERNAL_ERROR',
+    details: process.env.NODE_ENV === 'development' ? err.message : 'Internal server error'
   });
 });
 
@@ -97,11 +109,11 @@ app.use('*', (req, res) => {
 
 // Start the server
 app.listen(PORT, () => {
-  console.log(`🚀 ReviewGen Backend Server (DEBUG MODE) running on port ${PORT}`);
+  console.log(`🚀 DEBUG ReviewGen Backend Server running on port ${PORT}`);
   console.log(`📊 Health check: http://localhost:${PORT}/api/health`);
   console.log(`🤖 Llama API: http://localhost:${PORT}/api/llama`);
   console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`⚠️  DEBUG MODE: CORS allows all origins`);
+  console.log(`🔧 DEBUG MODE: CORS is set to allow all origins`);
   if (!process.env.NVIDIA_API_KEY) {
     console.warn('⚠️  NVIDIA_API_KEY not found in environment variables');
   }

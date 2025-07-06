@@ -31,7 +31,10 @@ const limiter = rateLimit({
 const corsOptions = {
   origin: function (origin, callback) {
     // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) return callback(null, true);
+    if (!origin) {
+      console.log('CORS: Allowing request with no origin');
+      return callback(null, true);
+    }
     
     console.log('CORS check for origin:', origin);
     
@@ -43,38 +46,47 @@ const corsOptions = {
       process.env.FRONTEND_URL
     ].filter(Boolean);
     
-    // Check if origin matches any allowed origins
-    const isAllowed = allowedOrigins.some(allowedOrigin => {
-      return allowedOrigin === origin;
-    });
+    // Check if origin matches any allowed origins exactly
+    const isExactMatch = allowedOrigins.includes(origin);
     
-    // Check for any Netlify.app domain
-    const isNetlifyDomain = origin.endsWith('.netlify.app');
+    // Check for any Netlify.app domain (including subdomains)
+    const isNetlifyDomain = origin.includes('.netlify.app');
     
-    // Additional check for Netlify preview URLs
+    // Check for Netlify preview URLs (more comprehensive)
     const isNetlifyPreview = origin.includes('netlify.app') && (
       origin.includes('--') || // Preview URLs like development--app.netlify.app
       origin.includes('deploy-preview') || // Deploy preview URLs
-      origin.includes('branch-deploy') // Branch deploy URLs
+      origin.includes('branch-deploy') || // Branch deploy URLs
+      origin.includes('pr-') || // Pull request previews
+      origin.includes('feature-') || // Feature branch previews
+      origin.includes('staging-') || // Staging previews
+      origin.includes('preview-') // General preview URLs
     );
+    
+    // Check for any Netlify-related domain
+    const isAnyNetlifyDomain = origin.includes('netlify');
     
     console.log('CORS check results:', {
       origin,
       allowedOrigins,
-      isAllowed,
+      isExactMatch,
       isNetlifyDomain,
       isNetlifyPreview,
+      isAnyNetlifyDomain,
       frontendUrl: process.env.FRONTEND_URL
     });
     
-    if (isAllowed || isNetlifyDomain || isNetlifyPreview) {
+    // Allow if any of these conditions are met
+    if (isExactMatch || isNetlifyDomain || isNetlifyPreview || isAnyNetlifyDomain) {
       console.log('CORS: Allowing origin:', origin);
       callback(null, true);
     } else {
       console.log('CORS blocked origin:', origin);
       console.log('Allowed origins:', allowedOrigins);
+      console.log('Is exact match:', isExactMatch);
       console.log('Is Netlify domain:', isNetlifyDomain);
       console.log('Is Netlify preview:', isNetlifyPreview);
+      console.log('Is any Netlify domain:', isAnyNetlifyDomain);
       callback(new Error('Not allowed by CORS'));
     }
   },
