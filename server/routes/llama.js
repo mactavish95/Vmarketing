@@ -109,7 +109,19 @@ router.post('/llama', async (req, res) => {
       });
     }
 
-    const model = selectModel('review_generation');
+    // Detect content type and select appropriate model
+    let useCase = 'review_generation';
+    if (text.toLowerCase().includes('facebook') || text.toLowerCase().includes('social media') || text.toLowerCase().includes('post')) {
+      useCase = 'social_media';
+    } else if (text.toLowerCase().includes('blog') || text.toLowerCase().includes('article')) {
+      useCase = 'blog_generation';
+    } else if (text.toLowerCase().includes('customer') || text.toLowerCase().includes('service')) {
+      useCase = 'customer_service';
+    } else if (text.toLowerCase().includes('voice') || text.toLowerCase().includes('analysis')) {
+      useCase = 'voice_analysis';
+    }
+    
+    const model = selectModel(useCase);
 
     const response = await axios.post(model.baseURL, {
       model: model.name,
@@ -199,12 +211,26 @@ router.post('/analyze-response-quality', async (req, res) => {
     let analysisPrompt;
     
     if (contentType === 'facebook_post') {
+      const contextInfo = context || {};
+      const targetLength = contextInfo.targetLength || 60;
+      const brandVoice = contextInfo.brandVoiceIntensity || 'moderate';
+      const engagement = contextInfo.engagementUrgency || 'normal';
+      const situation = contextInfo.situation || 'general';
+      
       analysisPrompt = `Analyze the quality of this Facebook post and provide a detailed assessment.
 
 Facebook Post to analyze:
 "${response}"
 
-Context: ${JSON.stringify(context)}
+Context Information:
+- Target Length: ${targetLength} words
+- Brand Voice Intensity: ${brandVoice}
+- Engagement Urgency: ${engagement}
+- Situation: ${situation}
+- Platform: ${contextInfo.platform || 'Facebook'}
+- Post Type: ${contextInfo.postType || 'General'}
+- Tone: ${contextInfo.tone || 'Engaging'}
+- Target Audience: ${contextInfo.targetAudience || 'General'}
 
 Please provide a comprehensive Facebook-specific quality analysis including:
 
@@ -216,8 +242,10 @@ Please provide a comprehensive Facebook-specific quality analysis including:
    - Readability: How easy to read on mobile devices
    - Call-to-Action: How clear and compelling the CTA is
    - Tone: How appropriate for Facebook audience
-   - Length: How optimal for Facebook algorithm (40-80 words ideal)
+   - Length: How optimal for Facebook algorithm (target: ${targetLength} words)
    - Hashtags: How relevant and strategic the hashtags are
+   - Brand Voice: How well the ${brandVoice} brand voice is applied
+   - Urgency: How well the ${engagement} engagement urgency is conveyed
 
 3. Facebook-Specific Strengths (list 3-5 main strengths)
 4. Facebook-Specific Improvement Suggestions (list 3-5 specific suggestions)
@@ -229,7 +257,15 @@ Facebook Best Practices to Consider:
 - Appropriate hashtag usage (3-5 relevant hashtags)
 - Mobile-friendly formatting
 - Conversational, authentic tone
-- Optimal length for engagement (40-80 words)
+- Optimal length for engagement (target: ${targetLength} words)
+- Brand voice consistency (${brandVoice} intensity)
+- Engagement urgency (${engagement} level)
+- Situation-appropriate content (${situation} context)
+
+Length Analysis:
+- Current word count: ${response.split(' ').length} words
+- Target word count: ${targetLength} words
+- Length optimization: ${Math.abs(response.split(' ').length - targetLength) <= 5 ? 'Excellent' : 'Needs adjustment'}
 
 Format your response as a JSON object with the following structure:
 {
@@ -242,13 +278,21 @@ Format your response as a JSON object with the following structure:
     "callToAction": 0.85,
     "tone": 0.8,
     "length": 0.9,
-    "hashtags": 0.85
+    "hashtags": 0.85,
+    "brandVoice": 0.85,
+    "urgency": 0.8
   },
   "strengths": ["Strong opening hook", "Clear call-to-action", "Good mobile formatting"],
-  "suggestions": ["Add more specific hashtags", "Include a question to boost engagement", "Consider adding emojis for visual appeal"]
+  "suggestions": ["Add more specific hashtags", "Include a question to boost engagement", "Consider adding emojis for visual appeal"],
+  "lengthAnalysis": {
+    "currentWords": ${response.split(' ').length},
+    "targetWords": ${targetLength},
+    "lengthScore": 0.9,
+    "lengthFeedback": "Excellent length optimization"
+  }
 }
 
-Be objective and constructive in your analysis, focusing specifically on Facebook optimization.`;
+Be objective and constructive in your analysis, focusing specifically on Facebook optimization and the provided context parameters.`;
     } else {
       analysisPrompt = `Analyze the quality of this ${contentType} content and provide a detailed assessment.
 

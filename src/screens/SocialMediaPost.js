@@ -18,6 +18,13 @@ const SocialMediaPost = () => {
   const [qualityAnalysis, setQualityAnalysis] = useState(null);
   const [generationHistory, setGenerationHistory] = useState([]);
   const [showAdvancedOptions, setShowAdvancedOptions] = useState(false);
+  
+  // New dynamic length adjustment features
+  const [contentLength, setContentLength] = useState('optimal');
+  const [brandVoiceIntensity, setBrandVoiceIntensity] = useState('moderate');
+  const [engagementUrgency, setEngagementUrgency] = useState('normal');
+  const [situation, setSituation] = useState('general');
+  const [customLength, setCustomLength] = useState(100);
 
   const platforms = [
     { value: 'facebook', label: 'Facebook', icon: '📘', maxLength: 63206, priority: true },
@@ -83,6 +90,90 @@ const SocialMediaPost = () => {
     { value: 'community', label: 'Community Building', icon: '🤝', description: 'Build relationships' }
   ];
 
+  // New dynamic length options
+  const contentLengths = [
+    { value: 'concise', label: 'Concise', icon: '📝', description: 'Short and to the point (20-40 words)', targetWords: 30 },
+    { value: 'optimal', label: 'Optimal', icon: '⚡', description: 'Platform-optimized length (40-80 words)', targetWords: 60 },
+    { value: 'detailed', label: 'Detailed', icon: '📄', description: 'Comprehensive content (80-150 words)', targetWords: 120 },
+    { value: 'comprehensive', label: 'Comprehensive', icon: '📚', description: 'In-depth content (150-300 words)', targetWords: 225 },
+    { value: 'custom', label: 'Custom', icon: '🎛️', description: 'Specify exact word count', targetWords: null }
+  ];
+
+  const brandVoiceIntensities = [
+    { value: 'subtle', label: 'Subtle', icon: '🤫', description: 'Minimal brand voice influence' },
+    { value: 'moderate', label: 'Moderate', icon: '🎯', description: 'Balanced brand voice' },
+    { value: 'strong', label: 'Strong', icon: '💪', description: 'Prominent brand voice' },
+    { value: 'dominant', label: 'Dominant', icon: '👑', description: 'Very strong brand voice' }
+  ];
+
+  const engagementUrgencies = [
+    { value: 'low', label: 'Low', icon: '😴', description: 'Relaxed, no urgency' },
+    { value: 'normal', label: 'Normal', icon: '😊', description: 'Standard engagement level' },
+    { value: 'high', label: 'High', icon: '🔥', description: 'High engagement urgency' },
+    { value: 'urgent', label: 'Urgent', icon: '🚨', description: 'Maximum engagement urgency' }
+  ];
+
+  const situations = [
+    { value: 'general', label: 'General', icon: '📝', description: 'Regular posting' },
+    { value: 'promotional', label: 'Promotional', icon: '🎯', description: 'Product/service promotion' },
+    { value: 'crisis', label: 'Crisis Response', icon: '⚠️', description: 'Addressing issues or concerns' },
+    { value: 'celebration', label: 'Celebration', icon: '🎉', description: 'Celebrating achievements' },
+    { value: 'educational', label: 'Educational', icon: '📚', description: 'Teaching or informing' },
+    { value: 'community', label: 'Community', icon: '🤝', description: 'Community engagement' },
+    { value: 'trending', label: 'Trending', icon: '📈', description: 'Riding current trends' },
+    { value: 'seasonal', label: 'Seasonal', icon: '🌱', description: 'Seasonal or holiday content' }
+  ];
+
+  // Calculate target length based on all factors
+  const calculateTargetLength = () => {
+    const selectedLength = contentLengths.find(cl => cl.value === contentLength);
+    let baseLength = selectedLength?.targetWords || customLength;
+    
+    // Adjust based on platform
+    const selectedPlatform = platforms.find(p => p.value === platform);
+    const platformMax = selectedPlatform?.maxLength || 1000;
+    const platformOptimal = Math.min(platformMax * 0.1, 80); // 10% of max or 80 words
+    
+    // Adjust based on brand voice intensity
+    const voiceMultiplier = {
+      subtle: 0.8,
+      moderate: 1.0,
+      strong: 1.2,
+      dominant: 1.4
+    }[brandVoiceIntensity] || 1.0;
+    
+    // Adjust based on engagement urgency
+    const urgencyMultiplier = {
+      low: 0.7,
+      normal: 1.0,
+      high: 1.3,
+      urgent: 1.6
+    }[engagementUrgency] || 1.0;
+    
+    // Adjust based on situation
+    const situationMultiplier = {
+      general: 1.0,
+      promotional: 1.1,
+      crisis: 1.3,
+      celebration: 1.2,
+      educational: 1.4,
+      community: 1.1,
+      trending: 0.9,
+      seasonal: 1.0
+    }[situation] || 1.0;
+    
+    // Calculate final target length
+    let targetLength = baseLength * voiceMultiplier * urgencyMultiplier * situationMultiplier;
+    
+    // Ensure it doesn't exceed platform limits
+    targetLength = Math.min(targetLength, platformOptimal);
+    
+    // Ensure minimum length
+    targetLength = Math.max(targetLength, 20);
+    
+    return Math.round(targetLength);
+  };
+
   const generateContent = async () => {
     if (!content.trim()) {
       setError('Please enter some content to enhance');
@@ -101,6 +192,12 @@ const SocialMediaPost = () => {
       const selectedAudience = audiences.find(a => a.value === targetAudience);
       const selectedStructure = contentStructures.find(cs => cs.value === contentStructure);
       const selectedGoal = engagementGoals.find(eg => eg.value === engagementGoal);
+      const selectedLength = contentLengths.find(cl => cl.value === contentLength);
+      const selectedVoice = brandVoiceIntensities.find(bv => bv.value === brandVoiceIntensity);
+      const selectedUrgency = engagementUrgencies.find(eu => eu.value === engagementUrgency);
+      const selectedSituation = situations.find(s => s.value === situation);
+
+      const targetLength = calculateTargetLength();
 
       const prompt = `Create a well-structured, precise, and thoughtful Facebook post based on the following requirements:
 
@@ -114,23 +211,44 @@ POST SPECIFICATIONS:
 - Content Structure: ${selectedStructure.label} - ${selectedStructure.description}
 - Engagement Goal: ${selectedGoal.label} - ${selectedGoal.description}
 
+DYNAMIC LENGTH ADJUSTMENT:
+- Content Length Preference: ${selectedLength.label} - ${selectedLength.description}
+- Target Word Count: ${targetLength} words
+- Brand Voice Intensity: ${selectedVoice.label} - ${selectedVoice.description}
+- Engagement Urgency: ${selectedUrgency.label} - ${selectedUrgency.description}
+- Situation: ${selectedSituation.label} - ${selectedSituation.description}
+
+LENGTH OPTIMIZATION RULES:
+1. TARGET LENGTH: Aim for exactly ${targetLength} words (±5 words)
+2. BRAND VOICE: Apply ${selectedVoice.label} brand voice intensity throughout
+3. ENGAGEMENT: Use ${selectedUrgency.label} urgency level for call-to-action
+4. SITUATION: Adapt content style for ${selectedSituation.label} context
+5. PLATFORM: Optimize for Facebook's algorithm and user behavior
+
 FACEBOOK OPTIMIZATION REQUIREMENTS:
 1. STRUCTURE: Use the ${selectedStructure.label} format with clear sections
 2. OPENING: Start with a compelling hook that grabs attention in the first 2-3 lines
 3. BODY: Develop the main content with logical flow and easy-to-read paragraphs
 4. ENGAGEMENT: Include a call-to-action that encourages ${selectedGoal.label.toLowerCase()}
 5. HASHTAGS: Add 3-5 relevant hashtags at the end (if appropriate for the post type)
-6. LENGTH: Optimize for Facebook's algorithm (aim for 40-80 words for best engagement)
-7. READABILITY: Use short paragraphs, bullet points, or numbered lists when appropriate
-8. PERSONALITY: Match the ${selectedTone.label} tone throughout
-9. AUDIENCE: Tailor language and examples for ${selectedAudience.label} audience
+6. READABILITY: Use short paragraphs, bullet points, or numbered lists when appropriate
+7. PERSONALITY: Match the ${selectedTone.label} tone throughout
+8. AUDIENCE: Tailor language and examples for ${selectedAudience.label} audience
+
+LENGTH ADJUSTMENT GUIDELINES:
+- If ${selectedLength.label}: Focus on ${selectedLength.description}
+- Brand voice ${selectedVoice.label}: ${selectedVoice.description}
+- Engagement ${selectedUrgency.label}: ${selectedUrgency.description}
+- Situation ${selectedSituation.label}: ${selectedSituation.description}
 
 Please create a Facebook post that is:
+- Exactly ${targetLength} words (±5 words)
 - Well-structured with clear beginning, middle, and end
 - Precise in its messaging and purpose
 - Thoughtful in its approach to the audience
 - Optimized for Facebook engagement
 - Professional yet authentic in tone
+- Adapted for ${selectedSituation.label} situation
 
 Provide only the enhanced Facebook post content, no explanations.`;
 
@@ -168,6 +286,12 @@ Provide only the enhanced Facebook post content, no explanations.`;
           targetAudience,
           contentStructure,
           engagementGoal,
+          contentLength,
+          brandVoiceIntensity,
+          engagementUrgency,
+          situation,
+          targetLength,
+          actualLength: data.response.split(' ').length,
           timestamp: new Date().toISOString()
         };
         setGenerationHistory(prev => [historyItem, ...prev.slice(0, 9)]); // Keep last 10
@@ -206,7 +330,11 @@ Provide only the enhanced Facebook post content, no explanations.`;
             tone, 
             targetAudience, 
             contentStructure, 
-            engagementGoal 
+            engagementGoal,
+            targetLength: calculateTargetLength(),
+            brandVoiceIntensity,
+            engagementUrgency,
+            situation
           }
         })
       });
@@ -235,6 +363,11 @@ Provide only the enhanced Facebook post content, no explanations.`;
     setHashtags('');
     setError('');
     setQualityAnalysis(null);
+    setContentLength('optimal');
+    setBrandVoiceIntensity('moderate');
+    setEngagementUrgency('normal');
+    setSituation('general');
+    setCustomLength(100);
   };
 
   const getPlatformIcon = (platformValue) => {
@@ -370,6 +503,119 @@ Provide only the enhanced Facebook post content, no explanations.`;
                     <span className="option-description">{goal.description}</span>
                   </button>
                 ))}
+              </div>
+            </div>
+
+            {/* Dynamic Length Adjustment */}
+            <div className="option-group">
+              <label>📏 Content Length & Optimization</label>
+              <div className="options-grid">
+                {contentLengths.map(length => (
+                  <button
+                    key={length.value}
+                    className={`option-btn ${contentLength === length.value ? 'active' : ''}`}
+                    onClick={() => setContentLength(length.value)}
+                  >
+                    <span className="option-icon">{length.icon}</span>
+                    <span className="option-label">{length.label}</span>
+                    <span className="option-description">{length.description}</span>
+                  </button>
+                ))}
+              </div>
+              
+              {/* Custom Length Input */}
+              {contentLength === 'custom' && (
+                <div className="custom-length-input">
+                  <label>Target Words:</label>
+                  <input
+                    type="number"
+                    value={customLength}
+                    onChange={(e) => setCustomLength(Math.max(20, parseInt(e.target.value) || 100))}
+                    min="20"
+                    max="500"
+                  />
+                  <span className="custom-length-target">
+                    Target: {calculateTargetLength()} words
+                  </span>
+                </div>
+              )}
+            </div>
+
+            {/* Brand Voice & Engagement */}
+            <div className="option-group">
+              <label>🎭 Brand Voice & Engagement</label>
+              <div className="options-grid">
+                {brandVoiceIntensities.map(voice => (
+                  <button
+                    key={voice.value}
+                    className={`option-btn ${brandVoiceIntensity === voice.value ? 'active' : ''}`}
+                    onClick={() => setBrandVoiceIntensity(voice.value)}
+                  >
+                    <span className="option-icon">{voice.icon}</span>
+                    <span className="option-label">{voice.label}</span>
+                    <span className="option-description">{voice.description}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="option-group">
+              <label>🔥 Engagement Urgency</label>
+              <div className="options-grid">
+                {engagementUrgencies.map(urgency => (
+                  <button
+                    key={urgency.value}
+                    className={`option-btn ${engagementUrgency === urgency.value ? 'active' : ''}`}
+                    onClick={() => setEngagementUrgency(urgency.value)}
+                  >
+                    <span className="option-icon">{urgency.icon}</span>
+                    <span className="option-label">{urgency.label}</span>
+                    <span className="option-description">{urgency.description}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Situation Context */}
+            <div className="option-group">
+              <label>🎯 Situation & Context</label>
+              <div className="options-grid">
+                {situations.map(situation => (
+                  <button
+                    key={situation.value}
+                    className={`option-btn ${situation === situation.value ? 'active' : ''}`}
+                    onClick={() => setSituation(situation.value)}
+                  >
+                    <span className="option-icon">{situation.icon}</span>
+                    <span className="option-label">{situation.label}</span>
+                    <span className="option-description">{situation.description}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Length Preview */}
+            <div className="length-preview">
+              <div className="length-preview-header">
+                <span>📊</span>
+                <span className="length-preview-title">Length Optimization Preview</span>
+              </div>
+              <div className="length-preview-grid">
+                <div>
+                  <strong>Base Length:</strong> {contentLengths.find(cl => cl.value === contentLength)?.targetWords || customLength} words
+                </div>
+                <div>
+                  <strong>Brand Voice:</strong> {brandVoiceIntensities.find(bv => bv.value === brandVoiceIntensity)?.label}
+                </div>
+                <div>
+                  <strong>Engagement:</strong> {engagementUrgencies.find(eu => eu.value === engagementUrgency)?.label}
+                </div>
+                <div>
+                  <strong>Situation:</strong> {situations.find(s => s.value === situation)?.label}
+                </div>
+                <div className="length-preview-target">
+                  🎯 Target Length: {calculateTargetLength()} words
+                </div>
               </div>
             </div>
 
@@ -547,6 +793,20 @@ Provide only the enhanced Facebook post content, no explanations.`;
                       <div className="history-enhanced">
                         <strong>Enhanced:</strong> {item.enhanced.substring(0, 150)}...
                       </div>
+                      <div className="history-length-info">
+                        <div className="history-length-item">
+                          <span>📏 Target:</span> {item.targetLength || 'N/A'} words
+                        </div>
+                        <div className="history-length-item">
+                          <span>📊 Actual:</span> {item.actualLength || 'N/A'} words
+                        </div>
+                        <div className="history-length-item">
+                          <span>🎭</span> {brandVoiceIntensities.find(bv => bv.value === item.brandVoiceIntensity)?.label || 'N/A'}
+                        </div>
+                        <div className="history-length-item">
+                          <span>🔥</span> {engagementUrgencies.find(eu => eu.value === item.engagementUrgency)?.label || 'N/A'}
+                        </div>
+                      </div>
                     </div>
                     <div className="history-actions">
                       <button onClick={() => copyToClipboard(item.enhanced)} className="history-btn">
@@ -560,6 +820,11 @@ Provide only the enhanced Facebook post content, no explanations.`;
                         setTargetAudience(item.targetAudience);
                         setContentStructure(item.contentStructure);
                         setEngagementGoal(item.engagementGoal);
+                        setContentLength(item.contentLength || 'optimal');
+                        setBrandVoiceIntensity(item.brandVoiceIntensity || 'moderate');
+                        setEngagementUrgency(item.engagementUrgency || 'normal');
+                        setSituation(item.situation || 'general');
+                        setCustomLength(item.customLength || 100);
                       }} className="history-btn">
                         🔄 Reuse
                       </button>
