@@ -14,6 +14,13 @@ const BlogIndex = () => {
     loadBlogHistory();
   }, []);
 
+  // Set active tab to 'history' if there are blog posts
+  useEffect(() => {
+    if (blogHistory.length > 0 && activeTab === 'published') {
+      setActiveTab('history');
+    }
+  }, [blogHistory.length, activeTab]);
+
   const loadBlogHistory = () => {
     try {
       const history = JSON.parse(localStorage.getItem('blogHistory') || '[]');
@@ -234,10 +241,30 @@ const BlogIndex = () => {
                 color: activeTab === 'history' ? '#fff' : '#4a5568',
                 fontWeight: '600',
                 cursor: 'pointer',
-                transition: 'all 0.3s ease'
+                transition: 'all 0.3s ease',
+                position: 'relative'
               }}
             >
               {t('yourBlogPosts')} ({blogHistory.length})
+              {blogHistory.length > 0 && (
+                <span style={{
+                  position: 'absolute',
+                  top: '-4px',
+                  right: '-4px',
+                  background: '#ff6b6b',
+                  color: '#fff',
+                  borderRadius: '50%',
+                  width: '20px',
+                  height: '20px',
+                  fontSize: '12px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontWeight: 'bold'
+                }}>
+                  {blogHistory.length}
+                </span>
+              )}
             </button>
           </div>
 
@@ -682,7 +709,7 @@ const BlogIndex = () => {
                           gap: '8px'
                         }}>
                           <Link
-                            to={`/blog/generated-${blog.id}`}
+                            to={`/blog-post/generated-${blog.id}`}
                             style={{
                               color: '#667eea',
                               textDecoration: 'none',

@@ -13,7 +13,6 @@ import BlogIndex from './screens/BlogIndex';
 import BlogPost from './screens/BlogPost';
 import CustomerServiceResponse from './screens/CustomerServiceResponse';
 import VoiceTest from './screens/VoiceTest';
-import ModelsInfo from './screens/ModelsInfo';
 import SocialMediaPost from './screens/SocialMediaPost';
 
 function App() {
@@ -26,14 +25,18 @@ function App() {
           <Route path="/llama" component={Llma} />
           <Route path="/enhanced-llm" component={EnhancedLLM} />
           <Route path="/voice-review" component={VoiceReview} />
+          <Route path="/voice" component={VoiceReview} />
           <Route path="/review-generator" component={ReviewGenerator} />
+          <Route path="/generate" component={ReviewGenerator} />
           <Route path="/review-history" component={ReviewHistory} />
+          <Route path="/history" component={ReviewHistory} />
           <Route path="/blog-creator" component={BlogCreator} />
           <Route path="/blog-index" component={BlogIndex} />
+          <Route path="/blog" component={BlogIndex} />
           <Route path="/blog-post/:slug" component={BlogPost} />
           <Route path="/customer-service" component={CustomerServiceResponse} />
+          <Route path="/customer-service-response" component={CustomerServiceResponse} />
           <Route path="/voice-test" component={VoiceTest} />
-          <Route path="/models-info" component={ModelsInfo} />
           <Route path="/social-media" component={SocialMediaPost} />
         </Switch>
       </div>

@@ -121,6 +121,8 @@
   "generatedOn": "Generated on",
   "cuisine": "Cuisine",
   "blogPostNotFound": "Blog post not found.",
+  "viewFullPost": "View Full Post",
+  "createSimilar": "Create Similar",
   "reviewGenerator": {
     "title": "AI Review Generator",
     "subtitle": "Let AI help you write reviews easily!",
@@ -176,12 +178,10 @@
     "llama": "Llama",
     "history": "History",
     "chattyAgent": "Chatty Agent",
-    "aiModels": "AI Models",
     "blog": "Blog",
     "blogCreator": "Blog Creator",
     "socialMedia": "Social Media",
-    "customerService": "Customer Service",
-    "modelsInfo": "Models Info"
+    "customerService": "Customer Service"
   },
   "llma": {
     "enterText": "Please enter some text to process",
@@ -399,8 +399,7 @@
     "reviewHistory": "Review History",
     "blogCreator": "Blog Creator",
     "socialMedia": "Social Media",
-    "customerService": "Customer Service",
-    "modelsInfo": "Models Info"
+    "customerService": "Customer Service"
   },
   "home": {
     "hero": {

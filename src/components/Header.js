@@ -39,6 +39,7 @@ const Header = ({ location }) => {
                 </button>
                 
                 <nav className={`nav-menu ${isMenuOpen ? 'active' : ''}`}>
+                    {/* Home */}
                     <Link 
                         to="/" 
                         className={`nav-link ${location.pathname === '/' ? 'active' : ''}`}
@@ -46,82 +47,86 @@ const Header = ({ location }) => {
                     >
                         🏠 {t('menu.home')}
                     </Link>
-                    <Link 
-                        to="/generate" 
-                        className={`nav-link ${location.pathname === '/generate' ? 'active' : ''}`}
-                        onClick={closeMenu}
-                    >
-                        ✍️ {t('menu.generate')}
-                    </Link>
-                    <Link 
-                        to="/voice" 
-                        className={`nav-link ${location.pathname === '/voice' ? 'active' : ''}`}
-                        onClick={closeMenu}
-                    >
-                        🎤 {t('menu.voice')}
-                    </Link>
-                    <Link 
-                        to="/llama" 
-                        className={`nav-link ${location.pathname === '/llama' ? 'active' : ''}`}
-                        onClick={closeMenu}
-                    >
-                        🤖 {t('menu.llama')}
-                    </Link>
-                    <Link 
-                        to="/history" 
-                        className={`nav-link ${location.pathname === '/history' ? 'active' : ''}`}
-                        onClick={closeMenu}
-                    >
-                        📚 {t('menu.history')}
-                    </Link>
-                    <Link 
-                        to="/customer-service-response" 
-                        className={`nav-link ${location.pathname === '/customer-service-response' ? 'active' : ''}`}
-                        onClick={closeMenu}
-                    >
-                        💬 {t('menu.chattyAgent')}
-                    </Link>
-                    <Link 
-                        to="/models" 
-                        className={`nav-link ${location.pathname === '/models' ? 'active' : ''}`}
-                        onClick={closeMenu}
-                    >
-                        🤖 {t('menu.aiModels')}
-                    </Link>
-                    <Link 
-                        to="/blog" 
-                        className={`nav-link ${location.pathname.startsWith('/blog') && !location.pathname.includes('/blog-creator') ? 'active' : ''}`}
-                        onClick={closeMenu}
-                    >
-                        📝 {t('menu.blog')}
-                    </Link>
-                    <Link 
-                        to="/blog-creator" 
-                        className={`nav-link ${location.pathname === '/blog-creator' ? 'active' : ''}`}
-                        onClick={closeMenu}
-                    >
-                        ✍️ {t('menu.blogCreator')}
-                    </Link>
-                    <Link 
-                        to="/social-media" 
-                        className={`nav-link ${location.pathname === '/social-media' ? 'active' : ''}`}
-                        onClick={closeMenu}
-                    >
-                        📱 {t('menu.socialMedia')}
-                    </Link>
+                    
+                    {/* Content Generation Group */}
+                    <div className="nav-group">
+                        <div className="nav-group-label">Content Creation</div>
+                        <Link 
+                            to="/generate" 
+                            className={`nav-link ${location.pathname === '/generate' ? 'active' : ''}`}
+                            onClick={closeMenu}
+                        >
+                            ✍️ {t('menu.generate')}
+                        </Link>
+                        <Link 
+                            to="/voice" 
+                            className={`nav-link ${location.pathname === '/voice' ? 'active' : ''}`}
+                            onClick={closeMenu}
+                        >
+                            🎤 {t('menu.voice')}
+                        </Link>
+                        <Link 
+                            to="/history" 
+                            className={`nav-link ${location.pathname === '/history' ? 'active' : ''}`}
+                            onClick={closeMenu}
+                        >
+                            📚 {t('menu.history')}
+                        </Link>
+                    </div>
+                    
+                    {/* AI & Tools Group */}
+                    <div className="nav-group">
+                        <div className="nav-group-label">AI & Tools</div>
+                        <Link 
+                            to="/llama" 
+                            className={`nav-link ${location.pathname === '/llama' ? 'active' : ''}`}
+                            onClick={closeMenu}
+                        >
+                            🤖 {t('menu.llama')}
+                        </Link>
+                        <Link 
+                            to="/customer-service-response" 
+                            className={`nav-link ${location.pathname === '/customer-service-response' ? 'active' : ''}`}
+                            onClick={closeMenu}
+                        >
+                            💬 {t('menu.chattyAgent')}
+                        </Link>
+
+                    </div>
+                    
+                    {/* Content Management Group */}
+                    <div className="nav-group">
+                        <div className="nav-group-label">Content Management</div>
+                        <Link 
+                            to="/blog" 
+                            className={`nav-link ${location.pathname.startsWith('/blog') && !location.pathname.includes('/blog-creator') ? 'active' : ''}`}
+                            onClick={closeMenu}
+                        >
+                            📝 {t('menu.blog')}
+                        </Link>
+                        <Link 
+                            to="/blog-creator" 
+                            className={`nav-link ${location.pathname === '/blog-creator' ? 'active' : ''}`}
+                            onClick={closeMenu}
+                        >
+                            ✍️ {t('menu.blogCreator')}
+                        </Link>
+                        <Link 
+                            to="/social-media" 
+                            className={`nav-link ${location.pathname === '/social-media' ? 'active' : ''}`}
+                            onClick={closeMenu}
+                        >
+                            📱 {t('menu.socialMedia')}
+                        </Link>
+                    </div>
+                    
+                    {/* Additional Services */}
                     <Link 
                         to="/customer-service" 
                         className={`nav-link ${location.pathname === '/customer-service' ? 'active' : ''}`}
                         onClick={closeMenu}
                     >
                         👨‍💼 {t('menu.customerService')}
-                    </Link>
-                    <Link 
-                        to="/models-info" 
-                        className={`nav-link ${location.pathname === '/models-info' ? 'active' : ''}`}
-                        onClick={closeMenu}
-                    >
-                        ℹ️ {t('menu.modelsInfo')}
                     </Link>
                 </nav>
             </div>

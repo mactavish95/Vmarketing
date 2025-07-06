@@ -169,6 +169,8 @@
   "generatedOn": "Được tạo lúc",
   "cuisine": "Ẩm thực",
   "blogPostNotFound": "Không tìm thấy bài blog.",
+  "viewFullPost": "Xem bài viết đầy đủ",
+  "createSimilar": "Tạo bài tương tự",
   "menu": {
     "home": "Trang chủ",
     "generate": "Tạo nội dung",
@@ -176,12 +178,10 @@
     "llama": "Llama",
     "history": "Lịch sử",
     "chattyAgent": "Trợ lý Chatty",
-    "aiModels": "Mô hình AI",
     "blog": "Blog",
     "blogCreator": "Tạo Blog",
     "socialMedia": "Mạng xã hội",
-    "customerService": "Dịch vụ khách hàng",
-    "modelsInfo": "Thông tin mô hình"
+    "customerService": "Dịch vụ khách hàng"
   },
   "llma": {
     "enterText": "Vui lòng nhập nội dung để xử lý",
@@ -399,8 +399,7 @@
     "reviewHistory": "Lịch sử đánh giá",
     "blogCreator": "Tạo blog",
     "socialMedia": "Mạng xã hội",
-    "customerService": "Dịch vụ khách hàng",
-    "modelsInfo": "Thông tin mô hình"
+    "customerService": "Dịch vụ khách hàng"
   },
   "home": {
     "hero": {
