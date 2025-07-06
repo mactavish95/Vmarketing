@@ -6,6 +6,8 @@
   "scripts": {
     "start": "node server-new.js",
     "dev": "nodemon server-new.js",
+    "debug": "node server-debug.js",
+    "debug-dev": "nodemon server-debug.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [

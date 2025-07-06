@@ -33,24 +33,23 @@ const corsOptions = {
     // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
     
+    console.log('CORS check for origin:', origin);
+    
     const allowedOrigins = [
       'http://localhost:3000',
       'https://vmarketing.netlify.app',
       'https://development--vmarketing.netlify.app',
-      'https://*.netlify.app',
       'https://app.netlify.com',
       process.env.FRONTEND_URL
     ].filter(Boolean);
     
-    // Check if origin matches any allowed origins (including wildcards)
+    // Check if origin matches any allowed origins
     const isAllowed = allowedOrigins.some(allowedOrigin => {
-      if (allowedOrigin.includes('*')) {
-        // Handle wildcard domains
-        const pattern = allowedOrigin.replace('*', '.*');
-        return new RegExp(pattern).test(origin);
-      }
       return allowedOrigin === origin;
     });
+    
+    // Check for any Netlify.app domain
+    const isNetlifyDomain = origin.endsWith('.netlify.app');
     
     // Additional check for Netlify preview URLs
     const isNetlifyPreview = origin.includes('netlify.app') && (
@@ -59,11 +58,22 @@ const corsOptions = {
       origin.includes('branch-deploy') // Branch deploy URLs
     );
     
-    if (isAllowed || isNetlifyPreview) {
+    console.log('CORS check results:', {
+      origin,
+      allowedOrigins,
+      isAllowed,
+      isNetlifyDomain,
+      isNetlifyPreview,
+      frontendUrl: process.env.FRONTEND_URL
+    });
+    
+    if (isAllowed || isNetlifyDomain || isNetlifyPreview) {
+      console.log('CORS: Allowing origin:', origin);
       callback(null, true);
     } else {
       console.log('CORS blocked origin:', origin);
       console.log('Allowed origins:', allowedOrigins);
+      console.log('Is Netlify domain:', isNetlifyDomain);
       console.log('Is Netlify preview:', isNetlifyPreview);
       callback(new Error('Not allowed by CORS'));
     }
