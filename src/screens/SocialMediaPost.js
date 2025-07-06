@@ -26,6 +26,10 @@ const SocialMediaPost = () => {
   const [situation, setSituation] = useState('general');
   const [customLength, setCustomLength] = useState(100);
 
+  // New follow-up question suggestions
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [selectedSuggestion, setSelectedSuggestion] = useState('');
+
   const platforms = [
     { value: 'facebook', label: 'Facebook', icon: '📘', maxLength: 63206, priority: true },
     { value: 'instagram', label: 'Instagram', icon: '📸', maxLength: 2200 },
@@ -360,15 +364,20 @@ Provide only the enhanced Facebook post content, no explanations.`;
   const clearAll = () => {
     setContent('');
     setEnhancedContent('');
-    setHashtags('');
     setError('');
     setQualityAnalysis(null);
-    setContentLength('optimal');
-    setBrandVoiceIntensity('moderate');
-    setEngagementUrgency('normal');
-    setSituation('general');
-    setCustomLength(100);
+    setGenerationHistory([]);
+    setShowAdvancedOptions(false);
+    setShowSuggestions(false);
+    setSelectedSuggestion('');
   };
+
+  // Show suggestions automatically when content is empty
+  useEffect(() => {
+    if (!content.trim() && !showSuggestions) {
+      setShowSuggestions(true);
+    }
+  }, [content, showSuggestions]);
 
   const getPlatformIcon = (platformValue) => {
     return platforms.find(p => p.value === platformValue)?.icon || '📱';
@@ -398,6 +407,288 @@ Provide only the enhanced Facebook post content, no explanations.`;
   const selectedPlatform = platforms.find(p => p.value === platform);
   const characterCount = enhancedContent.length;
   const isOverLimit = characterCount > selectedPlatform.maxLength;
+
+  // Follow-up question suggestions based on user selections
+  const getFollowUpSuggestions = () => {
+    const suggestions = {
+      general: [
+        "What's the most interesting thing that happened to you today?",
+        "Share a personal story that your audience can relate to",
+        "What's something you're grateful for right now?",
+        "Tell us about a challenge you recently overcame",
+        "What's a lesson you learned this week?"
+      ],
+      promotional: [
+        "What problem does your product/service solve?",
+        "Share a customer success story",
+        "What makes your offering unique?",
+        "What's a common misconception about your industry?",
+        "How has your product/service evolved?"
+      ],
+      educational: [
+        "What's a common mistake people make in your field?",
+        "Share a surprising fact or statistic",
+        "What's something everyone should know about your topic?",
+        "What's a tip that changed your perspective?",
+        "What's the most important lesson you've learned?"
+      ],
+      community: [
+        "What's happening in your local community?",
+        "How can people get involved with your cause?",
+        "What community event are you excited about?",
+        "Share a story about community support",
+        "What's a local business you want to highlight?"
+      ],
+      celebration: [
+        "What achievement are you most proud of?",
+        "Who deserves recognition in your network?",
+        "What milestone are you celebrating?",
+        "Share a team success story",
+        "What's something worth celebrating today?"
+      ],
+      trending: [
+        "What's your take on the current trend?",
+        "How does this trend relate to your audience?",
+        "What's the story behind this trend?",
+        "How can people participate in this trend?",
+        "What's the next big thing you're seeing?"
+      ],
+      seasonal: [
+        "What does this season mean to you?",
+        "How are you preparing for this time of year?",
+        "What traditions are important to you?",
+        "What's your favorite thing about this season?",
+        "How can people make the most of this season?"
+      ],
+      crisis: [
+        "How are you supporting your community during this time?",
+        "What resources can you share?",
+        "How are you adapting to the current situation?",
+        "What positive actions can people take?",
+        "How can we help each other?"
+      ]
+    };
+
+    // Get suggestions based on post type and situation
+    const postTypeSuggestions = suggestions[postType] || suggestions.general;
+    const situationSuggestions = suggestions[situation] || suggestions.general;
+    
+    // Add content structure specific suggestions
+    const structureSuggestions = {
+      story: [
+        "What's the beginning of your story?",
+        "What was the turning point?",
+        "How did it end?",
+        "What did you learn from this experience?"
+      ],
+      'problem-solution': [
+        "What problem are you addressing?",
+        "What's your solution?",
+        "How does this help others?",
+        "What results can people expect?"
+      ],
+      list: [
+        "What are the key points you want to share?",
+        "What's the most important item on your list?",
+        "How can people apply these points?",
+        "What's your top recommendation?"
+      ],
+      'question-answer': [
+        "What question are you answering?",
+        "What's the most common question you get?",
+        "What's something people often misunderstand?",
+        "What's your expert advice on this topic?"
+      ],
+      'before-after': [
+        "What was the situation before?",
+        "What changed?",
+        "What's the result now?",
+        "What made the difference?"
+      ],
+      tips: [
+        "What's your best tip?",
+        "What mistake should people avoid?",
+        "What's your secret to success?",
+        "What's the easiest way to get started?"
+      ],
+      quote: [
+        "What quote inspires you?",
+        "Who said something meaningful about this?",
+        "What's your favorite quote on this topic?",
+        "How does this quote apply to your audience?"
+      ],
+      announcement: [
+        "What are you announcing?",
+        "Why is this important?",
+        "What should people know?",
+        "What's the next step?"
+      ]
+    };
+
+    const structureSpecific = structureSuggestions[contentStructure] || [];
+    
+    // Add tone-specific suggestions
+    const toneSuggestions = {
+      engaging: [
+        "What would make your audience want to comment?",
+        "What question would start a conversation?",
+        "What's something controversial you can address?",
+        "What's a hot topic in your industry?"
+      ],
+      professional: [
+        "What industry insight can you share?",
+        "What professional development tip do you have?",
+        "What's a business lesson you've learned?",
+        "What trend should professionals watch?"
+      ],
+      casual: [
+        "What's something fun you want to share?",
+        "What made you smile today?",
+        "What's a lighthearted observation?",
+        "What's something relatable to your audience?"
+      ],
+      humorous: [
+        "What's something funny that happened?",
+        "What's a humorous take on your topic?",
+        "What's a joke or pun related to your content?",
+        "What's something that made you laugh?"
+      ],
+      inspirational: [
+        "What motivates you?",
+        "What's an inspiring story you can share?",
+        "What's your message of hope?",
+        "What would encourage your audience?"
+      ],
+      educational: [
+        "What fact would surprise your audience?",
+        "What's a common misconception?",
+        "What's something everyone should know?",
+        "What's a practical tip you can share?"
+      ],
+      empathetic: [
+        "What struggle can you relate to?",
+        "How can you show understanding?",
+        "What support can you offer?",
+        "What would make someone feel heard?"
+      ],
+      authoritative: [
+        "What's your expert opinion?",
+        "What's the data showing?",
+        "What's your proven approach?",
+        "What's your professional recommendation?"
+      ]
+    };
+
+    const toneSpecific = toneSuggestions[tone] || [];
+    
+    // Combine and remove duplicates
+    const allSuggestions = [...new Set([
+      ...postTypeSuggestions, 
+      ...situationSuggestions,
+      ...structureSpecific,
+      ...toneSpecific
+    ])];
+    
+    // Add platform-specific suggestions
+    const platformSpecific = {
+      facebook: [
+        "What would you like to discuss with your Facebook community?",
+        "Share something that would start a meaningful conversation",
+        "What's on your mind that others might relate to?",
+        "What's happening in your world that's worth sharing?"
+      ],
+      instagram: [
+        "What visual story would you like to tell?",
+        "Share a behind-the-scenes moment",
+        "What's inspiring you today?",
+        "What's a beautiful moment you want to capture?"
+      ],
+      twitter: [
+        "What's your hot take on a current topic?",
+        "Share a quick tip or insight",
+        "What's worth sharing in 280 characters?",
+        "What's trending that you have thoughts on?"
+      ],
+      linkedin: [
+        "What professional insight can you share?",
+        "What industry trend are you following?",
+        "What career advice would you give?",
+        "What business lesson have you learned?"
+      ],
+      tiktok: [
+        "What's a fun trend you can participate in?",
+        "What's something entertaining you can show?",
+        "What's a quick tip you can demonstrate?",
+        "What's something viral-worthy you can share?"
+      ],
+      youtube: [
+        "What tutorial or guide can you create?",
+        "What's a story you can tell in detail?",
+        "What's a topic you can explain thoroughly?",
+        "What's something you can show step-by-step?"
+      ]
+    };
+
+    const platformSuggestions = platformSpecific[platform] || platformSpecific.facebook;
+    
+    // Add engagement goal specific suggestions
+    const goalSuggestions = {
+      awareness: [
+        "What should people know about your brand?",
+        "What's unique about what you do?",
+        "What's your story that people should hear?",
+        "What makes you different from others?"
+      ],
+      engagement: [
+        "What question would get people talking?",
+        "What's something people would want to share?",
+        "What's a topic that would get comments?",
+        "What's something that would make people react?"
+      ],
+      conversation: [
+        "What's a topic people have strong opinions about?",
+        "What's something that would start a debate?",
+        "What's a question that has no right answer?",
+        "What's something that would get people thinking?"
+      ],
+      education: [
+        "What's something people often get wrong?",
+        "What's a tip that would help your audience?",
+        "What's something you wish everyone knew?",
+        "What's a lesson that would benefit others?"
+      ],
+      conversion: [
+        "What problem can you solve for people?",
+        "What's the benefit of working with you?",
+        "What's a success story you can share?",
+        "What's the next step people should take?"
+      ],
+      community: [
+        "How can people connect with each other?",
+        "What's a shared experience you can highlight?",
+        "What's something that would bring people together?",
+        "What's a community event or initiative?"
+      ]
+    };
+
+    const goalSpecific = goalSuggestions[engagementGoal] || [];
+    
+    return [...new Set([
+      ...allSuggestions, 
+      ...platformSuggestions,
+      ...goalSpecific
+    ])].slice(0, 10); // Show top 10 most relevant suggestions
+  };
+
+  const handleSuggestionClick = (suggestion) => {
+    setSelectedSuggestion(suggestion);
+    setContent(prev => prev ? `${prev}\n\n${suggestion}` : suggestion);
+    setShowSuggestions(false);
+  };
+
+  const toggleSuggestions = () => {
+    setShowSuggestions(!showSuggestions);
+  };
 
   return (
     <div className="social-media-post">
@@ -446,6 +737,84 @@ Provide only the enhanced Facebook post content, no explanations.`;
               <span>Characters: {content.length}</span>
               <span>Words: {content.split(/\s+/).filter(word => word.length > 0).length}</span>
             </div>
+          </div>
+
+          {/* Follow-up Question Suggestions */}
+          <div className="section">
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+              <h2>💡 Need Ideas? Get Inspired!</h2>
+              <button
+                onClick={toggleSuggestions}
+                className={`suggestions-toggle ${showSuggestions ? 'active' : ''}`}
+              >
+                <span>{showSuggestions ? '🙈' : '💡'}</span>
+                {showSuggestions ? 'Hide Suggestions' : 'Show Suggestions'}
+              </button>
+            </div>
+            
+            {showSuggestions && (
+              <div className="suggestions-container">
+                <div className="suggestions-header">
+                  <span style={{ fontSize: '20px' }}>🎯</span>
+                  <h3 className="suggestions-title">
+                    Personalized Suggestions for {getPlatformIcon(platform)} {platforms.find(p => p.value === platform)?.label}
+                  </h3>
+                </div>
+                
+                <p className="suggestions-subtitle">
+                  Based on your selections: <strong>{postTypes.find(pt => pt.value === postType)?.label}</strong> • <strong>{situations.find(s => s.value === situation)?.label}</strong> • <strong>{engagementGoals.find(eg => eg.value === engagementGoal)?.label}</strong>
+                </p>
+
+                {/* Quick Start Prompts */}
+                {!content.trim() && (
+                  <div className="quick-start-container">
+                    <div className="quick-start-header">
+                      <span style={{ fontSize: '18px' }}>🚀</span>
+                      <h4 className="quick-start-title">
+                        Quick Start - Choose a prompt to begin:
+                      </h4>
+                    </div>
+                    <div className="quick-start-grid">
+                      {[
+                        "I want to share a personal story...",
+                        "I have a tip or advice to give...",
+                        "I want to ask my audience something...",
+                        "I want to promote something...",
+                        "I want to educate about a topic...",
+                        "I want to celebrate an achievement..."
+                      ].map((prompt, index) => (
+                        <button
+                          key={index}
+                          onClick={() => setContent(prompt)}
+                          className="quick-start-btn"
+                        >
+                          {prompt}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div className="suggestions-grid">
+                  {getFollowUpSuggestions().map((suggestion, index) => (
+                    <button
+                      key={index}
+                      onClick={() => handleSuggestionClick(suggestion)}
+                      className="suggestion-item"
+                    >
+                      <div className="suggestion-add-icon">+</div>
+                      <div className="suggestion-text">
+                        "{suggestion}"
+                      </div>
+                    </button>
+                  ))}
+                </div>
+
+                <div className="suggestions-tip">
+                  💡 <strong>Tip:</strong> Click any suggestion above to add it to your content. You can then edit and personalize it!
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Facebook-Specific Options */}
