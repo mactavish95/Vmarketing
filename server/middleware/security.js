@@ -36,14 +36,35 @@ const corsOptions = {
     const allowedOrigins = [
       'http://localhost:3000',
       'https://vmarketing.netlify.app',
+      'https://development--vmarketing.netlify.app',
+      'https://*.netlify.app',
       'https://app.netlify.com',
       process.env.FRONTEND_URL
     ].filter(Boolean);
     
-    if (allowedOrigins.includes(origin)) {
+    // Check if origin matches any allowed origins (including wildcards)
+    const isAllowed = allowedOrigins.some(allowedOrigin => {
+      if (allowedOrigin.includes('*')) {
+        // Handle wildcard domains
+        const pattern = allowedOrigin.replace('*', '.*');
+        return new RegExp(pattern).test(origin);
+      }
+      return allowedOrigin === origin;
+    });
+    
+    // Additional check for Netlify preview URLs
+    const isNetlifyPreview = origin.includes('netlify.app') && (
+      origin.includes('--') || // Preview URLs like development--app.netlify.app
+      origin.includes('deploy-preview') || // Deploy preview URLs
+      origin.includes('branch-deploy') // Branch deploy URLs
+    );
+    
+    if (isAllowed || isNetlifyPreview) {
       callback(null, true);
     } else {
       console.log('CORS blocked origin:', origin);
+      console.log('Allowed origins:', allowedOrigins);
+      console.log('Is Netlify preview:', isNetlifyPreview);
       callback(new Error('Not allowed by CORS'));
     }
   },
