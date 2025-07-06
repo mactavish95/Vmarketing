@@ -105,49 +105,168 @@ class ResponseQualityAnalyzer {
 
         let coherenceScore = 0;
         let transitionCount = 0;
+        let logicalFlowScore = 0;
+        let structureScore = 0;
 
-        // Check for logical transitions
-        const transitions = ['however', 'therefore', 'furthermore', 'moreover', 'in addition', 'consequently', 'as a result', 'meanwhile', 'subsequently'];
+        // Check for logical transitions and connectors
+        const transitions = [
+            'however', 'therefore', 'furthermore', 'moreover', 'in addition', 
+            'consequently', 'as a result', 'meanwhile', 'subsequently', 'next',
+            'then', 'also', 'besides', 'additionally', 'further', 'moreover',
+            'similarly', 'likewise', 'in contrast', 'on the other hand',
+            'first', 'second', 'third', 'finally', 'in conclusion', 'to summarize'
+        ];
         
+        // Check for paragraph structure and logical flow
+        const paragraphs = response.split(/\n\s*\n/).filter(p => p.trim().length > 0);
+        if (paragraphs.length > 1) {
+            structureScore += 0.2; // Bonus for paragraph structure
+        }
+
         for (let i = 1; i < sentences.length; i++) {
             const currentSentence = sentences[i].toLowerCase();
-            const hasTransition = transitions.some(transition => currentSentence.includes(transition));
+            const prevSentence = sentences[i-1].toLowerCase();
             
+            // Check for transition words
+            const hasTransition = transitions.some(transition => currentSentence.includes(transition));
             if (hasTransition) {
                 transitionCount++;
+                logicalFlowScore += 0.1;
             }
 
-            // Check for topic continuity
-            const prevWords = sentences[i-1].toLowerCase().split(' ').slice(-3);
-            const currentWords = currentSentence.split(' ').slice(0, 3);
-            const hasContinuity = prevWords.some(word => currentWords.includes(word));
+            // Check for topic continuity and keyword repetition
+            const prevWords = prevSentence.split(' ').slice(-4); // Last 4 words
+            const currentWords = currentSentence.split(' ').slice(0, 4); // First 4 words
+            const hasContinuity = prevWords.some(word => 
+                currentWords.includes(word) && word.length > 3
+            );
             
             if (hasContinuity) {
-                coherenceScore += 0.2;
+                coherenceScore += 0.15;
+            }
+
+            // Check for logical progression (question-answer, problem-solution, etc.)
+            const hasQuestion = prevSentence.includes('?');
+            const hasAnswer = currentSentence.includes('because') || currentSentence.includes('since') || 
+                             currentSentence.includes('as') || currentSentence.includes('due to');
+            
+            if (hasQuestion && hasAnswer) {
+                logicalFlowScore += 0.2;
+            }
+
+            // Check for cause-effect relationships
+            const hasCause = prevSentence.includes('because') || prevSentence.includes('since') || 
+                           prevSentence.includes('as a result');
+            const hasEffect = currentSentence.includes('therefore') || currentSentence.includes('consequently') ||
+                            currentSentence.includes('this means') || currentSentence.includes('so');
+            
+            if (hasCause || hasEffect) {
+                logicalFlowScore += 0.15;
             }
         }
 
-        // Normalize scores
-        const transitionScore = Math.min(transitionCount / sentences.length, 1) * 0.3;
-        const continuityScore = Math.min(coherenceScore / sentences.length, 1) * 0.7;
+        // Check for clear beginning, middle, and end structure
+        const hasHook = sentences[0].length < 100 && (sentences[0].includes('!') || sentences[0].includes('?'));
+        const hasConclusion = sentences[sentences.length - 1].includes('in conclusion') || 
+                             sentences[sentences.length - 1].includes('finally') ||
+                             sentences[sentences.length - 1].includes('to summarize');
+        
+        if (hasHook) structureScore += 0.1;
+        if (hasConclusion) structureScore += 0.1;
 
-        return Math.min(transitionScore + continuityScore, 1);
+        // Normalize scores
+        const transitionScore = Math.min(transitionCount / sentences.length, 1) * 0.25;
+        const continuityScore = Math.min(coherenceScore / sentences.length, 1) * 0.3;
+        const flowScore = Math.min(logicalFlowScore / sentences.length, 1) * 0.25;
+        const finalStructureScore = Math.min(structureScore, 0.2);
+
+        return Math.min(transitionScore + continuityScore + flowScore + finalStructureScore, 1);
     }
 
-    // Analyze relevance to the context
+    // Analyze relevance to the context and target audience
     analyzeRelevance(response, context) {
-        if (!response || !context) return 0.5;
+        if (!response) return 0.5;
 
-        const responseWords = response.toLowerCase().split(' ');
-        const contextWords = Object.values(context).join(' ').toLowerCase().split(' ');
-        
-        // Find common words
-        const commonWords = responseWords.filter(word => 
-            contextWords.includes(word) && word.length > 3
-        );
+        let relevanceScore = 0.5; // Base score
+        const responseLower = response.toLowerCase();
+        const responseWords = responseLower.split(' ');
 
-        const relevanceScore = commonWords.length / Math.max(responseWords.length, 1);
-        return Math.min(relevanceScore * 2, 1); // Scale up for better scoring
+        // Analyze context relevance if context is provided
+        if (context && Object.keys(context).length > 0) {
+            const contextWords = Object.values(context).join(' ').toLowerCase().split(' ');
+            const contextKeywords = contextWords.filter(word => word.length > 3);
+            
+            // Find common words between response and context
+            const commonWords = responseWords.filter(word => 
+                contextKeywords.includes(word) && word.length > 3
+            );
+
+            const contextRelevance = commonWords.length / Math.max(responseWords.length, 1);
+            relevanceScore += contextRelevance * 0.3;
+        }
+
+        // Analyze audience relevance based on platform and target audience
+        if (context && context.targetAudience) {
+            const audience = context.targetAudience.toLowerCase();
+            
+            // Audience-specific relevance checks
+            if (audience.includes('business') || audience.includes('professional')) {
+                const businessTerms = ['strategy', 'growth', 'efficiency', 'results', 'professional', 'industry', 'market'];
+                const businessTermCount = businessTerms.filter(term => responseLower.includes(term)).length;
+                relevanceScore += (businessTermCount / businessTerms.length) * 0.2;
+            }
+            
+            if (audience.includes('family') || audience.includes('parent')) {
+                const familyTerms = ['family', 'children', 'kids', 'parent', 'home', 'together', 'fun', 'safe'];
+                const familyTermCount = familyTerms.filter(term => responseLower.includes(term)).length;
+                relevanceScore += (familyTermCount / familyTerms.length) * 0.2;
+            }
+            
+            if (audience.includes('foodie') || audience.includes('food')) {
+                const foodTerms = ['delicious', 'flavor', 'cuisine', 'ingredients', 'taste', 'dining', 'restaurant', 'chef'];
+                const foodTermCount = foodTerms.filter(term => responseLower.includes(term)).length;
+                relevanceScore += (foodTermCount / foodTerms.length) * 0.2;
+            }
+        }
+
+        // Analyze platform relevance
+        if (context && context.platform) {
+            const platform = context.platform.toLowerCase();
+            
+            if (platform.includes('facebook')) {
+                // Facebook-specific relevance (community, sharing, personal stories)
+                const facebookTerms = ['community', 'share', 'story', 'experience', 'friends', 'family', 'together'];
+                const facebookTermCount = facebookTerms.filter(term => responseLower.includes(term)).length;
+                relevanceScore += (facebookTermCount / facebookTerms.length) * 0.15;
+            }
+            
+            if (platform.includes('instagram')) {
+                // Instagram-specific relevance (visual, aesthetic, lifestyle)
+                const instagramTerms = ['beautiful', 'amazing', 'stunning', 'perfect', 'lifestyle', 'aesthetic', 'visual'];
+                const instagramTermCount = instagramTerms.filter(term => responseLower.includes(term)).length;
+                relevanceScore += (instagramTermCount / instagramTerms.length) * 0.15;
+            }
+            
+            if (platform.includes('linkedin')) {
+                // LinkedIn-specific relevance (professional, career, industry)
+                const linkedinTerms = ['professional', 'career', 'industry', 'business', 'leadership', 'expertise', 'network'];
+                const linkedinTermCount = linkedinTerms.filter(term => responseLower.includes(term)).length;
+                relevanceScore += (linkedinTermCount / linkedinTerms.length) * 0.15;
+            }
+        }
+
+        // Check for engagement elements (call-to-action, questions, etc.)
+        const engagementElements = ['click', 'share', 'comment', 'like', 'follow', 'visit', 'learn more', 'discover'];
+        const engagementCount = engagementElements.filter(element => responseLower.includes(element)).length;
+        relevanceScore += (engagementCount / engagementElements.length) * 0.1;
+
+        // Check for hashtag usage (relevant for social media)
+        const hashtagCount = (response.match(/#\w+/g) || []).length;
+        if (hashtagCount > 0 && hashtagCount <= 5) {
+            relevanceScore += 0.1; // Bonus for appropriate hashtag usage
+        }
+
+        return Math.min(relevanceScore, 1);
     }
 
     // Analyze completeness based on content type
@@ -328,28 +447,31 @@ class ResponseQualityAnalyzer {
         return 0.3;
     }
 
-    // Calculate overall quality score
+    // Calculate overall score based on metrics
     calculateOverallScore(metrics) {
+        // Enhanced weighting for social media content with focus on coherence and relevance
         const weights = {
-            coherence: 0.15,
-            relevance: 0.15,
-            completeness: 0.15,
-            clarity: 0.15,
-            engagement: 0.10,
-            structure: 0.10,
-            tone: 0.10,
-            length: 0.10
+            coherence: 0.40,      // 40% - Most important for social media
+            relevance: 0.30,      // 30% - Second most important
+            clarity: 0.15,        // 15% - Important for understanding
+            engagement: 0.15      // 15% - Important for social media success
         };
 
         let totalScore = 0;
         let totalWeight = 0;
 
+        // Calculate weighted score for key metrics
         Object.keys(weights).forEach(metric => {
-            totalScore += metrics[metric] * weights[metric];
-            totalWeight += weights[metric];
+            if (metrics[metric] !== undefined) {
+                totalScore += metrics[metric] * weights[metric];
+                totalWeight += weights[metric];
+            }
         });
 
-        return totalWeight > 0 ? totalScore / totalWeight : 0;
+        // Normalize to 0-100 scale
+        const normalizedScore = totalWeight > 0 ? (totalScore / totalWeight) * 100 : 0;
+        
+        return Math.round(normalizedScore);
     }
 
     // Identify strengths in the response
@@ -387,41 +509,64 @@ class ResponseQualityAnalyzer {
     // Generate suggestions for improvement
     generateSuggestions(analysis) {
         const suggestions = [];
-        const { metrics, weaknesses } = analysis;
 
-        if (metrics.coherence < 0.6) {
-            suggestions.push('Add transition words to improve flow between ideas');
+        // Coherence-focused suggestions (highest priority)
+        if (analysis.metrics.coherence < 0.7) {
+            suggestions.push(
+                "Improve logical flow by adding transition words like 'however', 'therefore', 'furthermore'",
+                "Ensure each sentence builds naturally on the previous one",
+                "Create a clear beginning, middle, and end structure",
+                "Use paragraph breaks to separate different ideas or topics",
+                "Check that your main message is consistently reinforced throughout"
+            );
         }
 
-        if (metrics.relevance < 0.6) {
-            suggestions.push('Focus more on the specific context and user needs');
+        // Relevance-focused suggestions (second priority)
+        if (analysis.metrics.relevance < 0.7) {
+            suggestions.push(
+                "Make content more relevant to your target audience by using their language and examples",
+                "Include specific details that matter to your audience",
+                "Add platform-specific elements (hashtags for Instagram, professional tone for LinkedIn)",
+                "Ensure your call-to-action aligns with your audience's interests",
+                "Use examples and references that your audience can relate to"
+            );
         }
 
-        if (metrics.completeness < 0.6) {
-            suggestions.push('Include more comprehensive information and details');
+        // Clarity-focused suggestions
+        if (analysis.metrics.clarity < 0.7) {
+            suggestions.push(
+                "Use shorter, simpler sentences for better readability",
+                "Avoid jargon and complex vocabulary",
+                "Make your main message crystal clear from the start",
+                "Break up long paragraphs into smaller, digestible chunks",
+                "Use bullet points or numbered lists for better organization"
+            );
         }
 
-        if (metrics.clarity < 0.6) {
-            suggestions.push('Use shorter sentences and simpler language');
+        // Engagement-focused suggestions
+        if (analysis.metrics.engagement < 0.7) {
+            suggestions.push(
+                "Start with a compelling hook that grabs attention immediately",
+                "Include a clear call-to-action that encourages interaction",
+                "Ask questions to encourage comments and engagement",
+                "Use emotional language that resonates with your audience",
+                "Add relevant hashtags to increase discoverability"
+            );
         }
 
-        if (metrics.engagement < 0.6) {
-            suggestions.push('Add questions or personal pronouns to increase engagement');
+        // General improvement suggestions
+        if (analysis.overallScore < 70) {
+            suggestions.push(
+                "Read your content aloud to check for natural flow and rhythm",
+                "Have someone from your target audience review the content",
+                "Test different versions to see which performs better",
+                "Focus on one main message rather than trying to cover multiple topics",
+                "Use storytelling techniques to make your content more engaging"
+            );
         }
 
-        if (metrics.structure < 0.6) {
-            suggestions.push('Organize content with clear sections and bullet points');
-        }
-
-        if (metrics.tone < 0.6) {
-            suggestions.push('Adjust tone to better match the expected style');
-        }
-
-        if (metrics.length < 0.6) {
-            suggestions.push('Adjust response length to better fit the content type');
-        }
-
-        return suggestions;
+        // Return unique suggestions (remove duplicates)
+        return [...new Set(suggestions)].slice(0, 8); // Limit to 8 suggestions
     }
 
     // Analyze response patterns

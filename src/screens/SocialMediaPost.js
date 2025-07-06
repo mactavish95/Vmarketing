@@ -180,7 +180,7 @@ const SocialMediaPost = () => {
 
   const generateContent = async () => {
     if (!content.trim()) {
-      setError('Please enter some content to enhance');
+      setError('Please enter some content to enhance.');
       return;
     }
 
@@ -190,123 +190,102 @@ const SocialMediaPost = () => {
     setQualityAnalysis(null);
 
     try {
-      const selectedPlatform = platforms.find(p => p.value === platform);
-      const selectedPostType = postTypes.find(pt => pt.value === postType);
-      const selectedTone = tones.find(t => t.value === tone);
-      const selectedAudience = audiences.find(a => a.value === targetAudience);
-      const selectedStructure = contentStructures.find(cs => cs.value === contentStructure);
-      const selectedGoal = engagementGoals.find(eg => eg.value === engagementGoal);
-      const selectedLength = contentLengths.find(cl => cl.value === contentLength);
-      const selectedVoice = brandVoiceIntensities.find(bv => bv.value === brandVoiceIntensity);
-      const selectedUrgency = engagementUrgencies.find(eu => eu.value === engagementUrgency);
-      const selectedSituation = situations.find(s => s.value === situation);
-
       const targetLength = calculateTargetLength();
+      
+      // Enhanced prompt focusing on coherence and relevance
+      const enhancedPrompt = `You are an expert social media content creator specializing in ${platform} posts. Your goal is to create content that is:
 
-      const prompt = `Create a well-structured, precise, and thoughtful Facebook post based on the following requirements:
+**COHERENCE & CLARITY:**
+- Write with a clear, logical flow that's easy to follow
+- Use simple, direct language that anyone can understand
+- Structure content with a clear beginning, middle, and end
+- Avoid jargon and complex sentences
+- Make each sentence build naturally on the previous one
 
-ORIGINAL CONTENT: "${content}"
+**RELEVANCE & ENGAGEMENT:**
+- Ensure every word serves a purpose and adds value
+- Make content immediately relevant to your target audience: ${targetAudience}
+- Create a strong hook that captures attention in the first few words
+- Include specific details that make the content relatable and authentic
+- Use the ${tone} tone consistently throughout
 
-POST SPECIFICATIONS:
-- Platform: Facebook (max ${selectedPlatform.maxLength} characters)
-- Post Type: ${selectedPostType.label} - ${selectedPostType.description}
-- Tone: ${selectedTone.label} - ${selectedTone.description}
-- Target Audience: ${selectedAudience.label} - ${selectedAudience.description}
-- Content Structure: ${selectedStructure.label} - ${selectedStructure.description}
-- Engagement Goal: ${selectedGoal.label} - ${selectedGoal.description}
+**CONTENT STRUCTURE:**
+- Platform: ${platform} (${postType} post)
+- Target length: ${targetLength} words
+- Content structure: ${contentStructure}
+- Engagement goal: ${engagementGoal}
+- Brand voice intensity: ${brandVoiceIntensity}
+- Situation context: ${situation}
 
-DYNAMIC LENGTH ADJUSTMENT:
-- Content Length Preference: ${selectedLength.label} - ${selectedLength.description}
-- Target Word Count: ${targetLength} words
-- Brand Voice Intensity: ${selectedVoice.label} - ${selectedVoice.description}
-- Engagement Urgency: ${selectedUrgency.label} - ${selectedUrgency.description}
-- Situation: ${selectedSituation.label} - ${selectedSituation.description}
+**ORIGINAL CONTENT TO ENHANCE:**
+${content}
 
-LENGTH OPTIMIZATION RULES:
-1. TARGET LENGTH: Aim for exactly ${targetLength} words (±5 words)
-2. BRAND VOICE: Apply ${selectedVoice.label} brand voice intensity throughout
-3. ENGAGEMENT: Use ${selectedUrgency.label} urgency level for call-to-action
-4. SITUATION: Adapt content style for ${selectedSituation.label} context
-5. PLATFORM: Optimize for Facebook's algorithm and user behavior
+**INSTRUCTIONS:**
+1. Transform this into a ${platform}-optimized post that's ${targetLength} words
+2. Use the ${contentStructure} structure for maximum impact
+3. Apply ${tone} tone consistently
+4. Target ${targetAudience} audience specifically
+5. Focus on ${engagementGoal} as the primary goal
+6. Ensure every sentence flows logically to the next
+7. Make the content immediately understandable and relatable
+8. Include a clear call-to-action that fits the ${engagementGoal}
+9. Add relevant hashtags for ${platform} (${hashtags ? 'incorporate these hashtags: ' + hashtags : 'suggest appropriate hashtags'})
 
-FACEBOOK OPTIMIZATION REQUIREMENTS:
-1. STRUCTURE: Use the ${selectedStructure.label} format with clear sections
-2. OPENING: Start with a compelling hook that grabs attention in the first 2-3 lines
-3. BODY: Develop the main content with logical flow and easy-to-read paragraphs
-4. ENGAGEMENT: Include a call-to-action that encourages ${selectedGoal.label.toLowerCase()}
-5. HASHTAGS: Add 3-5 relevant hashtags at the end (if appropriate for the post type)
-6. READABILITY: Use short paragraphs, bullet points, or numbered lists when appropriate
-7. PERSONALITY: Match the ${selectedTone.label} tone throughout
-8. AUDIENCE: Tailor language and examples for ${selectedAudience.label} audience
+**QUALITY REQUIREMENTS:**
+- Coherence: Each paragraph should connect seamlessly to the next
+- Relevance: Every detail should matter to the target audience
+- Clarity: Use simple, powerful words that convey meaning instantly
+- Engagement: Create content that encourages interaction and sharing
+- Authenticity: Make it feel genuine and personal, not generic
 
-LENGTH ADJUSTMENT GUIDELINES:
-- If ${selectedLength.label}: Focus on ${selectedLength.description}
-- Brand voice ${selectedVoice.label}: ${selectedVoice.description}
-- Engagement ${selectedUrgency.label}: ${selectedUrgency.description}
-- Situation ${selectedSituation.label}: ${selectedSituation.description}
+Generate a post that feels like it was written by someone who truly understands and cares about their audience.`;
 
-Please create a Facebook post that is:
-- Exactly ${targetLength} words (±5 words)
-- Well-structured with clear beginning, middle, and end
-- Precise in its messaging and purpose
-- Thoughtful in its approach to the audience
-- Optimized for Facebook engagement
-- Professional yet authentic in tone
-- Adapted for ${selectedSituation.label} situation
-
-Provide only the enhanced Facebook post content, no explanations.`;
-
+      // Force production URL if we're on Netlify
       const isNetlify = window.location.hostname.includes('netlify.app') || window.location.hostname.includes('vmarketing.netlify.app');
       const baseURL = isNetlify ? 'https://vmarketing-backend-server.onrender.com/api' : apiConfig.baseURL;
-
+      
       const response = await fetch(`${baseURL}/llama`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          text: prompt
+          text: enhancedPrompt,
+          useCase: 'social_media'
         })
       });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to generate enhanced content');
-      }
 
       const data = await response.json();
       
       if (data.success) {
-        setEnhancedContent(data.response);
+        const generatedContent = data.response;
+        setEnhancedContent(generatedContent);
         
         // Add to generation history
         const historyItem = {
           id: Date.now(),
           original: content,
-          enhanced: data.response,
+          enhanced: generatedContent,
           platform,
           postType,
           tone,
           targetAudience,
           contentStructure,
           engagementGoal,
-          contentLength,
+          length: targetLength,
           brandVoiceIntensity,
-          engagementUrgency,
           situation,
-          targetLength,
-          actualLength: data.response.split(' ').length,
           timestamp: new Date().toISOString()
         };
-        setGenerationHistory(prev => [historyItem, ...prev.slice(0, 9)]); // Keep last 10
         
-        // Analyze quality
-        await analyzeQuality(data.response);
+        setGenerationHistory(prev => [historyItem, ...prev.slice(0, 9)]);
+        
+        // Analyze quality with focus on coherence and relevance
+        await analyzeQuality(generatedContent);
       } else {
-        setError(data.error || 'Failed to generate enhanced content');
+        setError(data.error || 'Failed to generate content');
       }
     } catch (err) {
-      setError('Network error: ' + err.message);
+      console.error('Generation error:', err);
+      setError('Network error. Please try again.');
     } finally {
       setIsGenerating(false);
     }
@@ -315,44 +294,95 @@ Provide only the enhanced Facebook post content, no explanations.`;
   const analyzeQuality = async (text) => {
     if (!text.trim()) return;
 
-    setIsEnhancing(true);
     try {
+      // Force production URL if we're on Netlify
       const isNetlify = window.location.hostname.includes('netlify.app') || window.location.hostname.includes('vmarketing.netlify.app');
       const baseURL = isNetlify ? 'https://vmarketing-backend-server.onrender.com/api' : apiConfig.baseURL;
+      
+      const analysisPrompt = `Analyze this social media content for quality, with special focus on COHERENCE and RELEVANCE:
+
+**CONTENT TO ANALYZE:**
+${text}
+
+**ANALYSIS CONTEXT:**
+- Platform: ${platform}
+- Target Audience: ${targetAudience}
+- Tone: ${tone}
+- Engagement Goal: ${engagementGoal}
+- Content Structure: ${contentStructure}
+
+**FOCUS ON THESE KEY METRICS:**
+
+1. **COHERENCE (40% weight)** - How well does the content flow logically?
+   - Logical progression from start to finish
+   - Clear connections between sentences and paragraphs
+   - Consistent tone and voice throughout
+   - Easy to follow narrative structure
+
+2. **RELEVANCE (30% weight)** - How relevant is the content to the target audience?
+   - Addresses audience needs and interests
+   - Uses language and examples the audience understands
+   - Provides value specific to the target demographic
+   - Aligns with audience expectations and preferences
+
+3. **CLARITY (15% weight)** - How easy is the content to understand?
+   - Simple, direct language
+   - Clear main message
+   - No confusing or ambiguous statements
+   - Appropriate vocabulary for the audience
+
+4. **ENGAGEMENT (15% weight)** - How likely is it to engage the audience?
+   - Compelling opening hook
+   - Clear call-to-action
+   - Encourages interaction and sharing
+   - Maintains interest throughout
+
+**PROVIDE DETAILED ANALYSIS WITH:**
+- Overall quality score (0-100)
+- Individual scores for each metric
+- Specific strengths and weaknesses
+- Actionable suggestions for improvement
+- Focus especially on coherence and relevance issues
+
+Format as JSON with these fields:
+{
+  "overallScore": number,
+  "metrics": {
+    "coherence": { "score": number, "analysis": "detailed explanation" },
+    "relevance": { "score": number, "analysis": "detailed explanation" },
+    "clarity": { "score": number, "analysis": "detailed explanation" },
+    "engagement": { "score": number, "analysis": "detailed explanation" }
+  },
+  "strengths": ["list of specific strengths"],
+  "weaknesses": ["list of specific areas for improvement"],
+  "suggestions": ["specific actionable suggestions"]
+}`;
 
       const response = await fetch(`${baseURL}/analyze-response-quality`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          response: text,
-          contentType: 'facebook_post',
-          context: { 
-            platform, 
-            postType, 
-            tone, 
-            targetAudience, 
-            contentStructure, 
+          text: analysisPrompt,
+          contentType: 'social_media',
+          context: {
+            platform,
+            targetAudience,
+            tone,
             engagementGoal,
-            targetLength: calculateTargetLength(),
-            brandVoiceIntensity,
-            engagementUrgency,
-            situation
+            contentStructure
           }
         })
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        if (data.success) {
-          setQualityAnalysis(data.qualityAnalysis);
-        }
+      const data = await response.json();
+      
+      if (data.success) {
+        setQualityAnalysis(data.analysis);
+      } else {
+        console.warn('Quality analysis failed:', data.error);
       }
-    } catch (error) {
-      console.warn('Quality analysis failed:', error);
-    } finally {
-      setIsEnhancing(false);
+    } catch (err) {
+      console.error('Quality analysis error:', err);
     }
   };
 
@@ -1109,31 +1139,142 @@ Provide only the enhanced Facebook post content, no explanations.`;
               {qualityAnalysis && (
                 <div className="quality-section">
                   <h3>📊 Content Quality Analysis</h3>
+                  
+                  {/* Overall Score */}
                   <div className="quality-overview">
                     <div className="quality-score">
-                      <span className="score-number" style={{ color: getQualityColor(qualityAnalysis.overallScore) }}>
-                        {Math.round(qualityAnalysis.overallScore * 100)}
-                      </span>
-                      <span className="score-label">{getQualityLabel(qualityAnalysis.overallScore)}</span>
-                    </div>
-                    <div className="quality-metrics">
-                      {Object.entries(qualityAnalysis.metrics).map(([metric, score]) => (
-                        <div key={metric} className="metric-item">
-                          <span className="metric-label">{metric.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}</span>
-                          <span className="metric-score" style={{ color: getQualityColor(score) }}>
-                            {Math.round(score * 100)}%
-                          </span>
-                        </div>
-                      ))}
+                      <span className="score-number">{qualityAnalysis.overallScore || 0}</span>
+                      <span className="score-label">Overall Score</span>
                     </div>
                   </div>
-                  
+
+                  {/* Key Metrics - Focus on Coherence and Relevance */}
+                  <div className="quality-metrics">
+                    {/* Coherence - Most Important */}
+                    <div className="metric-item coherence">
+                      <div className="metric-label">
+                        <span style={{ color: '#4f8cff', fontWeight: 'bold' }}>🔗 Coherence</span>
+                        <span style={{ fontSize: '12px', color: '#666' }}> (40% weight)</span>
+                      </div>
+                      <div className="metric-score" style={{ color: '#4f8cff' }}>
+                        {Math.round((qualityAnalysis.metrics?.coherence || 0) * 100)}%
+                      </div>
+                    </div>
+
+                    {/* Relevance - Second Most Important */}
+                    <div className="metric-item relevance">
+                      <div className="metric-label">
+                        <span style={{ color: '#10b981', fontWeight: 'bold' }}>🎯 Relevance</span>
+                        <span style={{ fontSize: '12px', color: '#666' }}> (30% weight)</span>
+                      </div>
+                      <div className="metric-score" style={{ color: '#10b981' }}>
+                        {Math.round((qualityAnalysis.metrics?.relevance || 0) * 100)}%
+                      </div>
+                    </div>
+
+                    {/* Clarity */}
+                    <div className="metric-item clarity">
+                      <div className="metric-label">
+                        <span style={{ color: '#f59e0b', fontWeight: 'bold' }}>💡 Clarity</span>
+                        <span style={{ fontSize: '12px', color: '#666' }}> (15% weight)</span>
+                      </div>
+                      <div className="metric-score" style={{ color: '#f59e0b' }}>
+                        {Math.round((qualityAnalysis.metrics?.clarity || 0) * 100)}%
+                      </div>
+                    </div>
+
+                    {/* Engagement */}
+                    <div className="metric-item engagement">
+                      <div className="metric-label">
+                        <span style={{ color: '#ef4444', fontWeight: 'bold' }}>🔥 Engagement</span>
+                        <span style={{ fontSize: '12px', color: '#666' }}> (15% weight)</span>
+                      </div>
+                      <div className="metric-score" style={{ color: '#ef4444' }}>
+                        {Math.round((qualityAnalysis.metrics?.engagement || 0) * 100)}%
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Detailed Analysis */}
+                  {qualityAnalysis.metrics && (
+                    <div style={{ marginTop: '20px' }}>
+                      {/* Coherence Analysis */}
+                      {qualityAnalysis.metrics.coherence && (
+                        <div style={{ 
+                          background: 'rgba(79, 140, 255, 0.1)', 
+                          padding: '12px', 
+                          borderRadius: '8px', 
+                          marginBottom: '12px',
+                          border: '1px solid rgba(79, 140, 255, 0.2)'
+                        }}>
+                          <div style={{ fontWeight: 'bold', color: '#4f8cff', marginBottom: '8px' }}>
+                            🔗 Coherence Analysis:
+                          </div>
+                          <div style={{ fontSize: '14px', color: '#374151', lineHeight: '1.5' }}>
+                            {qualityAnalysis.metrics.coherence.analysis || 'Logical flow and structure analysis'}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Relevance Analysis */}
+                      {qualityAnalysis.metrics.relevance && (
+                        <div style={{ 
+                          background: 'rgba(16, 185, 129, 0.1)', 
+                          padding: '12px', 
+                          borderRadius: '8px', 
+                          marginBottom: '12px',
+                          border: '1px solid rgba(16, 185, 129, 0.2)'
+                        }}>
+                          <div style={{ fontWeight: 'bold', color: '#10b981', marginBottom: '8px' }}>
+                            🎯 Relevance Analysis:
+                          </div>
+                          <div style={{ fontSize: '14px', color: '#374151', lineHeight: '1.5' }}>
+                            {qualityAnalysis.metrics.relevance.analysis || 'Audience and context relevance analysis'}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Strengths and Weaknesses */}
+                  <div style={{ marginTop: '20px' }}>
+                    {qualityAnalysis.strengths && qualityAnalysis.strengths.length > 0 && (
+                      <div style={{ marginBottom: '16px' }}>
+                        <h4 style={{ color: '#10b981', marginBottom: '8px' }}>✅ Strengths:</h4>
+                        <ul style={{ margin: '0', paddingLeft: '20px' }}>
+                          {qualityAnalysis.strengths.map((strength, index) => (
+                            <li key={index} style={{ marginBottom: '4px', color: '#374151' }}>{strength}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {qualityAnalysis.weaknesses && qualityAnalysis.weaknesses.length > 0 && (
+                      <div style={{ marginBottom: '16px' }}>
+                        <h4 style={{ color: '#ef4444', marginBottom: '8px' }}>⚠️ Areas for Improvement:</h4>
+                        <ul style={{ margin: '0', paddingLeft: '20px' }}>
+                          {qualityAnalysis.weaknesses.map((weakness, index) => (
+                            <li key={index} style={{ marginBottom: '4px', color: '#374151' }}>{weakness}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Suggestions */}
                   {qualityAnalysis.suggestions && qualityAnalysis.suggestions.length > 0 && (
                     <div className="suggestions">
-                      <h4>💡 Improvement Suggestions</h4>
-                      <ul>
+                      <h4 style={{ color: '#4f8cff', marginBottom: '12px' }}>💡 Suggestions for Improvement:</h4>
+                      <ul style={{ margin: '0', paddingLeft: '20px' }}>
                         {qualityAnalysis.suggestions.map((suggestion, index) => (
-                          <li key={index}>{suggestion}</li>
+                          <li key={index} style={{ 
+                            marginBottom: '8px', 
+                            color: '#374151', 
+                            lineHeight: '1.5',
+                            fontSize: '14px'
+                          }}>
+                            {suggestion}
+                          </li>
                         ))}
                       </ul>
                     </div>
@@ -1164,10 +1305,7 @@ Provide only the enhanced Facebook post content, no explanations.`;
                       </div>
                       <div className="history-length-info">
                         <div className="history-length-item">
-                          <span>📏 Target:</span> {item.targetLength || 'N/A'} words
-                        </div>
-                        <div className="history-length-item">
-                          <span>📊 Actual:</span> {item.actualLength || 'N/A'} words
+                          <span>📏 Target:</span> {item.length || 'N/A'} words
                         </div>
                         <div className="history-length-item">
                           <span>🎭</span> {brandVoiceIntensities.find(bv => bv.value === item.brandVoiceIntensity)?.label || 'N/A'}
@@ -1180,22 +1318,6 @@ Provide only the enhanced Facebook post content, no explanations.`;
                     <div className="history-actions">
                       <button onClick={() => copyToClipboard(item.enhanced)} className="history-btn">
                         📋 Copy
-                      </button>
-                      <button onClick={() => {
-                        setContent(item.original);
-                        setPlatform(item.platform);
-                        setPostType(item.postType);
-                        setTone(item.tone);
-                        setTargetAudience(item.targetAudience);
-                        setContentStructure(item.contentStructure);
-                        setEngagementGoal(item.engagementGoal);
-                        setContentLength(item.contentLength || 'optimal');
-                        setBrandVoiceIntensity(item.brandVoiceIntensity || 'moderate');
-                        setEngagementUrgency(item.engagementUrgency || 'normal');
-                        setSituation(item.situation || 'general');
-                        setCustomLength(item.customLength || 100);
-                      }} className="history-btn">
-                        🔄 Reuse
                       </button>
                     </div>
                   </div>
