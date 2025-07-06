@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import './App.css';
 import Header from './components/Header';
 import HomeScreen from './screens/HomeScreen';
@@ -21,21 +21,21 @@ function App() {
     <Router>
       <div className="App">
         <Header />
-        <Routes>
-          <Route path="/" element={<HomeScreen />} />
-          <Route path="/llama" element={<Llma />} />
-          <Route path="/enhanced-llm" element={<EnhancedLLM />} />
-          <Route path="/voice-review" element={<VoiceReview />} />
-          <Route path="/review-generator" element={<ReviewGenerator />} />
-          <Route path="/review-history" element={<ReviewHistory />} />
-          <Route path="/blog-creator" element={<BlogCreator />} />
-          <Route path="/blog-index" element={<BlogIndex />} />
-          <Route path="/blog-post" element={<BlogPost />} />
-          <Route path="/customer-service" element={<CustomerServiceResponse />} />
-          <Route path="/voice-test" element={<VoiceTest />} />
-          <Route path="/models-info" element={<ModelsInfo />} />
-          <Route path="/social-media" element={<SocialMediaPost />} />
-        </Routes>
+        <Switch>
+          <Route exact path="/" component={HomeScreen} />
+          <Route path="/llama" component={Llma} />
+          <Route path="/enhanced-llm" component={EnhancedLLM} />
+          <Route path="/voice-review" component={VoiceReview} />
+          <Route path="/review-generator" component={ReviewGenerator} />
+          <Route path="/review-history" component={ReviewHistory} />
+          <Route path="/blog-creator" component={BlogCreator} />
+          <Route path="/blog-index" component={BlogIndex} />
+          <Route path="/blog-post/:slug" component={BlogPost} />
+          <Route path="/customer-service" component={CustomerServiceResponse} />
+          <Route path="/voice-test" component={VoiceTest} />
+          <Route path="/models-info" component={ModelsInfo} />
+          <Route path="/social-media" component={SocialMediaPost} />
+        </Switch>
       </div>
     </Router>
   );

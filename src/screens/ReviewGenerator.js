@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import VoiceAnalysis from '../components/VoiceAnalysis';
 import LocationAttachment from '../components/LocationAttachment';
 import llmService from '../services/llmService';
@@ -7,7 +7,7 @@ import apiConfig from '../config/api';
 import './ReviewGenerator.css';
 import { useTranslation } from 'react-i18next';
 
-const ReviewGenerator = () => {
+const ReviewGenerator = ({ history }) => {
     const [reviewData, setReviewData] = useState({
         reviewType: 'restaurant',
         rating: 5,
@@ -22,7 +22,6 @@ const ReviewGenerator = () => {
     const [isAnalyzing, setIsAnalyzing] = useState(false);
     const [showAnalysis, setShowAnalysis] = useState(false);
     const [locationData, setLocationData] = useState(null);
-    const history = useHistory();
     const [ratingAutoAdjusted, setRatingAutoAdjusted] = useState(false);
     const [modelInfo, setModelInfo] = useState(null);
     const { t } = useTranslation();
@@ -1062,4 +1061,4 @@ const ReviewGenerator = () => {
     );
 };
 
-export default ReviewGenerator; 
+export default withRouter(ReviewGenerator); 

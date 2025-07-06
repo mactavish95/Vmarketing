@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import './Header.css';
 import { useTranslation } from 'react-i18next';
 
-const Header = () => {
-    const location = useLocation();
+const Header = ({ location }) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const { t, i18n } = useTranslation();
 
@@ -148,4 +147,4 @@ const Header = () => {
     );
 };
 
-export default Header; 
+export default withRouter(Header); 

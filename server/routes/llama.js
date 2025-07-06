@@ -195,7 +195,62 @@ router.post('/analyze-response-quality', async (req, res) => {
 
     const model = selectModel('voice_analysis'); // Use analysis model for quality assessment
 
-    const analysisPrompt = `Analyze the quality of this ${contentType} content and provide a detailed assessment.
+    // Create specialized analysis prompt based on content type
+    let analysisPrompt;
+    
+    if (contentType === 'facebook_post') {
+      analysisPrompt = `Analyze the quality of this Facebook post and provide a detailed assessment.
+
+Facebook Post to analyze:
+"${response}"
+
+Context: ${JSON.stringify(context)}
+
+Please provide a comprehensive Facebook-specific quality analysis including:
+
+1. Overall Quality Score (0.0 to 1.0)
+2. Facebook-Specific Metrics (0.0 to 1.0 each):
+   - Hook: How compelling the opening is (first 2-3 lines)
+   - Structure: How well-organized with clear sections
+   - Engagement: How likely to generate likes, comments, shares
+   - Readability: How easy to read on mobile devices
+   - Call-to-Action: How clear and compelling the CTA is
+   - Tone: How appropriate for Facebook audience
+   - Length: How optimal for Facebook algorithm (40-80 words ideal)
+   - Hashtags: How relevant and strategic the hashtags are
+
+3. Facebook-Specific Strengths (list 3-5 main strengths)
+4. Facebook-Specific Improvement Suggestions (list 3-5 specific suggestions)
+
+Facebook Best Practices to Consider:
+- Strong opening hook that grabs attention
+- Short, scannable paragraphs
+- Clear call-to-action
+- Appropriate hashtag usage (3-5 relevant hashtags)
+- Mobile-friendly formatting
+- Conversational, authentic tone
+- Optimal length for engagement (40-80 words)
+
+Format your response as a JSON object with the following structure:
+{
+  "overallScore": 0.85,
+  "metrics": {
+    "hook": 0.9,
+    "structure": 0.85,
+    "engagement": 0.8,
+    "readability": 0.9,
+    "callToAction": 0.85,
+    "tone": 0.8,
+    "length": 0.9,
+    "hashtags": 0.85
+  },
+  "strengths": ["Strong opening hook", "Clear call-to-action", "Good mobile formatting"],
+  "suggestions": ["Add more specific hashtags", "Include a question to boost engagement", "Consider adding emojis for visual appeal"]
+}
+
+Be objective and constructive in your analysis, focusing specifically on Facebook optimization.`;
+    } else {
+      analysisPrompt = `Analyze the quality of this ${contentType} content and provide a detailed assessment.
 
 Content to analyze:
 "${response}"
@@ -236,6 +291,7 @@ Format your response as a JSON object with the following structure:
 }
 
 Be objective and constructive in your analysis.`;
+    }
 
     const analysisResponse = await axios.post(model.baseURL, {
       model: model.name,
@@ -276,22 +332,40 @@ Be objective and constructive in your analysis.`;
       }
     } catch (parseError) {
       console.warn('Failed to parse quality analysis JSON:', parseError);
-      // Provide a fallback analysis
-      qualityAnalysis = {
-        overallScore: 0.7,
-        metrics: {
-          coherence: 0.7,
-          relevance: 0.7,
-          completeness: 0.7,
-          clarity: 0.7,
-          engagement: 0.7,
-          structure: 0.7,
-          tone: 0.7,
-          length: 0.7
-        },
-        strengths: ['Content is readable and understandable'],
-        suggestions: ['Consider adding more specific details', 'Review for clarity and engagement']
-      };
+      // Provide a fallback analysis based on content type
+      if (contentType === 'facebook_post') {
+        qualityAnalysis = {
+          overallScore: 0.7,
+          metrics: {
+            hook: 0.7,
+            structure: 0.7,
+            engagement: 0.7,
+            readability: 0.7,
+            callToAction: 0.7,
+            tone: 0.7,
+            length: 0.7,
+            hashtags: 0.7
+          },
+          strengths: ['Content is readable and understandable'],
+          suggestions: ['Add a compelling opening hook', 'Include a clear call-to-action', 'Consider adding relevant hashtags']
+        };
+      } else {
+        qualityAnalysis = {
+          overallScore: 0.7,
+          metrics: {
+            coherence: 0.7,
+            relevance: 0.7,
+            completeness: 0.7,
+            clarity: 0.7,
+            engagement: 0.7,
+            structure: 0.7,
+            tone: 0.7,
+            length: 0.7
+          },
+          strengths: ['Content is readable and understandable'],
+          suggestions: ['Consider adding more specific details', 'Review for clarity and engagement']
+        };
+      }
     }
 
     res.json({
