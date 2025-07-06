@@ -11,9 +11,6 @@ const Llma = () => {
   const [conversationHistory, setConversationHistory] = useState([]);
   const { t } = useTranslation();
 
-  // Get API key from environment variable
-  const apiKey = process.env.REACT_APP_NVIDIA_API_KEY || '';
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -31,8 +28,8 @@ const Llma = () => {
       const userMessage = { role: 'user', content: inputText, timestamp: new Date() };
       setConversationHistory(prev => [...prev, userMessage]);
 
-      // Use API key from env
-      const result = await callLlamaAPI(inputText, apiKey, conversationHistory);
+      // Call API without API key (server handles it securely)
+      const result = await callLlamaAPI(inputText, conversationHistory);
       setResponse(result);
       
       // Add AI response to conversation history
@@ -45,7 +42,7 @@ const Llma = () => {
     }
   };
 
-  const callLlamaAPI = async (text, key, history) => {
+  const callLlamaAPI = async (text, history) => {
     // Check if API URL is configured and force production URL if on Netlify
     const isNetlify = window.location.hostname.includes('netlify.app') || window.location.hostname.includes('vmarketing.netlify.app');
     const baseURL = isNetlify ? 'https://vmarketing-backend-server.onrender.com/api' : apiConfig.baseURL;
@@ -61,7 +58,6 @@ const Llma = () => {
       },
       body: JSON.stringify({
         text: text,
-        apiKey: key,
         conversationHistory: history
       })
     });

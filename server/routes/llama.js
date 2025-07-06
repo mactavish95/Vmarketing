@@ -6,7 +6,7 @@ const { Review, mongoose } = require('../config/database');
 // NVIDIA Llama API endpoint
 router.post('/llama', async (req, res) => {
   try {
-    const { text, prompt, apiKey, conversationHistory = [] } = req.body;
+    const { text, prompt, conversationHistory = [] } = req.body;
     
     // Accept both 'text' and 'prompt' parameters for compatibility
     const inputText = text || prompt;
@@ -20,11 +20,13 @@ router.post('/llama', async (req, res) => {
       });
     }
 
-    if (!apiKey || typeof apiKey !== 'string') {
-      return res.status(400).json({
+    // Use API key from environment variables (more secure)
+    const apiKey = process.env.NVIDIA_API_KEY;
+    if (!apiKey) {
+      return res.status(500).json({
         success: false,
-        error: 'API key is required and must be a string',
-        code: 'INVALID_API_KEY'
+        error: 'NVIDIA API key not configured on server',
+        code: 'API_KEY_NOT_CONFIGURED'
       });
     }
 

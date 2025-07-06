@@ -39,7 +39,7 @@ export default function CustomerServiceResponse() {
     setError('');
     setStaffName('');
     try {
-      const apiKey = process.env.REACT_APP_NVIDIA_API_KEY || '';
+      // API key is now handled securely on the server
       // Force production URL if we're on Netlify
       const isNetlify = window.location.hostname.includes('netlify.app') || window.location.hostname.includes('vmarketing.netlify.app');
       const baseURL = isNetlify ? 'https://vmarketing-backend-server.onrender.com/api' : apiConfig.baseURL;
@@ -47,7 +47,7 @@ export default function CustomerServiceResponse() {
       const res = await fetch(`${baseURL}/voice/customer-service-response`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ review, sentiment, apiKey }),
+        body: JSON.stringify({ review, sentiment }),
       });
       const data = await res.json();
       if (data.success) {

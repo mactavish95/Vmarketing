@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 
 const LocationSuggestions = ({ 
     transcript, 
-    apiKey, 
     currentLocation, 
     onLocationSelect, 
     onClose 
@@ -20,13 +19,13 @@ const LocationSuggestions = ({
     const { t } = useTranslation();
 
     useEffect(() => {
-        if (transcript && apiKey) {
+        if (transcript) {
             getLocationSuggestions();
         }
-    }, [transcript, apiKey]);
+    }, [transcript]);
 
     const getLocationSuggestions = async () => {
-        if (!transcript || !apiKey) return;
+        if (!transcript) return;
 
         setIsLoading(true);
         setError('');
@@ -34,7 +33,7 @@ const LocationSuggestions = ({
         try {
             const result = await LocationService.getLocationSuggestions(
                 transcript, 
-                apiKey, 
+         
                 currentLocation
             );
 

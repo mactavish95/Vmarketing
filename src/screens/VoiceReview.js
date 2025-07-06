@@ -15,22 +15,8 @@ const VoiceReview = () => {
     const [generatedReview, setGeneratedReview] = useState('');
     const [savedReviews, setSavedReviews] = useState([]);
     const [locationData, setLocationData] = useState(null);
-    const [apiKey, setApiKey] = useState(() => {
-        // Load API key from localStorage on component mount
-        return localStorage.getItem('nvidiaApiKey') || '';
-    });
     const [error, setError] = useState('');
     const [ratingAutoAdjusted, setRatingAutoAdjusted] = useState(false);
-
-    // Save API key to localStorage whenever it changes
-    const handleApiKeyChange = (newApiKey) => {
-        setApiKey(newApiKey);
-        if (newApiKey.trim()) {
-            localStorage.setItem('nvidiaApiKey', newApiKey);
-        } else {
-            localStorage.removeItem('nvidiaApiKey');
-        }
-    };
 
     const handleTranscript = (newTranscript) => {
         setTranscript(newTranscript);
@@ -106,17 +92,14 @@ const VoiceReview = () => {
             return;
         }
 
-        if (!apiKey.trim()) {
-            setError('Please enter your NVIDIA API key');
-            return;
-        }
+        // API key is now handled securely on the server
 
         setIsAnalyzing(true);
         setError('');
 
         try {
             console.log('Analyzing voice input:', inputTranscript.substring(0, 100) + '...');
-            const analysisResult = await VoiceService.getVoiceAnalysis(inputTranscript, apiKey);
+            const analysisResult = await VoiceService.getVoiceAnalysis(inputTranscript);
             
             // Add the original transcript to the analysis result
             const analysisWithTranscript = {
@@ -148,15 +131,7 @@ const VoiceReview = () => {
     };
 
     const handleGenerateReview = async (inputTranscript, analysisData, reviewTypeParam) => {
-        // Validate API key first
-        if (!apiKey || typeof apiKey !== 'string' || apiKey.trim().length === 0) {
-            throw new Error('Please enter your NVIDIA API key');
-        }
-
-        // Validate API key format (should be a reasonable length, not an error message)
-        if (apiKey.length < 10 || apiKey.includes('TypeError') || apiKey.includes('Cannot read properties')) {
-            throw new Error('Invalid API key. Please enter a valid NVIDIA API key');
-        }
+        // API key is now handled securely on the server
 
         try {
             // Combine review type from component state and parameter
@@ -166,9 +141,7 @@ const VoiceReview = () => {
                 transcript: inputTranscript ? inputTranscript.substring(0, 100) + '...' : 'undefined',
                 reviewType: finalReviewType,
                 rating,
-                hasLocation: !!locationData,
-                apiKeyLength: apiKey.length,
-                apiKeyStart: apiKey.substring(0, 10) + '...'
+                hasLocation: !!locationData
             });
             
             // Validate inputs before making the API call
@@ -180,7 +153,7 @@ const VoiceReview = () => {
                 throw new Error('No analysis data provided for review generation');
             }
             
-            const review = await VoiceService.generateReview(inputTranscript, analysisData, apiKey, finalReviewType);
+            const review = await VoiceService.generateReview(inputTranscript, analysisData, finalReviewType);
             
             let reviewText = review;
             
@@ -280,29 +253,7 @@ const VoiceReview = () => {
                         style={{ marginBottom: '24px' }}
                     />
 
-                    {/* API Key Section */}
-                    <div className="api-key-section">
-                        <label htmlFor="voiceApiKey">NVIDIA API Key:</label>
-                        <input
-                            type="password"
-                            id="voiceApiKey"
-                            value={apiKey}
-                            onChange={(e) => handleApiKeyChange(e.target.value)}
-                            placeholder="Enter your NVIDIA API key"
-                            className="api-key-input"
-                        />
-                        <small>
-                            Get your API key from{' '}
-                            <a 
-                                href="https://integrate.api.nvidia.com" 
-                                target="_blank" 
-                                rel="noopener noreferrer"
-                            >
-                                NVIDIA API Portal
-                            </a>
-                            {' '}• This key is shared across all AI features
-                        </small>
-                    </div>
+                    {/* API Key is now handled securely on the server */}
 
                     <div className="voice-input-section">
                         <h2>🎤 Voice Input</h2>
@@ -339,7 +290,7 @@ const VoiceReview = () => {
                                 <div className="transcript-actions">
                                     <button 
                                         onClick={() => analyzeVoiceInput(transcript)} 
-                                        disabled={isAnalyzing || !apiKey.trim()}
+                                        disabled={isAnalyzing}
                                         className="analyze-btn"
                                     >
                                         {isAnalyzing ? '🤖 Analyzing...' : '🔍 Analyze Voice'}
@@ -391,7 +342,6 @@ const VoiceReview = () => {
                             onLocationChange={handleLocationChange}
                             initialLocation={locationData}
                             transcript={transcript}
-                            apiKey={apiKey}
                         />
                     </div>
 
@@ -438,7 +388,6 @@ const VoiceReview = () => {
                     <div className="instructions">
                         <h3>💡 How to Use:</h3>
                         <ol>
-                            <li>Enter your NVIDIA API key above</li>
                             <li>Click the microphone to start recording</li>
                             <li>Speak about your experience clearly</li>
                             <li>Select the review type and rating</li>

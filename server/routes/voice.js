@@ -6,7 +6,7 @@ const { Review, mongoose } = require('../config/database');
 // Voice Analysis endpoint using NVIDIA Llama
 router.post('/voice/analyze', async (req, res) => {
   try {
-    const { transcript, apiKey } = req.body;
+    const { transcript } = req.body;
     
     // Input validation
     if (!transcript || typeof transcript !== 'string') {
@@ -17,11 +17,13 @@ router.post('/voice/analyze', async (req, res) => {
       });
     }
 
-    if (!apiKey || typeof apiKey !== 'string') {
-      return res.status(400).json({
+    // Use API key from environment variables (more secure)
+    const apiKey = process.env.NVIDIA_API_KEY;
+    if (!apiKey) {
+      return res.status(500).json({
         success: false,
-        error: 'API key is required and must be a string',
-        code: 'INVALID_API_KEY'
+        error: 'NVIDIA API key not configured on server',
+        code: 'API_KEY_NOT_CONFIGURED'
       });
     }
 
@@ -86,7 +88,7 @@ router.post('/voice/analyze', async (req, res) => {
 // Voice Review Generation endpoint
 router.post('/voice/generate-review', async (req, res) => {
   try {
-    const { transcript, analysis, apiKey, reviewType = 'general' } = req.body;
+    const { transcript, analysis, reviewType = 'general' } = req.body;
     
     // Debug logging
     console.log('Voice review generation request received:');
@@ -106,12 +108,14 @@ router.post('/voice/generate-review', async (req, res) => {
       });
     }
 
-    if (!apiKey || typeof apiKey !== 'string') {
-      console.log('❌ Validation failed: API key missing or invalid');
-      return res.status(400).json({
+    // Use API key from environment variables (more secure)
+    const apiKey = process.env.NVIDIA_API_KEY;
+    if (!apiKey) {
+      console.log('❌ Validation failed: API key not configured on server');
+      return res.status(500).json({
         success: false,
-        error: 'API key is required and must be a string',
-        code: 'INVALID_API_KEY'
+        error: 'NVIDIA API key not configured on server',
+        code: 'API_KEY_NOT_CONFIGURED'
       });
     }
 
@@ -195,7 +199,17 @@ router.post('/voice/generate-review', async (req, res) => {
 // Location Suggestion endpoint
 router.post('/voice/suggest-location', async (req, res) => {
   try {
-    const { transcript, apiKey, currentLocation = null } = req.body;
+    const { transcript, currentLocation = null } = req.body;
+    
+    // Use API key from environment variables (more secure)
+    const apiKey = process.env.NVIDIA_API_KEY;
+    if (!apiKey) {
+      return res.status(500).json({
+        success: false,
+        error: 'NVIDIA API key not configured on server',
+        code: 'API_KEY_NOT_CONFIGURED'
+      });
+    }
     
     // Debug logging
     console.log('Location suggestion request received:');
@@ -209,14 +223,6 @@ router.post('/voice/suggest-location', async (req, res) => {
         success: false,
         error: 'Transcript is required and must be a string',
         code: 'INVALID_INPUT'
-      });
-    }
-
-    if (!apiKey || typeof apiKey !== 'string') {
-      return res.status(400).json({
-        success: false,
-        error: 'API key is required and must be a string',
-        code: 'INVALID_API_KEY'
       });
     }
 
@@ -281,7 +287,7 @@ router.post('/voice/suggest-location', async (req, res) => {
 // Customer Service Agent for Negative Reviews
 router.post('/voice/customer-service-response', async (req, res) => {
   try {
-    const { review, sentiment, apiKey } = req.body;
+    const { review, sentiment } = req.body;
 
     if (!review || typeof review !== 'string') {
       return res.status(400).json({
@@ -297,11 +303,14 @@ router.post('/voice/customer-service-response', async (req, res) => {
         code: 'INVALID_INPUT'
       });
     }
-    if (!apiKey || typeof apiKey !== 'string') {
-      return res.status(400).json({
+
+    // Use API key from environment variables (more secure)
+    const apiKey = process.env.NVIDIA_API_KEY;
+    if (!apiKey) {
+      return res.status(500).json({
         success: false,
-        error: 'API key is required and must be a string',
-        code: 'INVALID_API_KEY'
+        error: 'NVIDIA API key not configured on server',
+        code: 'API_KEY_NOT_CONFIGURED'
       });
     }
 

@@ -162,7 +162,7 @@ class LocationService {
      * @param {Object} currentLocation - Current location data (optional)
      * @returns {Promise<Object>} Location suggestions and analysis
      */
-    static async getLocationSuggestions(transcript, apiKey, currentLocation = null) {
+    static async getLocationSuggestions(transcript, currentLocation = null) {
         try {
             // Force production URL if we're on Netlify
             const isNetlify = typeof window !== 'undefined' && (window.location.hostname.includes('netlify.app') || window.location.hostname.includes('vmarketing.netlify.app'));
@@ -175,7 +175,6 @@ class LocationService {
                 },
                 body: JSON.stringify({
                     transcript,
-                    apiKey,
                     currentLocation
                 })
             });

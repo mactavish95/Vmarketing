@@ -16,9 +16,7 @@ const VoiceRecognition = ({ onTranscript, placeholder = "Tap to start speaking..
     const [manualText, setManualText] = useState('');
     const [isEnhancing, setIsEnhancing] = useState(false);
     const [enhancedTranscript, setEnhancedTranscript] = useState('');
-    const [apiKey, setApiKey] = useState(() => {
-        return localStorage.getItem('nvidiaApiKey') || '';
-    });
+      // API key is now handled securely on the server
     const recognitionRef = useRef(null);
     const timeoutRef = useRef(null);
     const { t } = useTranslation();
@@ -59,27 +57,8 @@ const VoiceRecognition = ({ onTranscript, placeholder = "Tap to start speaking..
 
     // Monitor API key changes
     useEffect(() => {
-        const checkApiKey = () => {
-            const storedApiKey = localStorage.getItem('nvidiaApiKey');
-            if (storedApiKey !== apiKey) {
-                console.log('API key updated:', { 
-                    oldLength: apiKey.length, 
-                    newLength: storedApiKey?.length,
-                    oldKey: apiKey.substring(0, 10) + '...',
-                    newKey: storedApiKey ? storedApiKey.substring(0, 10) + '...' : 'none'
-                });
-                setApiKey(storedApiKey || '');
-            }
-        };
-        
-        // Check immediately
-        checkApiKey();
-        
-        // Set up interval to check periodically
-        const interval = setInterval(checkApiKey, 2000);
-        
-        return () => clearInterval(interval);
-    }, []); // Remove apiKey dependency to prevent infinite loop
+        // API key is now handled securely on the server
+    }, []);
 
     const initializeSpeechRecognition = () => {
         try {
@@ -387,15 +366,15 @@ const VoiceRecognition = ({ onTranscript, placeholder = "Tap to start speaking..
     const enhanceTranscriptWithLLM = async (rawTranscript) => {
         console.log('LLM enhancement check:', {
             enableLLMEnhancement,
-            hasApiKey: !!apiKey.trim(),
+            hasApiKey: true, // API key is now handled securely on the server
             hasTranscript: !!rawTranscript.trim(),
             transcriptLength: rawTranscript.length
         });
 
-        if (!enableLLMEnhancement || !apiKey.trim() || !rawTranscript.trim()) {
+        if (!enableLLMEnhancement || !rawTranscript.trim()) {
             console.log('LLM enhancement skipped:', {
                 enableLLMEnhancement,
-                hasApiKey: !!apiKey.trim(),
+                hasApiKey: true, // API key is now handled securely on the server
                 hasTranscript: !!rawTranscript.trim()
             });
             return rawTranscript;
@@ -411,7 +390,7 @@ Original transcript: "${rawTranscript}"
 
 Corrected transcript:`;
 
-            console.log('Sending LLM enhancement request:', { prompt, apiKeyLength: apiKey.length });
+            console.log('Sending LLM enhancement request:', { prompt });
 
             const response = await fetch('/api/llama', {
                 method: 'POST',
@@ -419,8 +398,7 @@ Corrected transcript:`;
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    prompt: prompt,
-                    apiKey: apiKey
+                    prompt: prompt
                 })
             });
 
@@ -452,7 +430,7 @@ Corrected transcript:`;
 
     // Enhanced transcript processing
     const processTranscript = async (newTranscript, isFinal = false) => {
-        if (isFinal && enableLLMEnhancement && apiKey.trim()) {
+        if (isFinal && enableLLMEnhancement) {
             // Store original transcript first
             setTranscript(newTranscript);
             
@@ -486,14 +464,9 @@ Corrected transcript:`;
     const debugLLMEnhancement = async () => {
         console.log('=== LLM Enhancement Debug ===');
         console.log('enableLLMEnhancement:', enableLLMEnhancement);
-        console.log('apiKey length:', apiKey.length);
-        console.log('apiKey preview:', apiKey.substring(0, 10) + '...');
         console.log('current transcript:', transcript);
         
-        if (!apiKey.trim()) {
-            console.error('❌ No API key available');
-            return;
-        }
+        // API key is now handled securely on the server
         
         if (!transcript.trim()) {
             console.error('❌ No transcript to enhance');
@@ -511,7 +484,7 @@ Corrected transcript:`;
             window.debugVoiceRecognition = debugLLMEnhancement;
             console.log('Debug function available: window.debugVoiceRecognition()');
         }
-    }, [apiKey, transcript, enableLLMEnhancement]);
+    }, [transcript, enableLLMEnhancement]);
 
     if (!isSupported) {
         return (
@@ -551,10 +524,7 @@ Corrected transcript:`;
                             {isEnhancing ? 'AI Enhancing...' : 'AI Enhancement Ready'}
                         </span>
                         <span className="api-key-status">
-                            {apiKey.trim() ? 
-                                `🔑 API Key: ${apiKey.substring(0, 8)}...` : 
-                                '⚠️ No API Key'
-                            }
+                            🔑 API Key: Server Managed
                         </span>
                     </div>
                     {transcript && !isEnhancing && (

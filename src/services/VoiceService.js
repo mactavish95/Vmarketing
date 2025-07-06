@@ -689,7 +689,7 @@ class VoiceService {
   }
 
   // Analyze voice transcript using NVIDIA Llama
-  async analyzeVoice(transcript, apiKey) {
+  async analyzeVoice(transcript) {
     try {
       const response = await fetch(`${this.baseURL}/voice/analyze`, {
         method: 'POST',
@@ -697,8 +697,7 @@ class VoiceService {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          transcript,
-          apiKey
+          transcript
         })
       });
 
@@ -716,21 +715,17 @@ class VoiceService {
   }
 
   // Generate review from voice input and analysis
-  async generateReview(transcript, analysis, apiKey, reviewType = 'general') {
+  async generateReview(transcript, analysis, reviewType = 'general') {
     try {
       const requestBody = {
         transcript,
         analysis,
-        apiKey,
         reviewType
       };
       
       console.log('VoiceService: Sending request to backend:', {
         url: `${this.baseURL}/voice/generate-review`,
-        requestBody: {
-          ...requestBody,
-          apiKey: apiKey ? `${apiKey.substring(0, 10)}...` : 'undefined'
-        }
+        requestBody
       });
       
       const response = await fetch(`${this.baseURL}/voice/generate-review`, {
@@ -761,9 +756,9 @@ class VoiceService {
   }
 
   // Get voice analysis with fallback
-  async getVoiceAnalysis(transcript, apiKey) {
+  async getVoiceAnalysis(transcript) {
     try {
-      return await this.analyzeVoice(transcript, apiKey);
+      return await this.analyzeVoice(transcript);
     } catch (error) {
       console.error('Voice analysis failed:', error);
       

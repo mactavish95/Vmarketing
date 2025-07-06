@@ -19,9 +19,7 @@ const BlogCreator = () => {
   const [generatedBlog, setGeneratedBlog] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState('');
-  const [apiKey, setApiKey] = useState(() => {
-    return localStorage.getItem('nvidiaApiKey') || '';
-  });
+  // API key is now handled securely on the server
   
   // Image upload states
   const [images, setImages] = useState([]);
@@ -157,14 +155,7 @@ const BlogCreator = () => {
     }));
   };
 
-  const handleApiKeyChange = (newApiKey) => {
-    setApiKey(newApiKey);
-    if (newApiKey.trim()) {
-      localStorage.setItem('nvidiaApiKey', newApiKey);
-    } else {
-      localStorage.removeItem('nvidiaApiKey');
-    }
-  };
+  // API key is now handled securely on the server
 
   const generateBlogPost = async () => {
     // Validate input
@@ -178,10 +169,7 @@ const BlogCreator = () => {
       return;
     }
 
-    if (!apiKey.trim()) {
-      setError('Please enter your NVIDIA API key');
-      return;
-    }
+    // API key is now handled securely on the server
 
     setIsGenerating(true);
     setError('');
@@ -205,7 +193,6 @@ const BlogCreator = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...blogData,
-          apiKey,
           images: imageData
         }),
       });
@@ -804,49 +791,7 @@ const BlogCreator = () => {
 
           {!generatedBlog ? (
             <div>
-              {/* API Key Section */}
-              <div style={{
-                background: 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)',
-                borderRadius: '16px',
-                padding: '20px',
-                marginBottom: '24px',
-                border: '1px solid #bae6fd'
-              }}>
-                <label style={{
-                  display: 'block',
-                  marginBottom: '8px',
-                  fontWeight: '600',
-                  color: '#0c4a6e',
-                  fontSize: '16px'
-                }}>
-                  🔑 {t('nvidiaApiKey')}
-                </label>
-                <input
-                  type="password"
-                  value={apiKey}
-                  onChange={(e) => handleApiKeyChange(e.target.value)}
-                  placeholder={t('enterYourNvidiaApiKey')}
-                  style={{
-                    width: '100%',
-                    padding: '12px 16px',
-                    border: '2px solid #e1e5e9',
-                    borderRadius: '8px',
-                    fontSize: '16px',
-                    marginBottom: '8px'
-                  }}
-                />
-                <small style={{ color: '#0369a1', fontSize: '14px' }}>
-                  {t('getYourApiKeyFrom')}
-                  <a 
-                    href="https://integrate.api.nvidia.com" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    style={{ color: '#0ea5e9', textDecoration: 'none' }}
-                  >
-                    {t('nvidiaApiPortal')}
-                  </a>
-                </small>
-              </div>
+              {/* API Key is now handled securely on the server */}
 
               {/* Image Upload Section */}
               <div style={{
@@ -1427,7 +1372,7 @@ const BlogCreator = () => {
               <div style={{ textAlign: 'center' }}>
                 <button
                   onClick={generateBlogPost}
-                  disabled={isGenerating || !blogData.topic.trim() || !blogData.restaurantName.trim() || !apiKey.trim()}
+                  disabled={isGenerating || !blogData.topic.trim() || !blogData.restaurantName.trim()}
                   style={{
                     background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                     color: '#fff',
@@ -1439,7 +1384,7 @@ const BlogCreator = () => {
                     cursor: 'pointer',
                     boxShadow: '0 4px 16px rgba(102, 126, 234, 0.3)',
                     transition: 'all 0.3s ease',
-                    opacity: isGenerating || !blogData.topic.trim() || !blogData.restaurantName.trim() || !apiKey.trim() ? 0.6 : 1
+                    opacity: isGenerating || !blogData.topic.trim() || !blogData.restaurantName.trim() ? 0.6 : 1
                   }}
                 >
                   {isGenerating ? (

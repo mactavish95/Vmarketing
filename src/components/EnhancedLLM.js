@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 
 const EnhancedLLM = () => {
   const [input, setInput] = useState('');
-  const [apiKey, setApiKey] = useState('');
   const [response, setResponse] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -15,12 +14,8 @@ const EnhancedLLM = () => {
   const [conversationHistory, setConversationHistory] = useState([]);
   const { t } = useTranslation();
 
-  // Load API key from environment or localStorage
+  // Load available models on component mount
   useEffect(() => {
-    const savedApiKey = localStorage.getItem('nvidia_api_key') || process.env.REACT_APP_NVIDIA_API_KEY || '';
-    setApiKey(savedApiKey);
-    
-    // Load available models
     loadAvailableModels();
   }, []);
 
@@ -37,15 +32,10 @@ const EnhancedLLM = () => {
     }
   };
 
-  const handleApiKeyChange = (newApiKey) => {
-    setApiKey(newApiKey);
-    localStorage.setItem('nvidia_api_key', newApiKey);
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!input.trim() || !apiKey.trim()) {
-      setError('Please provide both input text and API key');
+    if (!input.trim()) {
+      setError('Please provide input text');
       return;
     }
 
@@ -57,7 +47,6 @@ const EnhancedLLM = () => {
     try {
       const requestBody = {
         text: input,
-        apiKey: apiKey,
         conversationHistory: conversationHistory,
         context: {
           userIntent: 'general',
@@ -129,8 +118,8 @@ const EnhancedLLM = () => {
   };
 
   const compareModels = async () => {
-    if (!input.trim() || !apiKey.trim()) {
-      setError('Please provide both input text and API key');
+    if (!input.trim()) {
+      setError('Please provide input text');
       return;
     }
 
@@ -143,7 +132,6 @@ const EnhancedLLM = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           text: input,
-          apiKey: apiKey,
           context: { userIntent: 'general' }
         }),
       });
@@ -198,17 +186,7 @@ const EnhancedLLM = () => {
       </div>
 
       <div className="enhanced-llm-content">
-        {/* API Key Input */}
-        <div className="api-key-section">
-          <label>🔑 NVIDIA API Key:</label>
-          <input
-            type="password"
-            value={apiKey}
-            onChange={(e) => handleApiKeyChange(e.target.value)}
-            placeholder="Enter your NVIDIA API key"
-            className="api-key-input"
-          />
-        </div>
+        {/* API Key is now handled securely on the server */}
 
         {/* Model Selection */}
         <div className="model-selection">

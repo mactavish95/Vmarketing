@@ -160,15 +160,24 @@ router.post('/blog/generate', async (req, res) => {
       length,
       keyPoints,
       specialFeatures,
-      apiKey,
       images
     } = req.body;
 
     // Validate required fields
-    if (!topic || !restaurantName || !apiKey) {
+    if (!topic || !restaurantName) {
       return res.status(400).json({
         success: false,
-        error: 'Missing required fields: topic, restaurantName, and apiKey are required'
+        error: 'Missing required fields: topic and restaurantName are required'
+      });
+    }
+
+    // Use API key from environment variables (more secure)
+    const apiKey = process.env.NVIDIA_API_KEY;
+    if (!apiKey) {
+      return res.status(500).json({
+        success: false,
+        error: 'NVIDIA API key not configured on server',
+        code: 'API_KEY_NOT_CONFIGURED'
       });
     }
 
@@ -447,7 +456,7 @@ ${imageAnalysis ? 'You excel at naturally integrating images into blog content w
 // Image processing endpoint (for future use with dedicated image analysis APIs)
 router.post('/blog/process-images', async (req, res) => {
   try {
-    const { images, apiKey } = req.body;
+    const { images } = req.body;
 
     if (!images || !Array.isArray(images)) {
       return res.status(400).json({
@@ -456,10 +465,13 @@ router.post('/blog/process-images', async (req, res) => {
       });
     }
 
+    // Use API key from environment variables (more secure)
+    const apiKey = process.env.NVIDIA_API_KEY;
     if (!apiKey) {
-      return res.status(400).json({
+      return res.status(500).json({
         success: false,
-        error: 'API key is required'
+        error: 'NVIDIA API key not configured on server',
+        code: 'API_KEY_NOT_CONFIGURED'
       });
     }
 

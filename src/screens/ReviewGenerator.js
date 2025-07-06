@@ -638,11 +638,7 @@ const ReviewGenerator = () => {
             return;
         }
 
-        const apiKey = localStorage.getItem('nvidiaApiKey');
-        if (!apiKey || apiKey.trim().length === 0) {
-            alert('Please enter your NVIDIA API key in the Voice Review section first to use AI-powered review generation.');
-            return;
-        }
+        // API key is now handled securely on the server
 
         setIsGenerating(true);
         
@@ -665,7 +661,6 @@ const ReviewGenerator = () => {
                     topics: [reviewData.reviewType],
                     summary: 'Review based on user input'
                 },
-                apiKey,
                 reviewData.reviewType
             );
             
@@ -932,7 +927,7 @@ const ReviewGenerator = () => {
                                 onLocationChange={handleLocationChange}
                                 initialLocation={locationData}
                                 transcript={reviewData.experience || reviewData.pros || reviewData.cons}
-                                apiKey={localStorage.getItem('nvidiaApiKey') || ''}
+                                // API key is now handled securely on the server
                             />
                         </div>
 

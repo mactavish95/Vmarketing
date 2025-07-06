@@ -7,8 +7,7 @@ import { useTranslation } from 'react-i18next';
 const LocationAttachment = ({ 
     onLocationChange, 
     initialLocation = null, 
-    transcript = null, 
-    apiKey = null 
+    transcript = null 
 }) => {
   const [location, setLocation] = useState(initialLocation);
   const [isLoading, setIsLoading] = useState(false);
@@ -160,7 +159,7 @@ const LocationAttachment = ({
               >
                 {t('locationAttachment.updateLocation')}
               </button>
-              {transcript && apiKey && (
+              {transcript && (
                 <button 
                   className="btn btn-suggest"
                   onClick={() => setShowSuggestions(true)}
@@ -185,7 +184,7 @@ const LocationAttachment = ({
               >
                 {isLoading ? t('locationAttachment.gettingLocation') : t('locationAttachment.attachCurrentLocation')}
               </button>
-              {transcript && apiKey && (
+              {transcript && (
                 <button 
                   className="btn btn-suggest location-btn"
                   onClick={() => setShowSuggestions(true)}
@@ -237,7 +236,6 @@ const LocationAttachment = ({
           <div className="modal-content">
             <LocationSuggestions
               transcript={transcript}
-              apiKey={apiKey}
               currentLocation={location}
               onLocationSelect={handleLocationSelect}
               onClose={() => setShowSuggestions(false)}

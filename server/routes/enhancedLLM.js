@@ -10,7 +10,7 @@ const qualityAnalyzer = new ResponseQualityAnalyzer();
 // Enhanced LLM endpoint with multi-model support and quality analysis
 router.post('/enhanced-llm', async (req, res) => {
   try {
-    const { text, prompt, apiKey, conversationHistory = [], context = {} } = req.body;
+    const { text, prompt, conversationHistory = [], context = {} } = req.body;
     
     // Accept both 'text' and 'prompt' parameters for compatibility
     const inputText = text || prompt;
@@ -24,11 +24,13 @@ router.post('/enhanced-llm', async (req, res) => {
       });
     }
 
-    if (!apiKey || typeof apiKey !== 'string') {
-      return res.status(400).json({
+    // Use API key from environment variables (more secure)
+    const apiKey = process.env.NVIDIA_API_KEY;
+    if (!apiKey) {
+      return res.status(500).json({
         success: false,
-        error: 'API key is required and must be a string',
-        code: 'INVALID_API_KEY'
+        error: 'NVIDIA API key not configured on server',
+        code: 'API_KEY_NOT_CONFIGURED'
       });
     }
 
@@ -175,7 +177,7 @@ router.post('/analyze-response-quality', async (req, res) => {
 // Model comparison endpoint
 router.post('/compare-models', async (req, res) => {
   try {
-    const { text, apiKey, context = {} } = req.body;
+    const { text, context = {} } = req.body;
     
     // Input validation
     if (!text || typeof text !== 'string') {
@@ -186,11 +188,13 @@ router.post('/compare-models', async (req, res) => {
       });
     }
 
-    if (!apiKey || typeof apiKey !== 'string') {
-      return res.status(400).json({
+    // Use API key from environment variables (more secure)
+    const apiKey = process.env.NVIDIA_API_KEY;
+    if (!apiKey) {
+      return res.status(500).json({
         success: false,
-        error: 'API key is required and must be a string',
-        code: 'INVALID_API_KEY'
+        error: 'NVIDIA API key not configured on server',
+        code: 'API_KEY_NOT_CONFIGURED'
       });
     }
 
