@@ -8,6 +8,8 @@
     "dev": "nodemon server-new.js",
     "debug": "node server-debug.js",
     "debug-dev": "nodemon server-debug.js",
+    "simple": "node server-simple.js",
+    "simple-dev": "nodemon server-simple.js",
     "build": "echo 'No build step required'",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

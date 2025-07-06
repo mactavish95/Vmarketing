@@ -7,7 +7,6 @@ const { connectToMongoDB } = require('./config/database');
 const { 
   securityMiddleware, 
   limiter, 
-  corsOptions, 
   compressionMiddleware, 
   loggingMiddleware 
 } = require('./middleware/security');
@@ -30,41 +29,19 @@ app.set('trust proxy', 1);
 // Connect to MongoDB
 connectToMongoDB();
 
-// Apply security middleware
+// SIMPLE CORS - Allow all origins
+app.use(cors({
+  origin: true,
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Origin', 'Accept']
+}));
+
+// Apply security middleware (after CORS)
 app.use(securityMiddleware);
 
 // Apply rate limiting to API routes
 app.use('/api/', limiter);
-
-// Apply CORS with error handling
-app.use((req, res, next) => {
-  console.log('🌐 CORS middleware processing request:', {
-    method: req.method,
-    origin: req.headers.origin,
-    url: req.url
-  });
-  
-  // Apply CORS
-  cors(corsOptions)(req, res, (err) => {
-    if (err) {
-      console.error('CORS error:', err);
-      return res.status(500).json({
-        success: false,
-        error: 'CORS configuration error',
-        code: 'CORS_ERROR'
-      });
-    }
-    next();
-  });
-});
-
-// Handle preflight requests explicitly
-app.options('*', (req, res) => {
-  console.log('🔄 Handling preflight request for:', req.url);
-  cors(corsOptions)(req, res, () => {
-    res.status(200).end();
-  });
-});
 
 // Apply compression
 app.use(compressionMiddleware);
@@ -106,10 +83,11 @@ app.use('*', (req, res) => {
 
 // Start the server
 app.listen(PORT, () => {
-  console.log(`🚀 ReviewGen Backend Server running on port ${PORT}`);
+  console.log(`🚀 ReviewGen Backend Server (SIMPLE CORS) running on port ${PORT}`);
   console.log(`📊 Health check: http://localhost:${PORT}/api/health`);
   console.log(`🤖 Llama API: http://localhost:${PORT}/api/llama`);
   console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`⚠️  SIMPLE MODE: CORS allows all origins`);
   if (!process.env.NVIDIA_API_KEY) {
     console.warn('⚠️  NVIDIA_API_KEY not found in environment variables');
   }
