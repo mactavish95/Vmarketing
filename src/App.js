@@ -1,36 +1,41 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import HomeScreen from './screens/HomeScreen';
-import ReviewGenerator from './screens/ReviewGenerator';
-import VoiceReview from './screens/VoiceReview';
-import VoiceTest from './screens/VoiceTest';
-import ReviewHistory from './screens/ReviewHistory';
-import Llma from './components/Llma';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import './App.css';
 import Header from './components/Header';
-import CustomerServiceResponse from './screens/CustomerServiceResponse';
-import ModelsInfo from './screens/ModelsInfo';
+import HomeScreen from './screens/HomeScreen';
+import Llma from './components/Llma';
+import EnhancedLLM from './components/EnhancedLLM';
+import VoiceReview from './screens/VoiceReview';
+import ReviewGenerator from './screens/ReviewGenerator';
+import ReviewHistory from './screens/ReviewHistory';
+import BlogCreator from './screens/BlogCreator';
 import BlogIndex from './screens/BlogIndex';
 import BlogPost from './screens/BlogPost';
-import BlogCreator from './screens/BlogCreator';
+import CustomerServiceResponse from './screens/CustomerServiceResponse';
+import VoiceTest from './screens/VoiceTest';
+import ModelsInfo from './screens/ModelsInfo';
+import SocialMediaPost from './screens/SocialMediaPost';
 
 function App() {
   return (
     <Router>
-      <div className="app">
+      <div className="App">
         <Header />
-        <Switch>
-          <Route path="/" exact component={HomeScreen} />
-          <Route path="/generate" component={ReviewGenerator} />
-          <Route path="/voice" component={VoiceReview} />
-          <Route path="/voice-test" component={VoiceTest} />
-          <Route path="/history" component={ReviewHistory} />
-          <Route path="/llama" component={Llma} />
-          <Route path="/customer-service-response" component={CustomerServiceResponse} />
-          <Route path="/models" component={ModelsInfo} />
-          <Route path="/blog" exact component={BlogIndex} />
-          <Route path="/blog/:slug" component={BlogPost} />
-          <Route path="/blog-creator" component={BlogCreator} />
-        </Switch>
+        <Routes>
+          <Route path="/" element={<HomeScreen />} />
+          <Route path="/llama" element={<Llma />} />
+          <Route path="/enhanced-llm" element={<EnhancedLLM />} />
+          <Route path="/voice-review" element={<VoiceReview />} />
+          <Route path="/review-generator" element={<ReviewGenerator />} />
+          <Route path="/review-history" element={<ReviewHistory />} />
+          <Route path="/blog-creator" element={<BlogCreator />} />
+          <Route path="/blog-index" element={<BlogIndex />} />
+          <Route path="/blog-post" element={<BlogPost />} />
+          <Route path="/customer-service" element={<CustomerServiceResponse />} />
+          <Route path="/voice-test" element={<VoiceTest />} />
+          <Route path="/models-info" element={<ModelsInfo />} />
+          <Route path="/social-media" element={<SocialMediaPost />} />
+        </Routes>
       </div>
     </Router>
   );

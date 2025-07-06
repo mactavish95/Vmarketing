@@ -178,7 +178,10 @@
     "chattyAgent": "Trợ lý Chatty",
     "aiModels": "Mô hình AI",
     "blog": "Blog",
-    "blogCreator": "Tạo Blog"
+    "blogCreator": "Tạo Blog",
+    "socialMedia": "Mạng xã hội",
+    "customerService": "Dịch vụ khách hàng",
+    "modelsInfo": "Thông tin mô hình"
   },
   "llma": {
     "enterText": "Vui lòng nhập nội dung để xử lý",
@@ -386,5 +389,40 @@
     "images": "Hình ảnh:",
     "generatedBlog": "Blog được tạo",
     "generatedOn": "Được tạo lúc"
+  },
+  "nav": {
+    "home": "Trang chủ",
+    "llama": "Chat Llama",
+    "enhancedLLM": "LLM Nâng cao",
+    "voiceReview": "Đánh giá giọng nói",
+    "reviewGenerator": "Tạo đánh giá",
+    "reviewHistory": "Lịch sử đánh giá",
+    "blogCreator": "Tạo blog",
+    "socialMedia": "Mạng xã hội",
+    "customerService": "Dịch vụ khách hàng",
+    "modelsInfo": "Thông tin mô hình"
+  },
+  "home": {
+    "hero": {
+      "title": "Tạo đánh giá bằng AI",
+      "subtitle": "Chuyển đổi suy nghĩ của bạn thành những đánh giá hấp dẫn với công nghệ AI tiên tiến",
+      "cta": "Bắt đầu",
+      "learnMore": "Tìm hiểu thêm"
+    },
+    "features": {
+      "title": "Tính năng",
+      "voiceRecognition": {
+        "title": "Nhận diện giọng nói",
+        "description": "Nói suy nghĩ của bạn và để AI chuyển đổi thành những đánh giá hoàn chỉnh"
+      },
+      "aiEnhancement": {
+        "title": "Nâng cao AI",
+        "description": "Các mô hình AI tiên tiến cải thiện chất lượng và sự tương tác của nội dung"
+      },
+      "multiplePlatforms": {
+        "title": "Nhiều nền tảng",
+        "description": "Tạo nội dung tối ưu cho các nền tảng mạng xã hội khác nhau"
+      }
+    }
   }
 } 

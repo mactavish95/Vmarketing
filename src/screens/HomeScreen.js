@@ -9,201 +9,141 @@ const HomeScreen = () => {
     return (
         <div className="home-screen">
             <div className="hero-section">
-                <h1>{t('homeScreen.welcome')}</h1>
-                <p>{t('homeScreen.description')}</p>
+                <h1>🤖 AI-Powered Content Creation</h1>
+                <p>Transform your ideas into engaging content with advanced AI technology</p>
                 <div className="hero-buttons">
-                    <Link to="/generate" className="hero-button primary">
-                        ✍️ AI Review Generator
+                    <Link to="/voice-review" className="hero-button primary">
+                        🎤 Start with Voice
                     </Link>
-                    <Link to="/voice" className="hero-button secondary">
-                        🎤 Voice Reviews
+                    <Link to="/review-generator" className="hero-button secondary">
+                        ✍️ Create Review
                     </Link>
                     <Link to="/blog-creator" className="hero-button tertiary">
-                        📝 Blog Creator
+                        📝 Write Blog
                     </Link>
                 </div>
             </div>
             
             <div className="features-grid">
-                {/* AI Review Generation */}
-                <div className="feature-card">
-                    <div className="feature-icon">🤖</div>
-                    <h3>{t('homeScreen.feature1Title')}</h3>
-                    <p>{t('homeScreen.feature1Description')}</p>
-                    <Link to="/generate" className="feature-link">
-                        {t('homeScreen.generateReviews')} →
-                    </Link>
-                </div>
-                
-                {/* Voice Reviews */}
+                {/* Voice Recognition */}
                 <div className="feature-card">
                     <div className="feature-icon">🎤</div>
-                    <h3>{t('homeScreen.feature2Title')}</h3>
-                    <p>{t('homeScreen.feature2Description')}</p>
-                    <Link to="/voice" className="feature-link">
-                        {t('homeScreen.tryVoiceReview')} →
+                    <h3>Voice Recognition</h3>
+                    <p>Speak your thoughts and let AI convert them into polished content</p>
+                    <Link to="/voice-review" className="feature-link">
+                        Try Voice Review →
                     </Link>
                 </div>
                 
-                {/* Customer Service Responses */}
+                {/* Review Generator */}
                 <div className="feature-card">
-                    <div className="feature-icon">💬</div>
-                    <h3>{t('homeScreen.feature3Title')}</h3>
-                    <p>{t('homeScreen.feature3Description')}</p>
-                    <Link to="/customer-service-response" className="feature-link">
-                        {t('homeScreen.chattyAgent')} →
+                    <div className="feature-icon">✍️</div>
+                    <h3>Review Generator</h3>
+                    <p>Create compelling reviews with AI-powered enhancement</p>
+                    <Link to="/review-generator" className="feature-link">
+                        Generate Review →
                     </Link>
                 </div>
                 
                 {/* Blog Creator */}
                 <div className="feature-card">
                     <div className="feature-icon">📝</div>
-                    <h3>{t('homeScreen.feature4Title')}</h3>
-                    <p>{t('homeScreen.feature4Description')}</p>
+                    <h3>Blog Creator</h3>
+                    <p>Write engaging blog posts with AI assistance</p>
                     <Link to="/blog-creator" className="feature-link">
-                        {t('homeScreen.createBlogPosts')} →
+                        Create Blog →
                     </Link>
                 </div>
                 
-                {/* AI Models */}
-                <div className="feature-card">
-                    <div className="feature-icon">🧠</div>
-                    <h3>{t('homeScreen.feature5Title')}</h3>
-                    <p>{t('homeScreen.feature5Description')}</p>
-                    <Link to="/models" className="feature-link">
-                        {t('homeScreen.viewModels')} →
-                    </Link>
-                </div>
-                
-                {/* Review History */}
-                <div className="feature-card">
-                    <div className="feature-icon">📚</div>
-                    <h3>{t('homeScreen.feature6Title')}</h3>
-                    <p>{t('homeScreen.feature6Description')}</p>
-                    <Link to="/history" className="feature-link">
-                        {t('homeScreen.viewHistory')} →
-                    </Link>
-                </div>
-                
-                {/* Restaurant Reviews */}
-                <div className="feature-card">
-                    <div className="feature-icon">🍽️</div>
-                    <h3>{t('homeScreen.feature7Title')}</h3>
-                    <p>{t('homeScreen.feature7Description')}</p>
-                    <Link to="/generate" className="feature-link">
-                        {t('homeScreen.writeRestaurantReview')} →
-                    </Link>
-                </div>
-                
-                {/* Hotel Reviews */}
-                <div className="feature-card">
-                    <div className="feature-icon">🏨</div>
-                    <h3>{t('homeScreen.feature8Title')}</h3>
-                    <p>{t('homeScreen.feature8Description')}</p>
-                    <Link to="/generate" className="feature-link">
-                        {t('homeScreen.writeHotelReview')} →
-                    </Link>
-                </div>
-                
-                {/* Product Reviews */}
+                {/* Social Media Posts */}
                 <div className="feature-card">
                     <div className="feature-icon">📱</div>
-                    <h3>{t('homeScreen.feature9Title')}</h3>
-                    <p>{t('homeScreen.feature9Description')}</p>
-                    <Link to="/generate" className="feature-link">
-                        {t('homeScreen.writeProductReview')} →
+                    <h3>Social Media Posts</h3>
+                    <p>Create optimized content for various social platforms</p>
+                    <Link to="/social-media" className="feature-link">
+                        Create Post →
                     </Link>
                 </div>
                 
-                {/* Service Reviews */}
+                {/* Customer Service */}
                 <div className="feature-card">
-                    <div className="feature-icon">🛠️</div>
-                    <h3>{t('homeScreen.feature10Title')}</h3>
-                    <p>{t('homeScreen.feature10Description')}</p>
-                    <Link to="/generate" className="feature-link">
-                        {t('homeScreen.writeServiceReview')} →
-                    </Link>
-                </div>
-                
-                {/* Blog Index */}
-                <div className="feature-card">
-                    <div className="feature-icon">📖</div>
-                    <h3>{t('homeScreen.feature11Title')}</h3>
-                    <p>{t('homeScreen.feature11Description')}</p>
-                    <Link to="/blog" className="feature-link">
-                        {t('homeScreen.readBlog')} →
+                    <div className="feature-icon">👨‍💼</div>
+                    <h3>Customer Service</h3>
+                    <p>Generate empathetic responses to customer feedback</p>
+                    <Link to="/customer-service" className="feature-link">
+                        Generate Response →
                     </Link>
                 </div>
                 
                 {/* Enhanced LLM */}
                 <div className="feature-card">
-                    <div className="feature-icon">⚡</div>
-                    <h3>{t('homeScreen.feature12Title')}</h3>
-                    <p>{t('homeScreen.feature12Description')}</p>
-                    <Link to="/llama" className="feature-link">
-                        {t('homeScreen.tryEnhancedChat')} →
+                    <div className="feature-icon">🚀</div>
+                    <h3>Enhanced LLM</h3>
+                    <p>Advanced AI models for superior content quality</p>
+                    <Link to="/enhanced-llm" className="feature-link">
+                        Try Enhanced LLM →
                     </Link>
                 </div>
             </div>
             
             {/* Service Categories */}
             <div className="service-categories">
-                <h2>{t('homeScreen.serviceCategoriesTitle')}</h2>
+                <h2>🎯 Content Creation Services</h2>
                 <div className="categories-grid">
                     <div className="category-card">
-                        <h3>{t('homeScreen.category1Title')}</h3>
+                        <h3>📝 Writing & Content</h3>
                         <ul>
-                            <li>{t('homeScreen.category1Item1')}</li>
-                            <li>{t('homeScreen.category1Item2')}</li>
-                            <li>{t('homeScreen.category1Item3')}</li>
-                            <li>{t('homeScreen.category1Item4')}</li>
+                            <li>Review Generation</li>
+                            <li>Blog Post Creation</li>
+                            <li>Social Media Content</li>
+                            <li>Product Descriptions</li>
                         </ul>
                     </div>
                     <div className="category-card">
-                        <h3>{t('homeScreen.category2Title')}</h3>
+                        <h3>🎤 Voice & Audio</h3>
                         <ul>
-                            <li>{t('homeScreen.category2Item1')}</li>
-                            <li>{t('homeScreen.category2Item2')}</li>
-                            <li>{t('homeScreen.category2Item3')}</li>
-                            <li>{t('homeScreen.category2Item4')}</li>
+                            <li>Voice-to-Text Conversion</li>
+                            <li>Audio Content Analysis</li>
+                            <li>Voice Review Generation</li>
+                            <li>Speech Enhancement</li>
                         </ul>
                     </div>
                     <div className="category-card">
-                        <h3>{t('homeScreen.category3Title')}</h3>
+                        <h3>🤖 AI Enhancement</h3>
                         <ul>
-                            <li>{t('homeScreen.category3Item1')}</li>
-                            <li>{t('homeScreen.category3Item2')}</li>
-                            <li>{t('homeScreen.category3Item3')}</li>
-                            <li>{t('homeScreen.category3Item4')}</li>
+                            <li>Content Quality Analysis</li>
+                            <li>Engagement Optimization</li>
+                            <li>Style & Tone Adjustment</li>
+                            <li>Multi-platform Optimization</li>
                         </ul>
                     </div>
                     <div className="category-card">
-                        <h3>{t('homeScreen.category4Title')}</h3>
+                        <h3>💼 Business Solutions</h3>
                         <ul>
-                            <li>{t('homeScreen.category4Item1')}</li>
-                            <li>{t('homeScreen.category4Item2')}</li>
-                            <li>{t('homeScreen.category4Item3')}</li>
-                            <li>{t('homeScreen.category4Item4')}</li>
+                            <li>Customer Service Responses</li>
+                            <li>Marketing Content</li>
+                            <li>Brand Voice Consistency</li>
+                            <li>Content Strategy</li>
                         </ul>
                     </div>
                 </div>
             </div>
             
             <div className="cta-section">
-                <h2>{t('homeScreen.getStartedTitle')}</h2>
-                <p>{t('homeScreen.getStartedDescription')}</p>
+                <h2>🚀 Ready to Create Amazing Content?</h2>
+                <p>Choose your preferred method and start creating engaging content today</p>
                 <div className="cta-buttons">
-                    <Link to="/generate" className="cta-button primary">
-                        🤖 AI Review Generator
+                    <Link to="/voice-review" className="cta-button primary">
+                        🎤 Start with Voice
                     </Link>
-                    <Link to="/voice" className="cta-button secondary">
-                        🎤 Voice Reviews
+                    <Link to="/review-generator" className="cta-button secondary">
+                        ✍️ Write Review
                     </Link>
                     <Link to="/blog-creator" className="cta-button tertiary">
-                        📝 Blog Creator
+                        📝 Create Blog
                     </Link>
-                    <Link to="/customer-service-response" className="cta-button quaternary">
-                        💬 Chatty Agent
+                    <Link to="/social-media" className="cta-button quaternary">
+                        📱 Social Media
                     </Link>
                 </div>
             </div>

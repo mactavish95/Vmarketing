@@ -103,6 +103,27 @@ const Header = () => {
                     >
                         ✍️ {t('menu.blogCreator')}
                     </Link>
+                    <Link 
+                        to="/social-media" 
+                        className={`nav-link ${location.pathname === '/social-media' ? 'active' : ''}`}
+                        onClick={closeMenu}
+                    >
+                        📱 {t('menu.socialMedia')}
+                    </Link>
+                    <Link 
+                        to="/customer-service" 
+                        className={`nav-link ${location.pathname === '/customer-service' ? 'active' : ''}`}
+                        onClick={closeMenu}
+                    >
+                        👨‍💼 {t('menu.customerService')}
+                    </Link>
+                    <Link 
+                        to="/models-info" 
+                        className={`nav-link ${location.pathname === '/models-info' ? 'active' : ''}`}
+                        onClick={closeMenu}
+                    >
+                        ℹ️ {t('menu.modelsInfo')}
+                    </Link>
                 </nav>
             </div>
             

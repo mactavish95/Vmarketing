@@ -178,7 +178,10 @@
     "chattyAgent": "Chatty Agent",
     "aiModels": "AI Models",
     "blog": "Blog",
-    "blogCreator": "Blog Creator"
+    "blogCreator": "Blog Creator",
+    "socialMedia": "Social Media",
+    "customerService": "Customer Service",
+    "modelsInfo": "Models Info"
   },
   "llma": {
     "enterText": "Please enter some text to process",
@@ -386,5 +389,40 @@
     "images": "Images:",
     "generatedBlog": "Generated Blog",
     "generatedOn": "Generated on"
+  },
+  "nav": {
+    "home": "Home",
+    "llama": "Llama Chat",
+    "enhancedLLM": "Enhanced LLM",
+    "voiceReview": "Voice Review",
+    "reviewGenerator": "Review Generator",
+    "reviewHistory": "Review History",
+    "blogCreator": "Blog Creator",
+    "socialMedia": "Social Media",
+    "customerService": "Customer Service",
+    "modelsInfo": "Models Info"
+  },
+  "home": {
+    "hero": {
+      "title": "AI-Powered Review Generation",
+      "subtitle": "Transform your thoughts into compelling reviews with advanced AI technology",
+      "cta": "Get Started",
+      "learnMore": "Learn More"
+    },
+    "features": {
+      "title": "Features",
+      "voiceRecognition": {
+        "title": "Voice Recognition",
+        "description": "Speak your thoughts and let AI convert them into polished reviews"
+      },
+      "aiEnhancement": {
+        "title": "AI Enhancement",
+        "description": "Advanced AI models improve your content quality and engagement"
+      },
+      "multiplePlatforms": {
+        "title": "Multiple Platforms",
+        "description": "Generate content optimized for different social media platforms"
+      }
+    }
   }
 } 
