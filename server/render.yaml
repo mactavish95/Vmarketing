@@ -12,6 +12,6 @@ services:
       - key: PORT
         value: 10000
       - key: FRONTEND_URL
-        value: https://development--vmarketing.netlify.app
+        value: https://vmarketing.netlify.app
       - key: NVIDIA_API_KEY
         sync: false 

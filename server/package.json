@@ -10,7 +10,7 @@
     "debug-dev": "nodemon server-debug.js || node server-debug.js",
     "simple": "node server-simple.js",
     "simple-dev": "nodemon server-simple.js || node server-simple.js",
-    "build": "echo 'No build step required'",
+    "build": "npm install",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
