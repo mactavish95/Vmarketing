@@ -11,7 +11,8 @@
     "simple": "node server-simple.js",
     "simple-dev": "nodemon server-simple.js",
     "build": "npm install",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "debug-render": "node debug-render.js"
   },
   "keywords": [
     "nvidia",
