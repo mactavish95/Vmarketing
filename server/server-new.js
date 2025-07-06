@@ -39,6 +39,9 @@ app.use('/api/', limiter);
 // Apply CORS
 app.use(cors(corsOptions));
 
+// Handle preflight requests explicitly
+app.options('*', cors(corsOptions));
+
 // Apply compression
 app.use(compressionMiddleware);
 
