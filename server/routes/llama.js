@@ -342,7 +342,7 @@ Be objective and constructive in your analysis.`;
       messages: [
         {
           role: 'system',
-          content: 'You are an expert content quality analyst. Provide objective, detailed assessments of content quality with specific, actionable feedback.'
+          content: 'You are an expert content quality analyst. Provide objective, detailed assessments of content quality with specific, actionable feedback. IMPORTANT: Always respond with valid JSON format only. Do not include any text before or after the JSON object. Ensure all property names are properly quoted with double quotes.'
         },
         {
           role: 'user',
@@ -364,18 +364,42 @@ Be objective and constructive in your analysis.`;
 
     const analysisText = analysisResponse.data.choices[0].message.content;
     
-    // Try to parse the JSON response
+    // Try to parse the JSON response with improved error handling
     let qualityAnalysis;
     try {
-      // Extract JSON from the response (in case there's extra text)
+      // First, try to extract JSON from the response (in case there's extra text)
       const jsonMatch = analysisText.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
-        qualityAnalysis = JSON.parse(jsonMatch[0]);
+        const jsonString = jsonMatch[0];
+        
+        // Try to fix common JSON issues
+        let cleanedJson = jsonString
+          // Fix single quotes to double quotes
+          .replace(/'/g, '"')
+          // Fix unquoted property names
+          .replace(/([{,]\s*)(\w+)(\s*:)/g, '$1"$2"$3')
+          // Fix trailing commas
+          .replace(/,(\s*[}\]])/g, '$1')
+          // Fix missing quotes around string values
+          .replace(/:\s*([^"][^,}\]]*[^"\s,}\]])/g, ': "$1"')
+          // Fix boolean and number values that might have been quoted
+          .replace(/:\s*"(\d+(?:\.\d+)?)"/g, ': $1')
+          .replace(/:\s*"(true|false)"/g, ': $1');
+        
+        try {
+          qualityAnalysis = JSON.parse(cleanedJson);
+        } catch (secondError) {
+          console.warn('Failed to parse cleaned JSON, trying original:', secondError.message);
+          // Try the original JSON string
+          qualityAnalysis = JSON.parse(jsonString);
+        }
       } else {
         throw new Error('No JSON found in response');
       }
     } catch (parseError) {
-      console.warn('Failed to parse quality analysis JSON:', parseError);
+      console.warn('Failed to parse quality analysis JSON:', parseError.message);
+      console.warn('Raw response:', analysisText.substring(0, 500) + '...');
+      
       // Provide a fallback analysis based on content type
       if (contentType === 'facebook_post') {
         qualityAnalysis = {
@@ -388,10 +412,18 @@ Be objective and constructive in your analysis.`;
             callToAction: 0.7,
             tone: 0.7,
             length: 0.7,
-            hashtags: 0.7
+            hashtags: 0.7,
+            brandVoice: 0.7,
+            urgency: 0.7
           },
           strengths: ['Content is readable and understandable'],
-          suggestions: ['Add a compelling opening hook', 'Include a clear call-to-action', 'Consider adding relevant hashtags']
+          suggestions: ['Add a compelling opening hook', 'Include a clear call-to-action', 'Consider adding relevant hashtags'],
+          lengthAnalysis: {
+            currentWords: response.split(' ').length,
+            targetWords: context?.targetLength || 60,
+            lengthScore: 0.7,
+            lengthFeedback: 'Length analysis not available'
+          }
         };
       } else {
         qualityAnalysis = {

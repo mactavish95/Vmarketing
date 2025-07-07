@@ -30,6 +30,22 @@ const SocialMediaPost = () => {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedSuggestion, setSelectedSuggestion] = useState('');
 
+  // Add state for reviewed content
+  const [reviewedContent, setReviewedContent] = useState('');
+  const [isReviewing, setIsReviewing] = useState(false);
+
+  // State for modal view
+  const [modalPost, setModalPost] = useState(null);
+
+  // New: Global history from backend
+  const [globalHistory, setGlobalHistory] = useState([]);
+  const [isHistoryLoading, setIsHistoryLoading] = useState(false);
+  const [historyError, setHistoryError] = useState('');
+
+  // State for showing original content
+  const [showOriginalContent, setShowOriginalContent] = useState(false);
+  const [showComparison, setShowComparison] = useState(false);
+
   const platforms = [
     { value: 'facebook', label: 'Facebook', icon: '📘', maxLength: 63206, priority: true },
     { value: 'instagram', label: 'Instagram', icon: '📸', maxLength: 2200 },
@@ -188,30 +204,47 @@ const SocialMediaPost = () => {
     setError('');
     setEnhancedContent('');
     setQualityAnalysis(null);
+    setShowOriginalContent(false);
+    setShowComparison(false);
 
     try {
       const targetLength = calculateTargetLength();
+      const minWords = targetLength;
+      const maxWords = Math.round(targetLength * 1.2);
       
-      // Enhanced prompt focusing on coherence and relevance
+      // Enhanced prompt focusing on relevance, precision, and clarity (no markdown, emojis, or unnecessary marks)
       const enhancedPrompt = `You are an expert social media content creator specializing in ${platform} posts. Your goal is to create content that is:
 
-**COHERENCE & CLARITY:**
-- Write with a clear, logical flow that's easy to follow
+**RELEVANCE & PRECISION:**
+- Only include information that is directly relevant to the main message
+- Remove any unnecessary, off-topic, or verbose content
+- Be concise and precise in your wording
+- Avoid filler, repetition, or generic statements
+
+**CLARITY:**
 - Use simple, direct language that anyone can understand
 - Structure content with a clear beginning, middle, and end
-- Avoid jargon and complex sentences
 - Make each sentence build naturally on the previous one
 
-**RELEVANCE & ENGAGEMENT:**
-- Ensure every word serves a purpose and adds value
-- Make content immediately relevant to your target audience: ${targetAudience}
-- Create a strong hook that captures attention in the first few words
-- Include specific details that make the content relatable and authentic
-- Use the ${tone} tone consistently throughout
+**FORMATTING:**
+${platform === 'instagram' ? `
+**INSTAGRAM-SPECIFIC FORMATTING:**
+- Use emojis strategically to make content visually appealing and engaging
+- Include 3-5 relevant hashtags at the end of the post
+- Use bullet points (•) to highlight key points and make content scannable
+- Break up text with line breaks for better readability
+- Use bold formatting (**text**) for emphasis on important points
+- Include call-to-action emojis (👉 🎯 💡 ✨ 🔥) to encourage engagement
+- Use food, lifestyle, and aesthetic emojis relevant to the content
+- Keep paragraphs short (2-3 lines max) for mobile viewing
+- End with a compelling call-to-action and relevant hashtags` : `
+- Do NOT Over use markdown, emojis, or any unnecessary formatting or symbols
+- Do NOT Over use bullet points, numbered lists, or headings
+- Write as a single, well-structured paragraph or two
+- Do NOT include hashtags in the main content (they will be added separately)`}
 
 **CONTENT STRUCTURE:**
 - Platform: ${platform} (${postType} post)
-- Target length: ${targetLength} words
 - Content structure: ${contentStructure}
 - Engagement goal: ${engagementGoal}
 - Brand voice intensity: ${brandVoiceIntensity}
@@ -221,24 +254,38 @@ const SocialMediaPost = () => {
 ${content}
 
 **INSTRUCTIONS:**
-1. Transform this into a ${platform}-optimized post that's ${targetLength} words
-2. Use the ${contentStructure} structure for maximum impact
-3. Apply ${tone} tone consistently
+1. Transform this into a ${platform}-optimized post that is concise, relevant, and precise
+2. Remove any irrelevant or unnecessary information
+3. Use the ${tone} tone consistently
 4. Target ${targetAudience} audience specifically
 5. Focus on ${engagementGoal} as the primary goal
 6. Ensure every sentence flows logically to the next
 7. Make the content immediately understandable and relatable
-8. Include a clear call-to-action that fits the ${engagementGoal}
-9. Add relevant hashtags for ${platform} (${hashtags ? 'incorporate these hashtags: ' + hashtags : 'suggest appropriate hashtags'})
+8. End with a clear call-to-action that fits the ${engagementGoal}
+${platform === 'instagram' ? `
+9. **INSTAGRAM ENHANCEMENTS:**
+   - Add 3-5 relevant emojis throughout the content
+   - Use bullet points (•) to highlight 2-3 key points
+   - Include bold formatting (**text**) for emphasis
+   - Add 3-5 relevant hashtags at the end
+   - Use line breaks to create visual appeal
+   - Include engagement emojis (💬 ❤️ 🔥 ✨) in call-to-action
+   - Make it visually appealing for Instagram's aesthetic-focused audience` : ''}
+
+**LENGTH REQUIREMENT:**
+- Write a comprehensive post of at least ${minWords} words, but not more than ${maxWords} words.
+- The post should be in-depth, detailed, and provide substantial value to the reader.
+- Do NOT stop early; ensure the post meets the minimum word count.
 
 **QUALITY REQUIREMENTS:**
-- Coherence: Each paragraph should connect seamlessly to the next
 - Relevance: Every detail should matter to the target audience
+- Precision: No filler, no off-topic content
 - Clarity: Use simple, powerful words that convey meaning instantly
-- Engagement: Create content that encourages interaction and sharing
+- Engagement: Encourage interaction and sharing
 - Authenticity: Make it feel genuine and personal, not generic
+${platform === 'instagram' ? '- Visual Appeal: Use emojis and formatting to make it Instagram-worthy' : '- NO MARKDOWN, NO EMOJIS, NO SYMBOLS, NO BULLETS, NO HEADINGS'}
 
-Generate a post that feels like it was written by someone who truly understands and cares about their audience.`;
+Generate a post that is concise, relevant, and precise${platform === 'instagram' ? ', with strategic emojis, bullet points, and hashtags for Instagram engagement' : ', with no markdown, emojis, or unnecessary marks'}. Output only the post text, nothing else.`;
 
       // Force production URL if we're on Netlify
       const isNetlify = window.location.hostname.includes('netlify.app') || window.location.hostname.includes('vmarketing.netlify.app');
@@ -256,12 +303,99 @@ Generate a post that feels like it was written by someone who truly understands 
       const data = await response.json();
       
       if (data.success) {
-        const generatedContent = data.response;
-        setEnhancedContent(generatedContent);
+        // Clean up markdown, emojis, and unnecessary marks from the generated content
+        let generatedContent = data.response;
+        
+        // DEBUG: Log the raw response from LLM
+        console.log('🔍 DEBUG: Raw LLM response:', data.response);
+        console.log('🔍 DEBUG: Response length:', data.response.length);
+        console.log('🔍 DEBUG: Response type:', typeof data.response);
+        
+        if (platform === 'instagram') {
+          // For Instagram, preserve emojis, bullet points, and hashtags
+          generatedContent = generatedContent
+            // Remove markdown code blocks
+            .replace(/```[\s\S]*?```/g, '')
+            // Remove inline code
+            .replace(/`([^`]+)`/g, '$1')
+            // Remove markdown links but keep text
+            .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+            // Remove markdown images but keep alt text
+            .replace(/!\[([^\]]*)\]\([^)]+\)/g, '$1')
+            // Remove markdown emphasis but keep text
+            .replace(/\*\*([^*]+)\*\*/g, '$1')
+            .replace(/\*([^*]+)\*/g, '$1')
+            .replace(/__([^_]+)__/g, '$1')
+            .replace(/_([^_]+)_/g, '$1')
+            // Remove markdown strikethrough
+            .replace(/~~([^~]+)~~/g, '$1')
+            // Remove markdown blockquotes
+            .replace(/^>\s*/gm, '')
+            // Remove markdown horizontal rules
+            .replace(/^[-*_]{3,}$/gm, '')
+            // Remove markdown table syntax
+            .replace(/^\|.*\|$/gm, '')
+            // Remove numbered lists but keep bullet points
+            .replace(/^\d+\.\s*/gm, '')
+            // Remove headings
+            .replace(/^#+\s*/gm, '')
+            // Remove extra whitespace but preserve line breaks
+            .replace(/\n{3,}/g, '\n\n')
+            .replace(/ {2,}/g, ' ')
+            .trim();
+        } else {
+          // For other platforms, remove all formatting
+          generatedContent = generatedContent
+            // Remove markdown code blocks
+            .replace(/```[\s\S]*?```/g, '')
+            // Remove inline code
+            .replace(/`([^`]+)`/g, '$1')
+            // Remove markdown links but keep text
+            .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+            // Remove markdown images but keep alt text
+            .replace(/!\[([^\]]*)\]\([^)]+\)/g, '$1')
+            // Remove markdown emphasis but keep text
+            .replace(/\*\*([^*]+)\*\*/g, '$1')
+            .replace(/\*([^*]+)\*/g, '$1')
+            .replace(/__([^_]+)__/g, '$1')
+            .replace(/_([^_]+)_/g, '$1')
+            // Remove markdown strikethrough
+            .replace(/~~([^~]+)~~/g, '$1')
+            // Remove markdown blockquotes
+            .replace(/^>\s*/gm, '')
+            // Remove markdown horizontal rules
+            .replace(/^[-*_]{3,}$/gm, '')
+            // Remove markdown table syntax
+            .replace(/^\|.*\|$/gm, '')
+            // Remove bullet points and numbered lists
+            .replace(/^[-*•]\s*/gm, '')
+            .replace(/^\d+\.\s*/gm, '')
+            // Remove headings
+            .replace(/^#+\s*/gm, '')
+            // Remove emojis and symbols
+            .replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F900}-\u{1F9FF}\u{1FA70}-\u{1FAFF}\u{1F1E6}-\u{1F1FF}\u{1F191}-\u{1F251}\u{1F004}\u{1F0CF}\u{1F170}-\u{1F171}\u{1F17E}-\u{1F17F}\u{1F18E}\u{3030}\u{2B50}\u{2B06}\u{2194}-\u{21AA}\u{2934}-\u{2935}\u{25AA}-\u{25AB}\u{25FE}-\u{25FF}\u{25B6}\u{25C0}\u{25FB}-\u{25FC}\u{25FD}-\u{25FE}\u{25A0}-\u{25A1}\u{25B2}-\u{25B3}\u{25BC}-\u{25BD}\u{25C6}-\u{25C7}\u{25CB}-\u{25CC}\u{25D0}-\u{25D1}\u{25E2}-\u{25E5}\u{25EF}]/gu, '')
+            // Remove extra whitespace
+            .replace(/\n{3,}/g, '\n\n')
+            .replace(/ {2,}/g, ' ')
+            .trim();
+        }
+        
+        // DEBUG: Log the cleaned content
+        console.log('🔍 DEBUG: Cleaned content:', generatedContent);
+        console.log('🔍 DEBUG: Cleaned content length:', generatedContent.length);
+        console.log('🔍 DEBUG: Is content empty?', !generatedContent.trim());
+        
+        // FALLBACK: If cleaning results in empty content, use the original
+        if (!generatedContent.trim()) {
+          console.warn('⚠️ WARNING: Cleaning resulted in empty content. Using original response.');
+          setError('The generated content was empty after cleaning. Using the original response.');
+          setEnhancedContent(data.response);
+        } else {
+          setEnhancedContent(generatedContent);
+        }
         
         // Add to generation history
         const historyItem = {
-          id: Date.now(),
           original: content,
           enhanced: generatedContent,
           platform,
@@ -276,7 +410,13 @@ Generate a post that feels like it was written by someone who truly understands 
           timestamp: new Date().toISOString()
         };
         
-        setGenerationHistory(prev => [historyItem, ...prev.slice(0, 9)]);
+        setGenerationHistory(prev => [
+          { ...historyItem, id: Date.now() },
+          ...prev.slice(0, 9)
+        ]);
+        
+        // Save to backend
+        savePostToBackend(historyItem);
         
         // Analyze quality with focus on coherence and relevance
         await analyzeQuality(generatedContent);
@@ -299,96 +439,408 @@ Generate a post that feels like it was written by someone who truly understands 
       const isNetlify = window.location.hostname.includes('netlify.app') || window.location.hostname.includes('vmarketing.netlify.app');
       const baseURL = isNetlify ? 'https://vmarketing-backend-server.onrender.com/api' : apiConfig.baseURL;
       
-      const analysisPrompt = `Analyze this social media content for quality, with special focus on COHERENCE and RELEVANCE:
-
-**CONTENT TO ANALYZE:**
-${text}
-
-**ANALYSIS CONTEXT:**
-- Platform: ${platform}
-- Target Audience: ${targetAudience}
-- Tone: ${tone}
-- Engagement Goal: ${engagementGoal}
-- Content Structure: ${contentStructure}
-
-**FOCUS ON THESE KEY METRICS:**
-
-1. **COHERENCE (40% weight)** - How well does the content flow logically?
-   - Logical progression from start to finish
-   - Clear connections between sentences and paragraphs
-   - Consistent tone and voice throughout
-   - Easy to follow narrative structure
-
-2. **RELEVANCE (30% weight)** - How relevant is the content to the target audience?
-   - Addresses audience needs and interests
-   - Uses language and examples the audience understands
-   - Provides value specific to the target demographic
-   - Aligns with audience expectations and preferences
-
-3. **CLARITY (15% weight)** - How easy is the content to understand?
-   - Simple, direct language
-   - Clear main message
-   - No confusing or ambiguous statements
-   - Appropriate vocabulary for the audience
-
-4. **ENGAGEMENT (15% weight)** - How likely is it to engage the audience?
-   - Compelling opening hook
-   - Clear call-to-action
-   - Encourages interaction and sharing
-   - Maintains interest throughout
-
-**PROVIDE DETAILED ANALYSIS WITH:**
-- Overall quality score (0-100)
-- Individual scores for each metric
-- Specific strengths and weaknesses
-- Actionable suggestions for improvement
-- Focus especially on coherence and relevance issues
-
-Format as JSON with these fields:
-{
-  "overallScore": number,
-  "metrics": {
-    "coherence": { "score": number, "analysis": "detailed explanation" },
-    "relevance": { "score": number, "analysis": "detailed explanation" },
-    "clarity": { "score": number, "analysis": "detailed explanation" },
-    "engagement": { "score": number, "analysis": "detailed explanation" }
-  },
-  "strengths": ["list of specific strengths"],
-  "weaknesses": ["list of specific areas for improvement"],
-  "suggestions": ["specific actionable suggestions"]
-}`;
-
+      // Use the correct endpoint and payload for quality analysis
       const response = await fetch(`${baseURL}/analyze-response-quality`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          text: analysisPrompt,
-          contentType: 'social_media',
+          response: text,
+          contentType: 'facebook_post',
           context: {
             platform,
             targetAudience,
             tone,
             engagementGoal,
-            contentStructure
+            contentStructure,
+            postType,
+            brandVoiceIntensity,
+            engagementUrgency,
+            situation,
+            targetLength: calculateTargetLength()
           }
         })
       });
 
       const data = await response.json();
       
-      if (data.success) {
-        setQualityAnalysis(data.analysis);
+      if (data.success && data.qualityAnalysis) {
+        setQualityAnalysis(data.qualityAnalysis);
       } else {
+        setQualityAnalysis(null);
         console.warn('Quality analysis failed:', data.error);
       }
     } catch (err) {
       console.error('Quality analysis error:', err);
+      setQualityAnalysis(null);
     }
   };
 
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text);
     alert('Content copied to clipboard!');
+  };
+
+  // Function to format Instagram content for preview
+  const formatInstagramContent = (content) => {
+    // Split content into main content and hashtags
+    const lines = content.split('\n');
+    const hashtagLines = [];
+    const mainContent = [];
+    
+    lines.forEach(line => {
+      if (line.trim().startsWith('#')) {
+        hashtagLines.push(line.trim());
+      } else {
+        mainContent.push(line);
+      }
+    });
+    
+    const mainText = mainContent.join('\n');
+    const hashtags = hashtagLines.join(' ');
+    
+    // Format bullet points
+    let formattedContent = mainText
+      .replace(/^•\s*/gm, '<div class="bullet-item"><span class="bullet-icon">•</span>')
+      .replace(/\n/g, '</div>\n<div class="bullet-item"><span class="bullet-icon">•</span>');
+    
+    // Add hashtags section if present
+    if (hashtags) {
+      formattedContent += `<div class="hashtags">${hashtags}</div>`;
+    }
+    
+    return formattedContent;
+  };
+
+  // Function to open preview in new window
+  const openPreviewWindow = (content, platform, postType, tone, targetAudience) => {
+    const platformInfo = platforms.find(p => p.value === platform);
+    const postTypeInfo = postTypes.find(pt => pt.value === postType);
+    const toneInfo = tones.find(t => t.value === tone);
+    const audienceInfo = audiences.find(a => a.value === targetAudience);
+    
+    const previewHTML = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${platformInfo?.label || 'Social Media'} Post Preview</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .preview-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            max-width: 500px;
+            width: 100%;
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        .preview-header {
+            background: linear-gradient(135deg, #4f8cff 0%, #38e8ff 100%);
+            padding: 24px;
+            text-align: center;
+            color: white;
+        }
+        
+        .preview-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        
+        .preview-meta {
+            font-size: 14px;
+            opacity: 0.9;
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .preview-content {
+            padding: 32px;
+            background: #f8f9ff;
+            min-height: 300px;
+            position: relative;
+        }
+        
+        .post-content {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            font-size: 16px;
+            line-height: 1.6;
+            color: #2d3748;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        .post-content.instagram {
+            font-size: 18px;
+            line-height: 1.8;
+            padding: 28px;
+            background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%);
+            border: 2px solid #ec4899;
+        }
+        
+        .post-content.instagram .hashtags {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #fbbf24;
+            color: #7c3aed;
+            font-weight: 600;
+        }
+        
+        .post-content.instagram .bullet-points {
+            margin: 12px 0;
+            padding-left: 8px;
+        }
+        
+        .post-content.instagram .bullet-points .bullet-item {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+        
+        .post-content.instagram .bullet-points .bullet-icon {
+            color: #ec4899;
+            font-size: 20px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        
+        .post-stats {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            color: #718096;
+        }
+        
+        .character-count {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .platform-icon {
+            font-size: 20px;
+        }
+        
+        .preview-actions {
+            padding: 24px;
+            background: white;
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .action-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        
+        .action-btn:hover {
+            background: #5a67d8;
+            transform: translateY(-1px);
+        }
+        
+        .action-btn.secondary {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+        
+        .action-btn.secondary:hover {
+            background: #cbd5e0;
+        }
+        
+        .quality-badge {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: #10b981;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        @media (max-width: 600px) {
+            .preview-container {
+                margin: 10px;
+                border-radius: 16px;
+            }
+            
+            .preview-header {
+                padding: 20px;
+            }
+            
+            .preview-title {
+                font-size: 20px;
+            }
+            
+            .preview-content {
+                padding: 20px;
+            }
+            
+            .post-content {
+                padding: 20px;
+                font-size: 15px;
+            }
+            
+            .preview-actions {
+                padding: 20px;
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="preview-container">
+        <div class="preview-header">
+            <div class="preview-title">
+                <span class="platform-icon">${platformInfo?.icon || '📱'}</span>
+                ${platformInfo?.label || 'Social Media'} Post Preview
+            </div>
+            <div class="preview-meta">
+                <div class="meta-item">
+                    <span>📝</span>
+                    <span>${postTypeInfo?.label || 'Post'}</span>
+                </div>
+                <div class="meta-item">
+                    <span>🎭</span>
+                    <span>${toneInfo?.label || 'Tone'}</span>
+                </div>
+                <div class="meta-item">
+                    <span>👥</span>
+                    <span>${audienceInfo?.label || 'Audience'}</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="preview-content">
+            <div class="quality-badge">✨ Enhanced</div>
+            <div class="post-content${platform === 'instagram' ? ' instagram' : ''}">${platform === 'instagram' ? formatInstagramContent(content) : content}</div>
+            <div class="post-stats">
+                <div class="character-count">
+                    <span>📊</span>
+                    <span>${content.length} characters</span>
+                </div>
+                <div class="character-count">
+                    <span>📝</span>
+                    <span>${content.split(' ').length} words</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="preview-actions">
+            <button id="copy-btn" class="action-btn">
+                📋 Copy Post
+            </button>
+            <button id="close-btn" class="action-btn secondary">
+                ✖ Close Window
+            </button>
+        </div>
+    </div>
+    
+    <script>
+        // Copy to clipboard function
+        function copyToClipboard() {
+            const content = \`${content.replace(/`/g, '\\`')}\`;
+            navigator.clipboard.writeText(content).then(() => {
+                alert('Post copied to clipboard!');
+            }).catch(() => {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = content;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                alert('Post copied to clipboard!');
+            });
+        }
+        
+        // Close window function
+        function closeWindow() {
+            window.close();
+        }
+        
+        // Add event listeners
+        document.getElementById('copy-btn').addEventListener('click', copyToClipboard);
+        document.getElementById('close-btn').addEventListener('click', closeWindow);
+        
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey || e.metaKey) {
+                if (e.key === 'c') {
+                    e.preventDefault();
+                    copyToClipboard();
+                } else if (e.key === 'w') {
+                    e.preventDefault();
+                    closeWindow();
+                }
+            }
+        });
+    </script>
+</body>
+</html>`;
+
+    const newWindow = window.open('', '_blank', 'width=600,height=800,scrollbars=yes,resizable=yes');
+    newWindow.document.write(previewHTML);
+    newWindow.document.close();
   };
 
   const clearAll = () => {
@@ -400,6 +852,8 @@ Format as JSON with these fields:
     setShowAdvancedOptions(false);
     setShowSuggestions(false);
     setSelectedSuggestion('');
+    setShowOriginalContent(false);
+    setShowComparison(false);
   };
 
   // Show suggestions automatically when content is empty
@@ -721,8 +1175,157 @@ Format as JSON with these fields:
     setShowSuggestions(!showSuggestions);
   };
 
+  // Function to review and clean the generated post using LLM-model
+  const reviewGeneratedContent = async (content) => {
+    setIsReviewing(true);
+    try {
+      // Use the same baseURL logic as before
+      const isNetlify = window.location.hostname.includes('netlify.app') || window.location.hostname.includes('vmarketing.netlify.app');
+      const baseURL = isNetlify ? 'https://vmarketing-backend-server.onrender.com/api' : apiConfig.baseURL;
+      
+      // Prompt for LLM-model to review and clean the content
+      const reviewPrompt = `Review the following ${platform} post. Remove any unnecessary, irrelevant, verbose, or off-topic content and words. Only keep what is precise, relevant, and directly serves the main message. Do not add anything new.${platform === 'instagram' ? ' Preserve emojis, bullet points (•), and hashtags as they are important for Instagram engagement.' : ' Output only the cleaned post, with no markdown, emojis, or extra formatting.'}
+
+POST TO REVIEW:
+${content}`;
+      
+      const response = await fetch(`${baseURL}/llama`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          text: reviewPrompt,
+          useCase: 'social_media'
+        })
+      });
+      const data = await response.json();
+      if (data.success) {
+        let cleaned = data.response;
+        
+        if (platform === 'instagram') {
+          // For Instagram, preserve emojis, bullet points, and hashtags
+          cleaned = cleaned
+            .replace(/```[\s\S]*?```/g, '')
+            .replace(/`([^`]+)`/g, '$1')
+            .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+            .replace(/!\[([^\]]*)\]\([^)]+\)/g, '$1')
+            .replace(/\*\*([^*]+)\*\*/g, '$1')
+            .replace(/\*([^*]+)\*/g, '$1')
+            .replace(/__([^_]+)__/g, '$1')
+            .replace(/_([^_]+)_/g, '$1')
+            .replace(/~~([^~]+)~~/g, '$1')
+            .replace(/^>\s*/gm, '')
+            .replace(/^[-*_]{3,}$/gm, '')
+            .replace(/^\|.*\|$/gm, '')
+            .replace(/^\d+\.\s*/gm, '')
+            .replace(/^#+\s*/gm, '')
+            .replace(/\n{3,}/g, '\n\n')
+            .replace(/ {2,}/g, ' ')
+            .trim();
+        } else {
+          // For other platforms, remove all formatting
+          cleaned = cleaned
+            .replace(/```[\s\S]*?```/g, '')
+            .replace(/`([^`]+)`/g, '$1')
+            .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+            .replace(/!\[([^\]]*)\]\([^)]+\)/g, '$1')
+            .replace(/\*\*([^*]+)\*\*/g, '$1')
+            .replace(/\*([^*]+)\*/g, '$1')
+            .replace(/__([^_]+)__/g, '$1')
+            .replace(/_([^_]+)_/g, '$1')
+            .replace(/~~([^~]+)~~/g, '$1')
+            .replace(/^>\s*/gm, '')
+            .replace(/^[-*_]{3,}$/gm, '')
+            .replace(/^\|.*\|$/gm, '')
+            .replace(/^[-*•]\s*/gm, '')
+            .replace(/^\d+\.\s*/gm, '')
+            .replace(/^#+\s*/gm, '')
+            .replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F900}-\u{1F9FF}\u{1FA70}-\u{1FAFF}\u{1F1E6}-\u{1F1FF}\u{1F191}-\u{1F251}\u{1F004}\u{1F0CF}\u{1F170}-\u{1F171}\u{1F17E}-\u{1F17F}\u{1F18E}\u{3030}\u{2B50}\u{2B06}\u{2194}-\u{21AA}\u{2934}-\u{2935}\u{25AA}-\u{25AB}\u{25FE}-\u{25FF}\u{25B6}\u{25C0}\u{25FB}-\u{25FC}\u{25FD}-\u{25FE}\u{25A0}-\u{25A1}\u{25B2}-\u{25B3}\u{25BC}-\u{25BD}\u{25C6}-\u{25C7}\u{25CB}-\u{25CC}\u{25D0}-\u{25D1}\u{25E2}-\u{25E5}\u{25EF}]/gu, '')
+            .replace(/\n{3,}/g, '\n\n')
+            .replace(/ {2,}/g, ' ')
+            .trim();
+        }
+        
+        setReviewedContent(cleaned);
+      } else {
+        setReviewedContent(content); // fallback
+      }
+    } catch (err) {
+      setReviewedContent(content); // fallback
+    } finally {
+      setIsReviewing(false);
+    }
+  };
+
+  // When enhancedContent changes, trigger review
+  useEffect(() => {
+    if (enhancedContent) {
+      reviewGeneratedContent(enhancedContent);
+    } else {
+      setReviewedContent('');
+    }
+  }, [enhancedContent]);
+
+  // Fetch global history from backend
+  const fetchGlobalHistory = async () => {
+    setIsHistoryLoading(true);
+    setHistoryError('');
+    try {
+      const isNetlify = window.location.hostname.includes('netlify.app') || window.location.hostname.includes('vmarketing.netlify.app');
+      const baseURL = isNetlify ? 'https://vmarketing-backend-server.onrender.com/api' : apiConfig.baseURL;
+      const response = await fetch(`${baseURL}/social-posts`);
+      const data = await response.json();
+      if (data.success) {
+        setGlobalHistory(data.posts || []);
+      } else {
+        setHistoryError(data.error || 'Failed to fetch global history');
+      }
+    } catch (err) {
+      setHistoryError('Network error fetching global history');
+    } finally {
+      setIsHistoryLoading(false);
+    }
+  };
+
+  // Fetch on mount
+  useEffect(() => {
+    fetchGlobalHistory();
+  }, []);
+
+  // Save new post to backend after generation
+  const savePostToBackend = async (historyItem) => {
+    try {
+      const isNetlify = window.location.hostname.includes('netlify.app') || window.location.hostname.includes('vmarketing.netlify.app');
+      const baseURL = isNetlify ? 'https://vmarketing-backend-server.onrender.com/api' : apiConfig.baseURL;
+      await fetch(`${baseURL}/social-posts`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(historyItem)
+      });
+      // Re-fetch global history after saving
+      fetchGlobalHistory();
+    } catch (err) {
+      // Optionally show error
+    }
+  };
+
+  // Helper to group history by platform (now uses globalHistory)
+  const groupHistoryByPlatform = (history) => {
+    const grouped = {};
+    history.forEach(item => {
+      if (!grouped[item.platform]) grouped[item.platform] = [];
+      grouped[item.platform].push(item);
+    });
+    return grouped;
+  };
+
   return (
-    <div className="social-media-post">
+    <div className="social-media-post responsive-mobile">
+      {/* DEBUG: Show enhancedContent and reviewedContent values */}
+      <div className="debug-info-mobile">
+        <div>🔍 <strong>DEBUG:</strong> enhancedContent: <span>{String(enhancedContent)}</span></div>
+        <div>🔍 <strong>DEBUG:</strong> reviewedContent: <span>{String(reviewedContent)}</span></div>
+      </div>
+
       <div className="post-container">
         <div className="post-header">
           <div className="header-icon">📘</div>
@@ -737,7 +1340,7 @@ Format as JSON with these fields:
 
         <div className="post-content">
           {/* Platform Selection */}
-          <div className="section">
+          <div className="section platform-section-mobile">
             <h2>📱 Platform Selection</h2>
             <div className="platform-grid">
               {platforms.map(p => (
@@ -745,6 +1348,7 @@ Format as JSON with these fields:
                   key={p.value}
                   className={`platform-option ${platform === p.value ? 'active' : ''} ${p.priority ? 'priority' : ''}`}
                   onClick={() => setPlatform(p.value)}
+                  tabIndex={0}
                 >
                   <span className="platform-icon">{p.icon}</span>
                   <span className="platform-label">{p.label}</span>
@@ -755,14 +1359,14 @@ Format as JSON with these fields:
           </div>
 
           {/* Content Input */}
-          <div className="section">
+          <div className="section content-section-mobile">
             <h2>✍️ Your Content</h2>
             <textarea
               value={content}
               onChange={(e) => setContent(e.target.value)}
               placeholder="Enter your original content here... What would you like to share on Facebook?"
-              rows={6}
-              className="content-input"
+              rows={5}
+              className="content-input mobile-friendly-input"
             />
             <div className="input-stats">
               <span>Characters: {content.length}</span>
@@ -771,20 +1375,20 @@ Format as JSON with these fields:
           </div>
 
           {/* Follow-up Question Suggestions */}
-          <div className="section">
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+          <div className="section suggestions-section-mobile">
+            <div className="suggestions-header-mobile">
               <h2>💡 Need Ideas? Get Inspired!</h2>
               <button
                 onClick={toggleSuggestions}
                 className={`suggestions-toggle ${showSuggestions ? 'active' : ''}`}
+                tabIndex={0}
               >
                 <span>{showSuggestions ? '🙈' : '💡'}</span>
                 {showSuggestions ? 'Hide Suggestions' : 'Show Suggestions'}
               </button>
             </div>
-            
             {showSuggestions && (
-              <div className="suggestions-container">
+              <div className="suggestions-container-mobile">
                 <div className="suggestions-header">
                   <span style={{ fontSize: '20px' }}>🎯</span>
                   <h3 className="suggestions-title">
@@ -849,7 +1453,7 @@ Format as JSON with these fields:
           </div>
 
           {/* Facebook-Specific Options */}
-          <div className="section">
+          <div className="section config-section-mobile">
             <h2>🎯 Facebook Post Configuration</h2>
             
             {/* Post Type */}
@@ -1069,9 +1673,9 @@ Format as JSON with these fields:
           </div>
 
           {/* Generate Button */}
-          <div className="section">
+          <div className="section generate-section-mobile">
             <button
-              className="generate-btn"
+              className="generate-btn mobile-generate-btn"
               onClick={generateContent}
               disabled={isGenerating || !content.trim()}
             >
@@ -1091,7 +1695,7 @@ Format as JSON with these fields:
 
           {/* Error Message */}
           {error && (
-            <div className="error-message">
+            <div className="error-message mobile-error-message">
               <span className="error-icon">⚠️</span>
               {error}
             </div>
@@ -1099,10 +1703,178 @@ Format as JSON with these fields:
 
           {/* Enhanced Content */}
           {enhancedContent && (
-            <div className="section result-section">
-              <h2>✨ Enhanced Facebook Post</h2>
-              
-              <div className="post-preview">
+            <div className="section result-section mobile-result-section" style={{ position: 'relative' }}>
+              {/* Original Content Display */}
+              {showOriginalContent && (
+                <div className="original-content-section">
+                  <h3 style={{ 
+                    color: '#6b7280', 
+                    fontSize: '18px', 
+                    marginBottom: '12px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
+                  }}>
+                    📝 Original Content
+                  </h3>
+                  <div style={{
+                    background: '#f9fafb',
+                    border: '2px solid #e5e7eb',
+                    borderRadius: '12px',
+                    padding: '20px',
+                    marginBottom: '20px',
+                    fontFamily: 'monospace',
+                    fontSize: '14px',
+                    lineHeight: '1.6',
+                    color: '#374151',
+                    whiteSpace: 'pre-wrap',
+                    wordBreak: 'break-word',
+                    position: 'relative'
+                  }}>
+                    <div style={{
+                      position: 'absolute',
+                      top: '8px',
+                      right: '8px',
+                      background: '#6b7280',
+                      color: 'white',
+                      padding: '4px 8px',
+                      borderRadius: '6px',
+                      fontSize: '12px',
+                      fontWeight: '600'
+                    }}>
+                      Original
+                    </div>
+                    {content}
+                  </div>
+                </div>
+              )}
+              {/* Side-by-Side Comparison */}
+              {showComparison && (
+                <div className="comparison-section">
+                  <h3 style={{ 
+                    color: '#8b5cf6', 
+                    fontSize: '18px', 
+                    marginBottom: '16px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
+                  }}>
+                    ⚖️ Before vs After Comparison
+                  </h3>
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: '1fr 1fr',
+                    gap: '20px',
+                    marginBottom: '20px'
+                  }}>
+                    {/* Original Content */}
+                    <div style={{
+                      background: '#f9fafb',
+                      border: '2px solid #e5e7eb',
+                      borderRadius: '12px',
+                      padding: '20px',
+                      position: 'relative'
+                    }}>
+                      <div style={{
+                        position: 'absolute',
+                        top: '8px',
+                        right: '8px',
+                        background: '#6b7280',
+                        color: 'white',
+                        padding: '4px 8px',
+                        borderRadius: '6px',
+                        fontSize: '12px',
+                        fontWeight: '600'
+                      }}>
+                        Before
+                      </div>
+                      <h4 style={{ 
+                        color: '#6b7280', 
+                        marginBottom: '12px',
+                        fontSize: '16px',
+                        fontWeight: '600'
+                      }}>
+                        📝 Original Content
+                      </h4>
+                      <div style={{
+                        fontFamily: 'monospace',
+                        fontSize: '14px',
+                        lineHeight: '1.6',
+                        color: '#374151',
+                        whiteSpace: 'pre-wrap',
+                        wordBreak: 'break-word',
+                        maxHeight: '300px',
+                        overflowY: 'auto'
+                      }}>
+                        {content}
+                      </div>
+                      <div style={{
+                        marginTop: '12px',
+                        paddingTop: '12px',
+                        borderTop: '1px solid #e5e7eb',
+                        fontSize: '12px',
+                        color: '#6b7280'
+                      }}>
+                        Words: {content.split(/\s+/).filter(word => word.length > 0).length} | 
+                        Characters: {content.length}
+                      </div>
+                    </div>
+                    {/* Enhanced Content */}
+                    <div style={{
+                      background: 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)',
+                      border: '2px solid #0ea5e9',
+                      borderRadius: '12px',
+                      padding: '20px',
+                      position: 'relative'
+                    }}>
+                      <div style={{
+                        position: 'absolute',
+                        top: '8px',
+                        right: '8px',
+                        background: '#0ea5e9',
+                        color: 'white',
+                        padding: '4px 8px',
+                        borderRadius: '6px',
+                        fontSize: '12px',
+                        fontWeight: '600'
+                      }}>
+                        After
+                      </div>
+                      <h4 style={{ 
+                        color: '#0ea5e9', 
+                        marginBottom: '12px',
+                        fontSize: '16px',
+                        fontWeight: '600'
+                      }}>
+                        ✨ Enhanced Content
+                      </h4>
+                      <div style={{
+                        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                        fontSize: '14px',
+                        lineHeight: '1.6',
+                        color: '#1e293b',
+                        whiteSpace: 'pre-wrap',
+                        wordBreak: 'break-word',
+                        maxHeight: '300px',
+                        overflowY: 'auto'
+                      }}>
+                        {reviewedContent || enhancedContent}
+                      </div>
+                      <div style={{
+                        marginTop: '12px',
+                        paddingTop: '12px',
+                        borderTop: '1px solid #0ea5e9',
+                        fontSize: '12px',
+                        color: '#0ea5e9'
+                      }}>
+                        Words: {(reviewedContent || enhancedContent).split(/\s+/).filter(word => word.length > 0).length} | 
+                        Characters: {(reviewedContent || enhancedContent).length}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+              <div className="post-preview mobile-post-preview">
                 <div className="preview-header">
                   <span className="platform-icon">{getPlatformIcon(platform)}</span>
                   <span className="preview-title">Facebook Post Preview</span>
@@ -1115,27 +1887,62 @@ Format as JSON with these fields:
                     </span>
                   </div>
                 </div>
-                
-                <div className={`preview-content ${isOverLimit ? 'over-limit' : ''}`}>
-                  <pre>{enhancedContent}</pre>
+                <div className={`preview-content ${isOverLimit ? 'over-limit' : ''} ${platform === 'instagram' ? 'instagram-preview' : ''}`}>
+                  {isReviewing ? (
+                    <span>Reviewing for unnecessary/irrelevant content...</span>
+                  ) : (
+                    <pre style={{
+                      fontFamily: platform === 'instagram' ? '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' : 'monospace',
+                      fontSize: platform === 'instagram' ? '16px' : '14px',
+                      lineHeight: platform === 'instagram' ? '1.8' : '1.4',
+                      color: platform === 'instagram' ? '#2d3748' : '#333',
+                      background: platform === 'instagram' ? 'linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%)' : 'transparent',
+                      padding: platform === 'instagram' ? '20px' : '0',
+                      borderRadius: platform === 'instagram' ? '12px' : '0',
+                      border: platform === 'instagram' ? '2px solid #ec4899' : 'none',
+                      margin: platform === 'instagram' ? '0' : '0'
+                    }}>
+                      {reviewedContent || enhancedContent}
+                    </pre>
+                  )}
                 </div>
-                
-                <div className="preview-footer">
+                <div className="preview-footer mobile-preview-footer">
                   <div className="character-count">
-                    Characters: {characterCount}/{selectedPlatform.maxLength}
+                    Characters: {(reviewedContent || enhancedContent).length}/{selectedPlatform.maxLength}
                     {isOverLimit && <span className="limit-warning">⚠️ Over character limit</span>}
-                  </div>
-                  <div className="preview-actions">
-                    <button onClick={() => copyToClipboard(enhancedContent)} className="action-btn">
-                      📋 Copy Post
-                    </button>
-                    <button onClick={() => copyToClipboard(enhancedContent + '\n\n' + hashtags)} className="action-btn">
-                      📋 Copy with Hashtags
-                    </button>
                   </div>
                 </div>
               </div>
-
+              {/* Sticky Action Bar */}
+              <div className="sticky-action-bar mobile-sticky-action-bar">
+                <button onClick={() => copyToClipboard(reviewedContent || enhancedContent)} className="action-btn mobile-action-btn">
+                  📋 Copy Post
+                </button>
+                <button 
+                  onClick={() => openPreviewWindow(
+                    reviewedContent || enhancedContent, 
+                    platform, 
+                    postType, 
+                    tone, 
+                    targetAudience
+                  )} 
+                  className="action-btn mobile-action-btn"
+                >
+                  👁️ Preview in New Window
+                </button>
+                <button 
+                  onClick={() => setShowOriginalContent(!showOriginalContent)} 
+                  className="action-btn mobile-action-btn"
+                >
+                  {showOriginalContent ? '🙈' : '📝'} {showOriginalContent ? 'Hide' : 'Show'} Original
+                </button>
+                <button 
+                  onClick={() => setShowComparison(!showComparison)} 
+                  className="action-btn mobile-action-btn"
+                >
+                  {showComparison ? '🙈' : '⚖️'} {showComparison ? 'Hide' : 'Show'} Comparison
+                </button>
+              </div>
               {/* Quality Analysis */}
               {qualityAnalysis && (
                 <div className="quality-section">
@@ -1285,315 +2092,351 @@ Format as JSON with these fields:
             </div>
           )}
 
-          {/* Generation History */}
-          {generationHistory.length > 0 && (
-            <div className="section history-section">
-              <div style={{ 
-                display: 'flex', 
-                justifyContent: 'space-between', 
-                alignItems: 'center', 
-                marginBottom: '16px' 
-              }}>
-                <div>
-                  <h2>📚 Previous Posts</h2>
-                  <p style={{ 
-                    margin: '0', 
-                    color: '#666', 
-                    fontSize: '14px',
-                    fontStyle: 'italic'
-                  }}>
-                    Your recently generated posts. Click on any post to view the full content and copy it.
-                  </p>
-                </div>
-                <button 
-                  onClick={() => {
-                    if (window.confirm('Are you sure you want to clear all previous posts? This action cannot be undone.')) {
-                      setGenerationHistory([]);
-                    }
-                  }}
-                  style={{
-                    background: '#ef4444',
-                    color: '#fff',
-                    border: 'none',
-                    padding: '8px 16px',
-                    borderRadius: '8px',
-                    fontSize: '12px',
-                    fontWeight: '600',
-                    cursor: 'pointer',
-                    transition: 'all 0.3s ease',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '4px'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.target.style.background = '#dc2626';
-                    e.target.style.transform = 'translateY(-1px)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.background = '#ef4444';
-                    e.target.style.transform = 'translateY(0)';
-                  }}
-                >
-                  🗑️ Clear History
-                </button>
-              </div>
-              
-              <div className="history-list">
-                {generationHistory.map((item, index) => (
-                  <div key={item.id} className="history-item">
-                    <div className="history-meta">
-                      <span className="history-platform">
-                        {getPlatformIcon(item.platform)} {platforms.find(p => p.value === item.platform)?.label}
-                      </span>
-                      <span className="history-type">
-                        {postTypes.find(pt => pt.value === item.postType)?.label}
-                      </span>
-                      <span className="history-time">
-                        {new Date(item.timestamp).toLocaleString()}
-                      </span>
-                    </div>
-                    
-                    <div className="history-content">
-                      <div className="history-original">
-                        <strong>Original:</strong> {item.original.substring(0, 100)}...
-                      </div>
-                      <div className="history-enhanced">
-                        <strong>Enhanced:</strong> {item.enhanced.substring(0, 150)}...
-                      </div>
-                      <div className="history-length-info">
-                        <div className="history-length-item">
-                          <span>📏 Target:</span> {item.length || 'N/A'} words
-                        </div>
-                        <div className="history-length-item">
-                          <span>🎭</span> {brandVoiceIntensities.find(bv => bv.value === item.brandVoiceIntensity)?.label || 'N/A'}
-                        </div>
-                        <div className="history-length-item">
-                          <span>🔥</span> {engagementUrgencies.find(eu => eu.value === item.engagementUrgency)?.label || 'N/A'}
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="history-actions">
-                      <button 
-                        onClick={() => {
-                          setContent(item.original);
-                          setEnhancedContent(item.enhanced);
-                          setPlatform(item.platform);
-                          setPostType(item.postType);
-                          setTone(item.tone);
-                          setTargetAudience(item.targetAudience);
-                          setContentStructure(item.contentStructure);
-                          setEngagementGoal(item.engagementGoal);
-                          setContentLength(item.contentLength || 'optimal');
-                          setBrandVoiceIntensity(item.brandVoiceIntensity);
-                          setEngagementUrgency(item.engagementUrgency);
-                          setSituation(item.situation);
-                          // Scroll to top
-                          window.scrollTo({ top: 0, behavior: 'smooth' });
-                        }} 
-                        className="history-btn"
-                        style={{ marginRight: '8px' }}
-                      >
-                        🔄 Load
-                      </button>
-                      <button 
-                        onClick={() => copyToClipboard(item.enhanced)} 
-                        className="history-btn"
-                      >
-                        📋 Copy
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              
-              {/* Full Post Viewer */}
-              <div style={{ marginTop: '20px' }}>
-                <h3 style={{ 
-                  marginBottom: '16px', 
-                  color: '#2d3748',
-                  fontSize: '18px',
-                  fontWeight: '600'
-                }}>
-                  📖 View Full Previous Posts
-                </h3>
-                <p style={{ 
-                  marginBottom: '16px', 
-                  color: '#666', 
-                  fontSize: '13px',
-                  fontStyle: 'italic'
-                }}>
-                  Click on any card below to open the full post in a new window for easy reading and copying.
-                </p>
-                <div style={{ 
-                  display: 'grid', 
-                  gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', 
-                  gap: '16px' 
-                }}>
-                  {generationHistory.slice(0, 6).map((item, index) => (
-                    <div key={item.id} style={{
-                      background: '#f8f9fa',
-                      border: '1px solid #e9ecef',
-                      borderRadius: '12px',
-                      padding: '16px',
-                      cursor: 'pointer',
-                      transition: 'all 0.3s ease',
-                      position: 'relative',
-                      overflow: 'hidden'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.target.style.transform = 'translateY(-2px)';
-                      e.target.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.transform = 'translateY(0)';
-                      e.target.style.boxShadow = 'none';
-                    }}
-                    onClick={() => {
-                      // Show full post in a modal-like view
-                      const fullPost = window.open('', '_blank', 'width=600,height=800');
-                      fullPost.document.write(`
-                        <html>
-                          <head>
-                            <title>Previous Post - ${new Date(item.timestamp).toLocaleDateString()}</title>
-                            <style>
-                              body { 
-                                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
-                                margin: 20px; 
-                                line-height: 1.6;
-                                background: #f8f9fa;
-                              }
-                              .post-container {
-                                background: white;
-                                padding: 24px;
-                                border-radius: 12px;
-                                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-                                max-width: 500px;
-                                margin: 0 auto;
-                              }
-                              .post-header {
-                                border-bottom: 1px solid #e9ecef;
-                                padding-bottom: 12px;
-                                margin-bottom: 16px;
-                              }
-                              .post-meta {
-                                font-size: 12px;
-                                color: #6c757d;
-                                margin-bottom: 8px;
-                              }
-                              .post-content {
-                                white-space: pre-wrap;
-                                font-size: 14px;
-                                color: #2d3748;
-                              }
-                              .post-actions {
-                                margin-top: 16px;
-                                padding-top: 12px;
-                                border-top: 1px solid #e9ecef;
-                              }
-                              .action-btn {
-                                background: #667eea;
-                                color: white;
-                                border: none;
-                                padding: 8px 16px;
-                                border-radius: 6px;
-                                cursor: pointer;
-                                margin-right: 8px;
-                                font-size: 12px;
-                              }
-                              .action-btn:hover {
-                                background: #5a67d8;
-                              }
-                            </style>
-                          </head>
-                          <body>
-                            <div class="post-container">
-                              <div class="post-header">
-                                <div class="post-meta">
-                                  ${getPlatformIcon(item.platform)} ${platforms.find(p => p.value === item.platform)?.label} • 
-                                  ${postTypes.find(pt => pt.value === item.postType)?.label} • 
-                                  ${new Date(item.timestamp).toLocaleString()}
-                                </div>
-                                <h3>Generated Post</h3>
+          {/* Generation History - Categorized by Platform */}
+          <div className="section history-section mobile-history-section">
+            <h2>📚 Previous Posts by Platform</h2>
+            <p style={{ margin: '0', color: '#666', fontSize: '14px', fontStyle: 'italic' }}>
+              Your recently generated posts, grouped by platform. Click on any post to view the full content and copy it.
+            </p>
+            {isHistoryLoading ? (
+              <div style={{ color: '#64748b', fontSize: '16px', padding: '24px 0' }}>Loading global history...</div>
+            ) : historyError ? (
+              <div style={{ color: '#ef4444', fontSize: '16px', padding: '24px 0' }}>{historyError}</div>
+            ) : (
+              <div style={{ marginTop: '24px' }}>
+                {Object.entries(groupHistoryByPlatform(globalHistory)).length > 0 ? (
+                  Object.entries(groupHistoryByPlatform(globalHistory)).map(([platformKey, posts]) => (
+                    <div key={platformKey} style={{ marginBottom: '32px' }}>
+                      <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#2d3748', fontSize: '20px', fontWeight: '700' }}>
+                        <span>{getPlatformIcon(platformKey)}</span>
+                        <span>{platforms.find(p => p.value === platformKey)?.label || platformKey}</span>
+                        <span style={{ color: '#718096', fontSize: '14px', fontWeight: '400', marginLeft: '8px' }}>({posts.length} post{posts.length > 1 ? 's' : ''})</span>
+                      </h3>
+                      <div className="history-list">
+                        {posts.map((item, index) => (
+                          <div key={item._id || item.id} className="history-item">
+                            <div className="history-meta">
+                              <span className="history-platform">
+                                {getPlatformIcon(item.platform)} {platforms.find(p => p.value === item.platform)?.label}
+                              </span>
+                              <span className="history-type">
+                                {postTypes.find(pt => pt.value === item.postType)?.label}
+                              </span>
+                              <span className="history-time">
+                                {new Date(item.timestamp).toLocaleString()}
+                              </span>
+                            </div>
+                            <div className="history-content">
+                              <div className="history-original">
+                                <strong>Original:</strong> {item.original.substring(0, 100)}...
                               </div>
-                              <div class="post-content">${item.enhanced}</div>
-                              <div class="post-actions">
-                                <button class="action-btn" onclick="navigator.clipboard.writeText('${item.enhanced.replace(/'/g, "\\'")}').then(() => alert('Copied!'))">
-                                  📋 Copy Post
-                                </button>
-                                <button class="action-btn" onclick="window.close()">
-                                  ❌ Close
-                                </button>
+                              <div className="history-enhanced">
+                                <strong>Enhanced:</strong> {item.enhanced.substring(0, 150)}...
+                              </div>
+                              <div className="history-length-info">
+                                <div className="history-length-item">
+                                  <span>📏 Target:</span> {item.length || 'N/A'} words
+                                </div>
+                                <div className="history-length-item">
+                                  <span>🎭</span> {brandVoiceIntensities.find(bv => bv.value === item.brandVoiceIntensity)?.label || 'N/A'}
+                                </div>
+                                <div className="history-length-item">
+                                  <span>🔥</span> {engagementUrgencies.find(eu => eu.value === item.engagementUrgency)?.label || 'N/A'}
+                                </div>
                               </div>
                             </div>
-                          </body>
-                        </html>
-                      `);
-                    }}
-                    >
-                      <div style={{
-                        position: 'absolute',
-                        top: '8px',
-                        right: '8px',
-                        background: '#667eea',
-                        color: 'white',
-                        padding: '2px 6px',
-                        borderRadius: '4px',
-                        fontSize: '10px',
-                        fontWeight: '600'
-                      }}>
-                        #{index + 1}
-                      </div>
-                      
-                      <div style={{ marginBottom: '8px' }}>
-                        <span style={{ 
-                          fontSize: '12px', 
-                          color: '#6c757d',
-                          fontWeight: '500'
-                        }}>
-                          {getPlatformIcon(item.platform)} {platforms.find(p => p.value === item.platform)?.label}
-                        </span>
-                        <span style={{ 
-                          fontSize: '12px', 
-                          color: '#6c757d',
-                          marginLeft: '8px'
-                        }}>
-                          {new Date(item.timestamp).toLocaleDateString()}
-                        </span>
-                      </div>
-                      
-                      <div style={{
-                        fontSize: '13px',
-                        color: '#495057',
-                        lineHeight: '1.4',
-                        maxHeight: '60px',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        display: '-webkit-box',
-                        WebkitLineClamp: 3,
-                        WebkitBoxOrient: 'vertical'
-                      }}>
-                        {item.enhanced}
-                      </div>
-                      
-                      <div style={{
-                        marginTop: '8px',
-                        fontSize: '11px',
-                        color: '#6c757d'
-                      }}>
-                        📏 {item.length || 'N/A'} words • 
-                        🎭 {brandVoiceIntensities.find(bv => bv.value === item.brandVoiceIntensity)?.label || 'N/A'}
+                            <div className="history-actions">
+                              <button 
+                                onClick={() => {
+                                  setContent(item.original);
+                                  setEnhancedContent(item.enhanced);
+                                  setPlatform(item.platform);
+                                  setPostType(item.postType);
+                                  setTone(item.tone);
+                                  setTargetAudience(item.targetAudience);
+                                  setContentStructure(item.contentStructure);
+                                  setEngagementGoal(item.engagementGoal);
+                                  setContentLength(item.contentLength || 'optimal');
+                                  setBrandVoiceIntensity(item.brandVoiceIntensity);
+                                  setEngagementUrgency(item.engagementUrgency);
+                                  setSituation(item.situation);
+                                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                                }} 
+                                className="history-btn"
+                                style={{ marginRight: '8px' }}
+                              >
+                                🔄 Load
+                              </button>
+                              <button 
+                                onClick={() => copyToClipboard(item.enhanced)} 
+                                className="history-btn"
+                                style={{ marginRight: '8px' }}
+                              >
+                                📋 Copy
+                              </button>
+                              <button
+                                onClick={() => openPreviewWindow(
+                                  item.enhanced,
+                                  item.platform,
+                                  item.postType,
+                                  item.tone,
+                                  item.targetAudience
+                                )}
+                                className="history-btn preview"
+                              >
+                                👁️ Preview
+                              </button>
+                              <button
+                                onClick={() => setModalPost(item)}
+                                className="history-btn"
+                              >
+                                📄 View Full Post
+                              </button>
+                            </div>
+                          </div>
+                        ))}
                       </div>
                     </div>
-                  ))}
+                  ))
+                ) : (
+                  // Show all platforms with empty state if no posts
+                  platforms.map(p => (
+                    <div key={p.value} style={{ marginBottom: '32px' }}>
+                      <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#2d3748', fontSize: '20px', fontWeight: '700' }}>
+                        <span>{p.icon}</span>
+                        <span>{p.label}</span>
+                        <span style={{ color: '#718096', fontSize: '14px', fontWeight: '400', marginLeft: '8px' }}>(0 posts)</span>
+                      </h3>
+                      <div className="history-list">
+                        <div className="history-item" style={{ color: '#a0aec0', fontStyle: 'italic', padding: '18px 0', fontSize: '16px' }}>
+                          No posts yet for {p.label}. Create a post above and it will appear here!
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            )}
+
+            {/* Modal for full post view */}
+            {modalPost && (
+              <div 
+                className="modal-overlay"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  animation: 'fadeIn 0.3s ease-out',
+                }}
+                onClick={() => setModalPost(null)}
+              >
+                <div
+                  className="modal-content"
+                  style={{
+                    padding: '48px 36px 36px 36px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    minHeight: '340px',
+                  }}
+                  onClick={e => e.stopPropagation()}
+                >
+                  <button
+                    className="modal-close-btn"
+                    onClick={() => setModalPost(null)}
+                    style={{
+                      background: '#ef4444',
+                      color: '#fff',
+                      border: 'none',
+                      borderRadius: '10px',
+                      padding: '10px 22px',
+                      fontSize: '18px',
+                      fontWeight: '700',
+                      cursor: 'pointer',
+                      boxShadow: '0 4px 12px rgba(239,68,68,0.25)',
+                      transition: 'all 0.2s ease',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.background = '#dc2626';
+                      e.target.style.transform = 'scale(1.05)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.background = '#ef4444';
+                      e.target.style.transform = 'scale(1)';
+                    }}
+                  >
+                    ✖ Close
+                  </button>
+                  <h2 style={{
+                    marginBottom: '16px',
+                    color: '#3730a3',
+                    fontSize: '2.1rem',
+                    fontWeight: 800,
+                    letterSpacing: '0.5px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                  }}>
+                    {getPlatformIcon(modalPost.platform)} {platforms.find(p => p.value === modalPost.platform)?.label} Post
+                  </h2>
+                  <div style={{ color: '#64748b', fontSize: '15px', marginBottom: '18px', fontWeight: 500 }}>
+                    {new Date(modalPost.timestamp).toLocaleString()} • {postTypes.find(pt => pt.value === modalPost.postType)?.label}
+                  </div>
+                  <div style={{
+                    background: 'rgba(255,255,255,0.98)',
+                    border: '1.5px solid #c7d2fe',
+                    borderRadius: '12px',
+                    padding: '28px',
+                    fontSize: '1.25rem',
+                    color: '#1e293b',
+                    whiteSpace: 'pre-wrap',
+                    marginBottom: '24px',
+                    lineHeight: 1.7,
+                    fontWeight: 500,
+                    boxShadow: '0 4px 20px rgba(102,126,234,0.12)',
+                    wordBreak: 'break-word',
+                    minHeight: '120px',
+                  }}>
+                    {modalPost.enhanced}
+                  </div>
+                  
+                  {/* Original Content in Modal */}
+                  <div style={{
+                    background: '#f9fafb',
+                    border: '1.5px solid #e5e7eb',
+                    borderRadius: '12px',
+                    padding: '20px',
+                    marginBottom: '24px',
+                    position: 'relative'
+                  }}>
+                    <div style={{
+                      position: 'absolute',
+                      top: '8px',
+                      right: '8px',
+                      background: '#6b7280',
+                      color: 'white',
+                      padding: '4px 8px',
+                      borderRadius: '6px',
+                      fontSize: '12px',
+                      fontWeight: '600'
+                    }}>
+                      Original
+                    </div>
+                    <h4 style={{ 
+                      color: '#6b7280', 
+                      marginBottom: '12px',
+                      fontSize: '16px',
+                      fontWeight: '600'
+                    }}>
+                      📝 Original Content
+                    </h4>
+                    <div style={{
+                      fontFamily: 'monospace',
+                      fontSize: '14px',
+                      lineHeight: '1.6',
+                      color: '#374151',
+                      whiteSpace: 'pre-wrap',
+                      wordBreak: 'break-word'
+                    }}>
+                      {modalPost.original}
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', gap: '12px', marginTop: '8px' }}>
+                    <button
+                      onClick={() => copyToClipboard(modalPost.enhanced)}
+                      style={{
+                        background: '#667eea',
+                        color: 'white',
+                        border: 'none',
+                        padding: '12px 28px',
+                        borderRadius: '10px',
+                        cursor: 'pointer',
+                        fontSize: '1.1rem',
+                        fontWeight: 600,
+                        boxShadow: '0 2px 8px rgba(102,126,234,0.15)',
+                        transition: 'all 0.2s ease',
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.background = '#5a67d8';
+                        e.target.style.transform = 'translateY(-1px)';
+                        e.target.style.boxShadow = '0 4px 12px rgba(102,126,234,0.25)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.background = '#667eea';
+                        e.target.style.transform = 'translateY(0)';
+                        e.target.style.boxShadow = '0 2px 8px rgba(102,126,234,0.15)';
+                      }}
+                    >
+                      📋 Copy Post
+                    </button>
+                    <button
+                      onClick={() => openPreviewWindow(
+                        modalPost.enhanced,
+                        modalPost.platform,
+                        modalPost.postType,
+                        modalPost.tone,
+                        modalPost.targetAudience
+                      )}
+                      style={{
+                        background: '#10b981',
+                        color: 'white',
+                        border: 'none',
+                        padding: '12px 28px',
+                        borderRadius: '10px',
+                        cursor: 'pointer',
+                        fontSize: '1.1rem',
+                        fontWeight: 600,
+                        boxShadow: '0 2px 8px rgba(16,185,129,0.15)',
+                        transition: 'all 0.2s ease',
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.background = '#059669';
+                        e.target.style.transform = 'translateY(-1px)';
+                        e.target.style.boxShadow = '0 4px 12px rgba(16,185,129,0.25)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.background = '#10b981';
+                        e.target.style.transform = 'translateY(0)';
+                        e.target.style.boxShadow = '0 2px 8px rgba(16,185,129,0.15)';
+                      }}
+                    >
+                      👁️ Preview in New Window
+                    </button>
+                    <button
+                      onClick={() => setModalPost(null)}
+                      style={{
+                        background: '#e0e7ff',
+                        color: '#3730a3',
+                        border: 'none',
+                        padding: '12px 28px',
+                        borderRadius: '10px',
+                        cursor: 'pointer',
+                        fontSize: '1.1rem',
+                        fontWeight: 600,
+                        boxShadow: '0 2px 8px rgba(102,126,234,0.12)',
+                        transition: 'all 0.2s ease',
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.background = '#c7d2fe';
+                        e.target.style.transform = 'translateY(-1px)';
+                        e.target.style.boxShadow = '0 4px 12px rgba(102,126,234,0.2)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.background = '#e0e7ff';
+                        e.target.style.transform = 'translateY(0)';
+                        e.target.style.boxShadow = '0 2px 8px rgba(102,126,234,0.12)';
+                      }}
+                    >
+                      Close
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
 
           {/* Clear Button */}
-          <div className="section">
-            <button onClick={clearAll} className="clear-btn">
+          <div className="section clear-section-mobile">
+            <button onClick={clearAll} className="clear-btn mobile-clear-btn">
               🗑️ Clear All
             </button>
           </div>

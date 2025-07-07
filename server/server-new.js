@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
+console.log('DEBUG NVIDIA_API_KEY:', process.env.NVIDIA_API_KEY, typeof process.env.NVIDIA_API_KEY);
 
 // Import modules
 const { connectToMongoDB } = require('./config/database');
@@ -20,6 +21,7 @@ const healthRoutes = require('./routes/health');
 const enhancedLLMRoutes = require('./routes/enhancedLLM');
 const modelsRoutes = require('./routes/models');
 const blogRoutes = require('./routes/blog');
+const socialMediaPostsRoutes = require('./routes/socialMediaPosts');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -84,6 +86,7 @@ app.use('/api', healthRoutes);
 app.use('/api', enhancedLLMRoutes);
 app.use('/api', modelsRoutes);
 app.use('/api', blogRoutes);
+app.use('/api', socialMediaPostsRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
