@@ -145,7 +145,8 @@ const BlogCreator = () => {
   const lengths = [
     { value: 'short', label: 'Short (300-500 words)', icon: '📝', color: '#4caf50' },
     { value: 'medium', label: 'Medium (600-800 words)', icon: '📄', color: '#ff9800' },
-    { value: 'long', label: 'Long (900-1200 words)', icon: '📚', color: '#f44336' }
+    { value: 'long', label: 'Long (900-1200 words)', icon: '📖', color: '#f44336' },
+    { value: 'extra_long', label: 'Extra Long (1500-3000 words)', icon: '📖', color: '#1976d2' }
   ];
 
   const handleInputChange = (field, value) => {
@@ -738,14 +739,14 @@ const BlogCreator = () => {
     <div style={{
       minHeight: '100vh',
       background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      padding: '20px',
+      padding: '12px',
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
     }}>
       <div style={{
         maxWidth: 1200,
         margin: '0 auto',
-        background: 'rgba(255, 255, 255, 0.95)',
-        borderRadius: '24px',
+        background: 'rgba(255, 255, 255, 0.98)',
+        borderRadius: '16px',
         boxShadow: '0 20px 60px rgba(0, 0, 0, 0.15)',
         overflow: 'hidden',
         backdropFilter: 'blur(10px)'
@@ -753,19 +754,19 @@ const BlogCreator = () => {
         {/* Header */}
         <div style={{
           background: 'linear-gradient(135deg, #4f8cff 0%, #38e8ff 100%)',
-          padding: '40px 32px',
+          padding: '24px 16px',
           textAlign: 'center'
         }}>
           <span style={{ 
-            fontSize: '64px', 
-            marginBottom: '16px', 
+            fontSize: '56px', 
+            marginBottom: '12px', 
             display: 'block',
             filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.1))'
           }}>📝</span>
           <h1 style={{ 
-            margin: '0 0 12px 0', 
+            margin: '0 0 8px 0', 
             fontWeight: '800', 
-            fontSize: '36px', 
+            fontSize: '24px', 
             color: '#fff',
             textShadow: '0 2px 4px rgba(0,0,0,0.1)'
           }}>
@@ -773,7 +774,7 @@ const BlogCreator = () => {
           </h1>
           <p style={{ 
             margin: '0', 
-            fontSize: '18px', 
+            fontSize: '14px', 
             color: '#fff',
             opacity: '0.95'
           }}>
@@ -782,48 +783,46 @@ const BlogCreator = () => {
         </div>
 
         {/* Content */}
-        <div style={{ padding: '40px 32px' }}>
+        <div style={{ padding: '16px' }}>
           {/* Model Information */}
           <ModelInfo 
             useCase="blog_generation" 
-            style={{ marginBottom: '24px' }}
+            style={{ marginBottom: '16px' }}
           />
 
           {!generatedBlog ? (
             <div>
-              {/* API Key is now handled securely on the server */}
-
               {/* Image Upload Section */}
               <div style={{
                 background: 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)',
-                borderRadius: '16px',
-                padding: '24px',
-                marginBottom: '24px',
+                borderRadius: '12px',
+                padding: '16px',
+                marginBottom: '16px',
                 border: '1px solid #bae6fd'
               }}>
                 <h3 style={{
-                  margin: '0 0 20px 0',
+                  margin: '0 0 12px 0',
                   color: '#0c4a6e',
-                  fontSize: '20px',
+                  fontSize: '16px',
                   fontWeight: '700',
                   display: 'flex',
                   alignItems: 'center',
                   gap: '8px'
                 }}>
-                  📸 {t('blogImages')}
+                  <span style={{ fontSize: '24px' }}>📸</span> {t('blogImages')}
                 </h3>
                 
                 <div style={{
                   border: '2px dashed #bae6fd',
                   borderRadius: '12px',
-                  padding: '24px',
+                  padding: '16px',
                   textAlign: 'center',
                   background: 'rgba(255, 255, 255, 0.5)',
-                  marginBottom: '20px',
+                  marginBottom: '12px',
                   transition: 'all 0.3s ease'
                 }}>
-                  <div style={{ fontSize: '48px', marginBottom: '12px' }}>📁</div>
-                  <p style={{ margin: '0 0 16px 0', color: '#0c4a6e', fontSize: '16px' }}>
+                  <div style={{ fontSize: '48px', marginBottom: '8px' }}>📁</div>
+                  <p style={{ margin: '0 0 12px 0', color: '#0c4a6e', fontSize: '14px' }}>
                     {t('uploadImagesToEnhanceYourBlogPost')}
                   </p>
                   <input
@@ -839,17 +838,18 @@ const BlogCreator = () => {
                     style={{
                       background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                       color: '#fff',
-                      padding: '12px 24px',
+                      padding: '12px 20px',
                       borderRadius: '8px',
                       cursor: 'pointer',
                       fontWeight: '600',
                       display: 'inline-block',
-                      transition: 'all 0.3s ease'
+                      transition: 'all 0.3s ease',
+                      fontSize: '14px'
                     }}
                   >
-                    📤 {t('chooseImages')}
+                    <span style={{ fontSize: '18px', marginRight: '6px' }}>📤</span> {t('chooseImages')}
                   </label>
-                  <p style={{ margin: '8px 0 0 0', color: '#0369a1', fontSize: '14px' }}>
+                  <p style={{ margin: '6px 0 0 0', color: '#0369a1', fontSize: '12px' }}>
                     {t('supportsJpegPngGifWebp')}
                   </p>
                 </div>
@@ -859,15 +859,15 @@ const BlogCreator = () => {
                   <div style={{
                     background: '#fff',
                     borderRadius: '8px',
-                    padding: '16px',
-                    marginBottom: '16px',
+                    padding: '12px',
+                    marginBottom: '12px',
                     border: '1px solid #bae6fd'
                   }}>
                     <div style={{
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '12px',
-                      marginBottom: '8px'
+                      gap: '8px',
+                      marginBottom: '6px'
                     }}>
                       <div style={{
                         width: '20px',
@@ -877,15 +877,15 @@ const BlogCreator = () => {
                         borderRadius: '50%',
                         animation: 'spin 1s linear infinite'
                       }}></div>
-                      <span style={{ color: '#0c4a6e', fontWeight: '600' }}>
+                      <span style={{ color: '#0c4a6e', fontWeight: '600', fontSize: '14px' }}>
                         {t('uploadingImages')}
                       </span>
                     </div>
                     <div style={{
                       width: '100%',
-                      height: '8px',
+                      height: '6px',
                       background: '#e0f2fe',
-                      borderRadius: '4px',
+                      borderRadius: '3px',
                       overflow: 'hidden'
                     }}>
                       <div style={{
@@ -902,26 +902,29 @@ const BlogCreator = () => {
                 {images.length > 0 && (
                   <div>
                     <h4 style={{
-                      margin: '0 0 16px 0',
+                      margin: '0 0 12px 0',
                       color: '#0c4a6e',
-                      fontSize: '16px',
-                      fontWeight: '600'
+                      fontSize: '14px',
+                      fontWeight: '600',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px'
                     }}>
-                      📷 {t('uploadedImages')} ({images.length})
+                      <span style={{ fontSize: '20px' }}>📷</span> {t('uploadedImages')} ({images.length})
                     </h4>
                     <div style={{
                       display: 'grid',
-                      gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
-                      gap: '16px',
-                      marginBottom: '16px'
+                      gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))',
+                      gap: '8px',
+                      marginBottom: '12px'
                     }}>
                       {images.map((image, index) => (
                         <div
                           key={image.id}
                           style={{
                             background: '#fff',
-                            borderRadius: '12px',
-                            padding: '12px',
+                            borderRadius: '8px',
+                            padding: '8px',
                             border: '1px solid #bae6fd',
                             position: 'relative'
                           }}
@@ -931,30 +934,31 @@ const BlogCreator = () => {
                             alt={image.name}
                             style={{
                               width: '100%',
-                              height: '120px',
+                              height: '80px',
                               objectFit: 'cover',
-                              borderRadius: '8px',
-                              marginBottom: '8px'
+                              borderRadius: '6px',
+                              marginBottom: '6px'
                             }}
                           />
                           <div style={{
-                            fontSize: '12px',
+                            fontSize: '11px',
                             color: '#0369a1',
-                            marginBottom: '4px',
+                            marginBottom: '3px',
                             fontWeight: '500'
                           }}>
-                            {image.name.length > 20 ? image.name.substring(0, 20) + '...' : image.name}
+                            {image.name.length > 12 ? image.name.substring(0, 12) + '...' : image.name}
                           </div>
                           <div style={{
-                            fontSize: '11px',
+                            fontSize: '10px',
                             color: '#64748b',
-                            marginBottom: '8px'
+                            marginBottom: '6px'
                           }}>
                             {formatFileSize(image.size)}
                           </div>
                           <div style={{
                             display: 'flex',
-                            gap: '8px'
+                            gap: '4px',
+                            flexWrap: 'wrap'
                           }}>
                             <button
                               onClick={() => removeImage(image.id)}
@@ -962,14 +966,19 @@ const BlogCreator = () => {
                                 background: '#ef4444',
                                 color: '#fff',
                                 border: 'none',
-                                borderRadius: '6px',
-                                padding: '4px 8px',
-                                fontSize: '11px',
+                                borderRadius: '4px',
+                                padding: '4px 6px',
+                                fontSize: '12px',
                                 cursor: 'pointer',
-                                fontWeight: '500'
+                                fontWeight: '500',
+                                minWidth: '28px',
+                                height: '28px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center'
                               }}
                             >
-                              🗑️ {t('remove')}
+                              🗑️
                             </button>
                             {index > 0 && (
                               <button
@@ -978,14 +987,19 @@ const BlogCreator = () => {
                                   background: '#3b82f6',
                                   color: '#fff',
                                   border: 'none',
-                                  borderRadius: '6px',
-                                  padding: '4px 8px',
-                                  fontSize: '11px',
+                                  borderRadius: '4px',
+                                  padding: '4px 6px',
+                                  fontSize: '12px',
                                   cursor: 'pointer',
-                                  fontWeight: '500'
+                                  fontWeight: '500',
+                                  minWidth: '28px',
+                                  height: '28px',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center'
                                 }}
                               >
-                                ⬆️ {t('up')}
+                                ⬆️
                               </button>
                             )}
                             {index < images.length - 1 && (
@@ -995,14 +1009,19 @@ const BlogCreator = () => {
                                   background: '#3b82f6',
                                   color: '#fff',
                                   border: 'none',
-                                  borderRadius: '6px',
-                                  padding: '4px 8px',
-                                  fontSize: '11px',
+                                  borderRadius: '4px',
+                                  padding: '4px 6px',
+                                  fontSize: '12px',
                                   cursor: 'pointer',
-                                  fontWeight: '500'
+                                  fontWeight: '500',
+                                  minWidth: '28px',
+                                  height: '28px',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center'
                                 }}
                               >
-                                ⬇️ {t('down')}
+                                ⬇️
                               </button>
                             )}
                           </div>
@@ -1011,12 +1030,12 @@ const BlogCreator = () => {
                     </div>
                     <div style={{
                       background: '#e0f2fe',
-                      borderRadius: '8px',
-                      padding: '12px',
-                      fontSize: '14px',
+                      borderRadius: '6px',
+                      padding: '10px',
+                      fontSize: '12px',
                       color: '#0c4a6e'
                     }}>
-                      💡 <strong>{t('tip')}:</strong> {t('imagesWillBeAutomaticallyIntegratedIntoYourBlogPost')}
+                      <span style={{ fontSize: '16px', marginRight: '4px' }}>💡</span> <strong>{t('tip')}:</strong> {t('imagesWillBeAutomaticallyIntegratedIntoYourBlogPost')}
                     </div>
                   </div>
                 )}
@@ -1024,33 +1043,37 @@ const BlogCreator = () => {
 
               {/* Blog Configuration Form */}
               <div style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-                gap: '24px',
-                marginBottom: '32px'
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '16px',
+                marginBottom: '20px'
               }}>
                 {/* Basic Information */}
                 <div style={{
                   background: '#f8f9fa',
-                  borderRadius: '16px',
-                  padding: '24px',
+                  borderRadius: '12px',
+                  padding: '16px',
                   border: '1px solid #e9ecef'
                 }}>
                   <h3 style={{
-                    margin: '0 0 20px 0',
+                    margin: '0 0 12px 0',
                     color: '#2d3748',
-                    fontSize: '20px',
-                    fontWeight: '700'
+                    fontSize: '16px',
+                    fontWeight: '700',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
                   }}>
-                    📋 {t('basicInformation')}
+                    <span style={{ fontSize: '24px' }}>📋</span> {t('basicInformation')}
                   </h3>
                   
-                  <div style={{ marginBottom: '16px' }}>
+                  <div style={{ marginBottom: '12px' }}>
                     <label style={{
                       display: 'block',
-                      marginBottom: '8px',
+                      marginBottom: '6px',
                       fontWeight: '600',
-                      color: '#495057'
+                      color: '#495057',
+                      fontSize: '14px'
                     }}>
                       {t('blogTopic')} *
                     </label>
@@ -1061,20 +1084,22 @@ const BlogCreator = () => {
                       placeholder={t('e.g.,OurNewSeasonalMenuBehindTheScenesLocalIngredients')}
                       style={{
                         width: '100%',
-                        padding: '12px 16px',
+                        padding: '12px',
                         border: '2px solid #e1e5e9',
                         borderRadius: '8px',
-                        fontSize: '16px'
+                        fontSize: '16px',
+                        boxSizing: 'border-box'
                       }}
                     />
                   </div>
 
-                  <div style={{ marginBottom: '16px' }}>
+                  <div style={{ marginBottom: '12px' }}>
                     <label style={{
                       display: 'block',
-                      marginBottom: '8px',
+                      marginBottom: '6px',
                       fontWeight: '600',
-                      color: '#495057'
+                      color: '#495057',
+                      fontSize: '14px'
                     }}>
                       {t('restaurantName')} *
                     </label>
@@ -1085,20 +1110,22 @@ const BlogCreator = () => {
                       placeholder={t('yourRestaurantName')}
                       style={{
                         width: '100%',
-                        padding: '12px 16px',
+                        padding: '12px',
                         border: '2px solid #e1e5e9',
                         borderRadius: '8px',
-                        fontSize: '16px'
+                        fontSize: '16px',
+                        boxSizing: 'border-box'
                       }}
                     />
                   </div>
 
-                  <div style={{ marginBottom: '16px' }}>
+                  <div style={{ marginBottom: '12px' }}>
                     <label style={{
                       display: 'block',
-                      marginBottom: '8px',
+                      marginBottom: '6px',
                       fontWeight: '600',
-                      color: '#495057'
+                      color: '#495057',
+                      fontSize: '14px'
                     }}>
                       {t('restaurantType')}
                     </label>
@@ -1107,10 +1134,11 @@ const BlogCreator = () => {
                       onChange={(e) => handleInputChange('restaurantType', e.target.value)}
                       style={{
                         width: '100%',
-                        padding: '12px 16px',
+                        padding: '12px',
                         border: '2px solid #e1e5e9',
                         borderRadius: '8px',
-                        fontSize: '16px'
+                        fontSize: '16px',
+                        boxSizing: 'border-box'
                       }}
                     >
                       {restaurantTypes.map(type => (
@@ -1121,12 +1149,13 @@ const BlogCreator = () => {
                     </select>
                   </div>
 
-                  <div style={{ marginBottom: '16px' }}>
+                  <div style={{ marginBottom: '12px' }}>
                     <label style={{
                       display: 'block',
-                      marginBottom: '8px',
+                      marginBottom: '6px',
                       fontWeight: '600',
-                      color: '#495057'
+                      color: '#495057',
+                      fontSize: '14px'
                     }}>
                       {t('cuisineType')}
                     </label>
@@ -1137,20 +1166,22 @@ const BlogCreator = () => {
                       placeholder={t('e.g.,ItalianMexicanFusionAmerican')}
                       style={{
                         width: '100%',
-                        padding: '12px 16px',
+                        padding: '12px',
                         border: '2px solid #e1e5e9',
                         borderRadius: '8px',
-                        fontSize: '16px'
+                        fontSize: '16px',
+                        boxSizing: 'border-box'
                       }}
                     />
                   </div>
 
-                  <div style={{ marginBottom: '16px' }}>
+                  <div style={{ marginBottom: '0' }}>
                     <label style={{
                       display: 'block',
-                      marginBottom: '8px',
+                      marginBottom: '6px',
                       fontWeight: '600',
-                      color: '#495057'
+                      color: '#495057',
+                      fontSize: '14px'
                     }}>
                       {t('location')}
                     </label>
@@ -1161,10 +1192,11 @@ const BlogCreator = () => {
                       placeholder={t('e.g.,DowntownSeattleWestVillageEtc')}
                       style={{
                         width: '100%',
-                        padding: '12px 16px',
+                        padding: '12px',
                         border: '2px solid #e1e5e9',
                         borderRadius: '8px',
-                        fontSize: '16px'
+                        fontSize: '16px',
+                        boxSizing: 'border-box'
                       }}
                     />
                   </div>
@@ -1173,25 +1205,29 @@ const BlogCreator = () => {
                 {/* Content Preferences */}
                 <div style={{
                   background: '#f8f9fa',
-                  borderRadius: '16px',
-                  padding: '24px',
+                  borderRadius: '12px',
+                  padding: '16px',
                   border: '1px solid #e9ecef'
                 }}>
                   <h3 style={{
-                    margin: '0 0 20px 0',
+                    margin: '0 0 12px 0',
                     color: '#2d3748',
-                    fontSize: '20px',
-                    fontWeight: '700'
+                    fontSize: '16px',
+                    fontWeight: '700',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
                   }}>
-                    🎯 {t('contentPreferences')}
+                    <span style={{ fontSize: '24px' }}>🎯</span> {t('contentPreferences')}
                   </h3>
 
-                  <div style={{ marginBottom: '20px' }}>
+                  <div style={{ marginBottom: '16px' }}>
                     <label style={{
                       display: 'block',
-                      marginBottom: '12px',
+                      marginBottom: '8px',
                       fontWeight: '600',
-                      color: '#495057'
+                      color: '#495057',
+                      fontSize: '14px'
                     }}>
                       {t('targetAudience')}
                     </label>
@@ -1206,29 +1242,36 @@ const BlogCreator = () => {
                           type="button"
                           onClick={() => handleInputChange('targetAudience', audience.value)}
                           style={{
-                            padding: '8px 12px',
+                            padding: '12px 8px',
                             borderRadius: '8px',
                             border: `2px solid ${blogData.targetAudience === audience.value ? audience.color : '#e1e5e9'}`,
                             background: blogData.targetAudience === audience.value ? `${audience.color}15` : '#fff',
                             color: blogData.targetAudience === audience.value ? audience.color : '#495057',
                             cursor: 'pointer',
-                            fontSize: '14px',
+                            fontSize: '13px',
                             fontWeight: '500',
-                            transition: 'all 0.3s ease'
+                            transition: 'all 0.3s ease',
+                            textAlign: 'center',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            gap: '4px'
                           }}
                         >
-                          {audience.icon} {audience.label}
+                          <span style={{ fontSize: '24px' }}>{audience.icon}</span>
+                          <span>{audience.label}</span>
                         </button>
                       ))}
                     </div>
                   </div>
 
-                  <div style={{ marginBottom: '20px' }}>
+                  <div style={{ marginBottom: '16px' }}>
                     <label style={{
                       display: 'block',
-                      marginBottom: '12px',
+                      marginBottom: '8px',
                       fontWeight: '600',
-                      color: '#495057'
+                      color: '#495057',
+                      fontSize: '14px'
                     }}>
                       {t('writingTone')}
                     </label>
@@ -1243,35 +1286,42 @@ const BlogCreator = () => {
                           type="button"
                           onClick={() => handleInputChange('tone', tone.value)}
                           style={{
-                            padding: '8px 12px',
+                            padding: '12px 8px',
                             borderRadius: '8px',
                             border: `2px solid ${blogData.tone === tone.value ? tone.color : '#e1e5e9'}`,
                             background: blogData.tone === tone.value ? `${tone.color}15` : '#fff',
                             color: blogData.tone === tone.value ? tone.color : '#495057',
                             cursor: 'pointer',
-                            fontSize: '14px',
+                            fontSize: '13px',
                             fontWeight: '500',
-                            transition: 'all 0.3s ease'
+                            transition: 'all 0.3s ease',
+                            textAlign: 'center',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            gap: '4px'
                           }}
                         >
-                          {tone.icon} {tone.label}
+                          <span style={{ fontSize: '24px' }}>{tone.icon}</span>
+                          <span>{tone.label}</span>
                         </button>
                       ))}
                     </div>
                   </div>
 
-                  <div style={{ marginBottom: '20px' }}>
+                  <div style={{ marginBottom: '0' }}>
                     <label style={{
                       display: 'block',
-                      marginBottom: '12px',
+                      marginBottom: '8px',
                       fontWeight: '600',
-                      color: '#495057'
+                      color: '#495057',
+                      fontSize: '14px'
                     }}>
                       {t('blogLength')}
                     </label>
                     <div style={{
-                      display: 'grid',
-                      gridTemplateColumns: '1fr',
+                      display: 'flex',
+                      flexDirection: 'column',
                       gap: '8px'
                     }}>
                       {lengths.map(length => (
@@ -1280,7 +1330,7 @@ const BlogCreator = () => {
                           type="button"
                           onClick={() => handleInputChange('length', length.value)}
                           style={{
-                            padding: '12px 16px',
+                            padding: '12px',
                             borderRadius: '8px',
                             border: `2px solid ${blogData.length === length.value ? length.color : '#e1e5e9'}`,
                             background: blogData.length === length.value ? `${length.color}15` : '#fff',
@@ -1289,82 +1339,94 @@ const BlogCreator = () => {
                             fontSize: '14px',
                             fontWeight: '500',
                             transition: 'all 0.3s ease',
-                            textAlign: 'left'
+                            textAlign: 'left',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px'
                           }}
                         >
-                          {length.icon} {length.label}
+                          <span style={{ fontSize: '24px' }}>{length.icon}</span>
+                          <span>{length.label}</span>
                         </button>
                       ))}
                     </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Additional Details */}
-              <div style={{
-                background: '#f8f9fa',
-                borderRadius: '16px',
-                padding: '24px',
-                marginBottom: '32px',
-                border: '1px solid #e9ecef'
-              }}>
-                <h3 style={{
-                  margin: '0 0 20px 0',
-                  color: '#2d3748',
-                  fontSize: '20px',
-                  fontWeight: '700'
+                {/* Additional Details */}
+                <div style={{
+                  background: '#f8f9fa',
+                  borderRadius: '12px',
+                  padding: '16px',
+                  border: '1px solid #e9ecef'
                 }}>
-                  📝 {t('additionalDetails')}
-                </h3>
-                
-                <div style={{ marginBottom: '20px' }}>
-                  <label style={{
-                    display: 'block',
-                    marginBottom: '8px',
-                    fontWeight: '600',
-                    color: '#495057'
+                  <h3 style={{
+                    margin: '0 0 12px 0',
+                    color: '#2d3748',
+                    fontSize: '16px',
+                    fontWeight: '700',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
                   }}>
-                    {t('keyPointsToInclude')}
-                  </label>
-                  <textarea
-                    value={blogData.keyPoints}
-                    onChange={(e) => handleInputChange('keyPoints', e.target.value)}
-                    placeholder={t('listSpecificPointsEventsOrFeaturesYouWantHighlightedInTheBlogPost')}
-                    rows="4"
-                    style={{
-                      width: '100%',
-                      padding: '12px 16px',
-                      border: '2px solid #e1e5e9',
-                      borderRadius: '8px',
-                      fontSize: '16px',
-                      resize: 'vertical'
-                    }}
-                  />
-                </div>
+                    <span style={{ fontSize: '24px' }}>📝</span> {t('additionalDetails')}
+                  </h3>
+                  
+                  <div style={{ marginBottom: '16px' }}>
+                    <label style={{
+                      display: 'block',
+                      marginBottom: '6px',
+                      fontWeight: '600',
+                      color: '#495057',
+                      fontSize: '14px'
+                    }}>
+                      {t('keyPointsToInclude')}
+                    </label>
+                    <textarea
+                      value={blogData.keyPoints}
+                      onChange={(e) => handleInputChange('keyPoints', e.target.value)}
+                      placeholder={t('listSpecificPointsEventsOrFeaturesYouWantHighlightedInTheBlogPost')}
+                      rows="3"
+                      style={{
+                        width: '100%',
+                        padding: '12px',
+                        border: '2px solid #e1e5e9',
+                        borderRadius: '8px',
+                        fontSize: '16px',
+                        resize: 'vertical',
+                        boxSizing: 'border-box',
+                        fontFamily: 'inherit'
+                      }}
+                    />
+                  </div>
 
-                <div style={{ marginBottom: '20px' }}>
-                  <label style={{
-                    display: 'block',
-                    marginBottom: '8px',
-                    fontWeight: '600',
-                    color: '#495057'
-                  }}>
-                    {t('specialFeaturesOrHighlights')}
-                  </label>
-                  <textarea
-                    value={blogData.specialFeatures}
-                    onChange={(e) => handleInputChange('specialFeatures', e.target.value)}
-                    placeholder={t('mentionAnySpecialFeaturesAwardsUniqueAspectsOrRecentNewsAboutYourRestaurant')}
-                    rows="4"
-                    style={{
-                      width: '100%',
-                      padding: '12px 16px',
-                      border: '2px solid #e1e5e9',
-                      borderRadius: '8px',
-                      fontSize: '16px',
-                      resize: 'vertical'
-                    }}
-                  />
+                  <div style={{ marginBottom: '0' }}>
+                    <label style={{
+                      display: 'block',
+                      marginBottom: '6px',
+                      fontWeight: '600',
+                      color: '#495057',
+                      fontSize: '14px'
+                    }}>
+                      {t('specialFeaturesOrHighlights')}
+                    </label>
+                    <textarea
+                      value={blogData.specialFeatures}
+                      onChange={(e) => handleInputChange('specialFeatures', e.target.value)}
+                      placeholder={t('mentionAnySpecialFeaturesAwardsUniqueAspectsOrRecentNewsAboutYourRestaurant')}
+                      rows="3"
+                      style={{
+                        width: '100%',
+                        padding: '12px',
+                        border: '2px solid #e1e5e9',
+                        borderRadius: '8px',
+                        fontSize: '16px',
+                        resize: 'vertical',
+                        boxSizing: 'border-box',
+                        fontFamily: 'inherit'
+                      }}
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -1378,24 +1440,46 @@ const BlogCreator = () => {
                     color: '#fff',
                     border: 'none',
                     borderRadius: '12px',
-                    padding: '16px 32px',
+                    padding: '16px 24px',
                     fontWeight: '700',
-                    fontSize: '18px',
+                    fontSize: '16px',
                     cursor: 'pointer',
                     boxShadow: '0 4px 16px rgba(102, 126, 234, 0.3)',
                     transition: 'all 0.3s ease',
-                    opacity: isGenerating || !blogData.topic.trim() || !blogData.restaurantName.trim() ? 0.6 : 1
+                    opacity: isGenerating || !blogData.topic.trim() || !blogData.restaurantName.trim() ? 0.6 : 1,
+                    width: '100%',
+                    maxWidth: '300px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '8px'
                   }}
                 >
                   {isGenerating ? (
                     <div style={{
-                      display: 'flex', alignItems: 'center', gap: '8px', color: '#667eea', fontWeight: '700', fontSize: '16px', marginTop: '12px'
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      justifyContent: 'center',
+                      gap: '8px', 
+                      color: '#fff', 
+                      fontWeight: '700', 
+                      fontSize: '16px'
                     }}>
-                      <div style={{ width: '24px', height: '24px', border: '4px solid #e2e8f0', borderTop: '4px solid #667eea', borderRadius: '50%', animation: 'spin 1s linear infinite', marginRight: '8px' }}></div>
+                      <div style={{ 
+                        width: '20px', 
+                        height: '20px', 
+                        border: '3px solid rgba(255,255,255,0.3)', 
+                        borderTop: '3px solid #fff', 
+                        borderRadius: '50%', 
+                        animation: 'spin 1s linear infinite' 
+                      }}></div>
                       {t('generatingBlogPost')}
                     </div>
                   ) : (
-                    <span>🚀 {t('generateBlogPost')}</span>
+                    <>
+                      <span style={{ fontSize: '24px' }}>🚀</span>
+                      <span>{t('generateBlogPost')}</span>
+                    </>
                   )}
                 </button>
               </div>
@@ -1405,28 +1489,34 @@ const BlogCreator = () => {
               {/* Generated Blog Post */}
               <div style={{
                 background: '#f8f9fa',
-                borderRadius: '16px',
-                padding: '24px',
-                marginBottom: '24px',
+                borderRadius: '12px',
+                padding: '16px',
+                marginBottom: '16px',
                 border: '1px solid #e9ecef'
               }}>
                 <div style={{
                   display: 'flex',
                   justifyContent: 'space-between',
                   alignItems: 'center',
-                  marginBottom: '20px'
+                  marginBottom: '12px',
+                  flexWrap: 'wrap',
+                  gap: '12px'
                 }}>
                   <h3 style={{
                     margin: 0,
                     color: '#2d3748',
-                    fontSize: '24px',
-                    fontWeight: '700'
+                    fontSize: '18px',
+                    fontWeight: '700',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
                   }}>
-                    ✨ {t('yourGeneratedBlogPost')}
+                    <span style={{ fontSize: '24px' }}>✨</span> {t('yourGeneratedBlogPost')}
                   </h3>
                   <div style={{
                     display: 'flex',
-                    gap: '12px'
+                    gap: '8px',
+                    flexWrap: 'wrap'
                   }}>
                     <button
                       onClick={copyToClipboard}
@@ -1435,13 +1525,16 @@ const BlogCreator = () => {
                         color: '#fff',
                         border: 'none',
                         borderRadius: '8px',
-                        padding: '8px 16px',
+                        padding: '8px 12px',
                         fontWeight: '600',
                         cursor: 'pointer',
-                        fontSize: '14px'
+                        fontSize: '13px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '4px'
                       }}
                     >
-                      📋 {t('copy')}
+                      <span style={{ fontSize: '16px' }}>📋</span> {t('copy')}
                     </button>
                     <button
                       onClick={resetForm}
@@ -1450,23 +1543,26 @@ const BlogCreator = () => {
                         color: '#fff',
                         border: 'none',
                         borderRadius: '8px',
-                        padding: '8px 16px',
+                        padding: '8px 12px',
                         fontWeight: '600',
                         cursor: 'pointer',
-                        fontSize: '14px'
+                        fontSize: '13px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '4px'
                       }}
                     >
-                      🔄 {t('newPost')}
+                      <span style={{ fontSize: '16px' }}>🔄</span> {t('newPost')}
                     </button>
                   </div>
                 </div>
 
                 <div style={{
                   background: '#fff',
-                  borderRadius: '12px',
-                  padding: '24px',
+                  borderRadius: '8px',
+                  padding: '16px',
                   border: '1px solid #e9ecef',
-                  marginBottom: '16px'
+                  marginBottom: '12px'
                 }}>
                   {renderHierarchicalContent(generatedBlog)}
                 </div>
@@ -1475,63 +1571,77 @@ const BlogCreator = () => {
                   display: 'flex',
                   justifyContent: 'space-between',
                   alignItems: 'center',
-                  padding: '16px',
+                  padding: '12px',
                   background: '#e9ecef',
-                  borderRadius: '8px',
-                  fontSize: '14px',
-                  color: '#6c757d'
+                  borderRadius: '6px',
+                  fontSize: '12px',
+                  color: '#6c757d',
+                  flexWrap: 'wrap',
+                  gap: '8px'
                 }}>
-                  <span>📊 {t('wordCount')}: {getWordCount()} words</span>
-                  <span>📸 {t('images')}: {images.length}</span>
-                  <span>🤖 {t('model')}: NVIDIA Llama 3.3 Nemotron Super 49B</span>
-                  <span>📅 {t('generated')}: {new Date().toLocaleString()}</span>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <span style={{ fontSize: '16px' }}>📊</span> {t('wordCount')}: {getWordCount()} words
+                  </span>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <span style={{ fontSize: '16px' }}>📸</span> {t('images')}: {images.length}
+                  </span>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <span style={{ fontSize: '16px' }}>🤖</span> {t('model')}: NVIDIA Llama 3.3 Nemotron Super 49B
+                  </span>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <span style={{ fontSize: '16px' }}>📅</span> {t('generated')}: {new Date().toLocaleString()}
+                  </span>
                 </div>
                 
                 {/* Image Analysis Information */}
                 {imageAnalysis && (
                   <div style={{
-                    marginTop: '16px',
-                    padding: '16px',
+                    marginTop: '12px',
+                    padding: '12px',
                     background: 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)',
-                    borderRadius: '8px',
+                    borderRadius: '6px',
                     border: '1px solid #bae6fd'
                   }}>
                     <h4 style={{
-                      margin: '0 0 12px 0',
+                      margin: '0 0 8px 0',
                       color: '#0c4a6e',
-                      fontSize: '16px',
-                      fontWeight: '600'
+                      fontSize: '14px',
+                      fontWeight: '600',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px'
                     }}>
-                      📸 {t('imageIntegrationAnalysis')}
+                      <span style={{ fontSize: '20px' }}>📸</span> {t('imageIntegrationAnalysis')}
                     </h4>
                     <div style={{
                       display: 'grid',
-                      gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-                      gap: '12px'
+                      gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                      gap: '8px'
                     }}>
                       {imageAnalysis.imageDetails.map((img, index) => (
                         <div key={index} style={{
                           background: '#fff',
-                          padding: '12px',
-                          borderRadius: '8px',
+                          padding: '8px',
+                          borderRadius: '6px',
                           border: '1px solid #bae6fd'
                         }}>
                           <div style={{
                             fontWeight: '600',
                             color: '#0c4a6e',
-                            marginBottom: '4px'
+                            marginBottom: '3px',
+                            fontSize: '12px'
                           }}>
                             {img.name}
                           </div>
                           <div style={{
-                            fontSize: '12px',
+                            fontSize: '11px',
                             color: '#0369a1',
-                            marginBottom: '4px'
+                            marginBottom: '3px'
                           }}>
                             📍 {t('placement')}: {img.suggestedPlacement}
                           </div>
                           <div style={{
-                            fontSize: '12px',
+                            fontSize: '11px',
                             color: '#0369a1',
                             fontStyle: 'italic'
                           }}>
@@ -1542,24 +1652,27 @@ const BlogCreator = () => {
                     </div>
                     {imageAnalysis.integrationSuggestions.length > 0 && (
                       <div style={{
-                        marginTop: '12px',
-                        padding: '12px',
+                        marginTop: '8px',
+                        padding: '8px',
                         background: '#fff',
-                        borderRadius: '6px',
+                        borderRadius: '4px',
                         border: '1px solid #bae6fd'
                       }}>
                         <div style={{
                           fontWeight: '600',
                           color: '#0c4a6e',
-                          marginBottom: '8px',
-                          fontSize: '14px'
+                          marginBottom: '6px',
+                          fontSize: '12px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '4px'
                         }}>
-                          💡 {t('integrationSuggestions')}:
+                          <span style={{ fontSize: '16px' }}>💡</span> {t('integrationSuggestions')}:
                         </div>
                         <ul style={{
                           margin: '0',
-                          paddingLeft: '16px',
-                          fontSize: '12px',
+                          paddingLeft: '12px',
+                          fontSize: '11px',
                           color: '#0369a1'
                         }}>
                           {imageAnalysis.integrationSuggestions.map((suggestion, index) => (
@@ -1580,13 +1693,18 @@ const BlogCreator = () => {
               background: 'linear-gradient(135deg, #fed7d7 0%, #feb2b2 100%)',
               border: '1px solid #fc8181',
               borderRadius: '12px',
-              padding: '16px',
+              padding: '12px',
               color: '#c53030',
               fontWeight: '600',
               textAlign: 'center',
-              marginTop: '24px'
+              marginTop: '16px',
+              fontSize: '14px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px'
             }}>
-              ⚠️ {error}
+              <span style={{ fontSize: '20px' }}>⚠️</span> {error}
             </div>
           )}
         </div>
@@ -1596,6 +1714,58 @@ const BlogCreator = () => {
         @keyframes spin {
           0% { transform: rotate(0deg); }
           100% { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 768px) {
+          .blog-creator-container {
+            padding: 8px;
+          }
+          
+          .blog-creator-header {
+            padding: 20px 12px;
+          }
+          
+          .blog-creator-header h1 {
+            font-size: 20px;
+          }
+          
+          .blog-creator-content {
+            padding: 12px;
+          }
+          
+          .form-grid {
+            grid-template-columns: 1fr;
+          }
+          
+          .image-grid {
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+          }
+          
+          .button-grid {
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+          }
+        }
+        
+        @media (max-width: 480px) {
+          .blog-creator-container {
+            padding: 6px;
+          }
+          
+          .blog-creator-header {
+            padding: 16px 8px;
+          }
+          
+          .blog-creator-header h1 {
+            font-size: 18px;
+          }
+          
+          .blog-creator-content {
+            padding: 8px;
+          }
+          
+          .image-grid {
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+          }
         }
       `}</style>
     </div>

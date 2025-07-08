@@ -2,6 +2,11 @@ import React, { useState, useEffect } from 'react';
 import apiConfig from '../config/api';
 import './SocialMediaPost.css';
 
+// [EXTRACT] Move all option/selector UI (platform, post type, tone, audience, content structure, engagement goal, length, brand voice, urgency, situation, advanced options) into a new component SocialMediaPostOptions.js
+import SocialMediaPostOptions from '../components/SocialMediaPostOptions';
+import SocialMediaPostResult from '../components/SocialMediaPostResult';
+import ModelInfo from '../components/ModelInfo';
+
 const SocialMediaPost = () => {
   const [content, setContent] = useState('');
   const [platform, setPlatform] = useState('facebook');
@@ -48,10 +53,10 @@ const SocialMediaPost = () => {
 
   const platforms = [
     { value: 'facebook', label: 'Facebook', icon: '📘', maxLength: 63206, priority: true },
-    { value: 'instagram', label: 'Instagram', icon: '📸', maxLength: 2200 },
+    { value: 'instagram', label: 'Instagram', icon: '📸', maxLength: 2200, priority: true },
+    { value: 'tiktok', label: 'TikTok', icon: '🎵', maxLength: 150, priority: true },
     { value: 'twitter', label: 'Twitter/X', icon: '🐦', maxLength: 280 },
     { value: 'linkedin', label: 'LinkedIn', icon: '💼', maxLength: 3000 },
-    { value: 'tiktok', label: 'TikTok', icon: '🎵', maxLength: 150 },
     { value: 'youtube', label: 'YouTube', icon: '📺', maxLength: 5000 }
   ];
 
@@ -1320,1128 +1325,293 @@ ${content}`;
 
   return (
     <div className="social-media-post responsive-mobile">
-      {/* DEBUG: Show enhancedContent and reviewedContent values */}
-      <div className="debug-info-mobile">
-        <div>🔍 <strong>DEBUG:</strong> enhancedContent: <span>{String(enhancedContent)}</span></div>
-        <div>🔍 <strong>DEBUG:</strong> reviewedContent: <span>{String(reviewedContent)}</span></div>
+      {/* Page Header/Description */}
+      <div className="page-header" style={{
+        background: 'linear-gradient(135deg, #4f8cff 0%, #38e8ff 100%)',
+        padding: '48px 32px',
+        textAlign: 'center',
+        borderRadius: '24px',
+        marginBottom: '32px',
+        position: 'relative',
+        overflow: 'hidden',
+        boxShadow: '0 20px 60px rgba(0, 0, 0, 0.15)',
+        backdropFilter: 'blur(10px)'
+      }}>
+        <div style={{
+          position: 'absolute',
+          top: '-50%',
+          right: '-20%',
+          width: '200px',
+          height: '200px',
+          background: 'rgba(255, 255, 255, 0.1)',
+          borderRadius: '50%',
+          animation: 'float 6s ease-in-out infinite'
+        }}></div>
+        <div style={{
+          position: 'absolute',
+          bottom: '-30%',
+          left: '-10%',
+          width: '150px',
+          height: '150px',
+          background: 'rgba(255, 255, 255, 0.08)',
+          borderRadius: '50%',
+          animation: 'float 8s ease-in-out infinite reverse'
+        }}></div>
+        
+        <div style={{ 
+          fontSize: '64px', 
+          marginBottom: '20px', 
+          filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.1))',
+          animation: 'fadeIn 0.8s ease-out'
+        }}>
+          📱
+        </div>
+        <h1 style={{
+          margin: '0 0 16px 0',
+          fontWeight: '800',
+          fontSize: '42px',
+          letterSpacing: '-0.5px',
+          color: '#fff',
+          textShadow: '0 2px 4px rgba(0,0,0,0.1)',
+          lineHeight: '1.1',
+          animation: 'fadeIn 0.8s ease-out 0.1s both'
+        }}>
+          Social Media Post Generator
+        </h1>
+        <p style={{
+          margin: '0 0 32px 0',
+          fontSize: '20px',
+          opacity: '0.95',
+          color: '#fff',
+          fontWeight: '500',
+          lineHeight: '1.4',
+          maxWidth: '600px',
+          marginLeft: 'auto',
+          marginRight: 'auto',
+          animation: 'fadeIn 0.8s ease-out 0.2s both'
+        }}>
+          Create engaging, platform-optimized social media content with AI-powered enhancement
+        </p>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'center',
+          gap: '16px',
+          flexWrap: 'wrap',
+          animation: 'fadeIn 0.8s ease-out 0.3s both'
+        }}>
+          <span style={{
+            background: 'rgba(255, 255, 255, 0.2)',
+            color: '#fff',
+            padding: '12px 20px',
+            borderRadius: '25px',
+            fontSize: '15px',
+            fontWeight: '600',
+            backdropFilter: 'blur(10px)',
+            border: '1px solid rgba(255, 255, 255, 0.3)',
+            transition: 'all 0.3s ease',
+            cursor: 'default'
+          }}>
+            ✨ AI Enhanced
+          </span>
+          <span style={{
+            background: 'rgba(255, 255, 255, 0.2)',
+            color: '#fff',
+            padding: '12px 20px',
+            borderRadius: '25px',
+            fontSize: '15px',
+            fontWeight: '600',
+            backdropFilter: 'blur(10px)',
+            border: '1px solid rgba(255, 255, 255, 0.3)',
+            transition: 'all 0.3s ease',
+            cursor: 'default'
+          }}>
+            📊 Quality Analysis
+          </span>
+          <span style={{
+            background: 'rgba(255, 255, 255, 0.2)',
+            color: '#fff',
+            padding: '12px 20px',
+            borderRadius: '25px',
+            fontSize: '15px',
+            fontWeight: '600',
+            backdropFilter: 'blur(10px)',
+            border: '1px solid rgba(255, 255, 255, 0.3)',
+            transition: 'all 0.3s ease',
+            cursor: 'default'
+          }}>
+            🎯 Platform Optimized
+          </span>
+          <span style={{
+            background: 'rgba(255, 255, 255, 0.2)',
+            color: '#fff',
+            padding: '12px 20px',
+            borderRadius: '25px',
+            fontSize: '15px',
+            fontWeight: '600',
+            backdropFilter: 'blur(10px)',
+            border: '1px solid rgba(255, 255, 255, 0.3)',
+            transition: 'all 0.3s ease',
+            cursor: 'default'
+          }}>
+            💡 Smart Suggestions
+          </span>
+        </div>
       </div>
 
-      <div className="post-container">
-        <div className="post-header">
-          <div className="header-icon">📘</div>
-          <h1>Facebook Post Creator</h1>
-          <p>Create well-structured, precise, and thoughtful Facebook posts with AI enhancement</p>
-          <div className="header-features">
-            <span className="feature-badge">🤖 AI-Powered</span>
-            <span className="feature-badge">📊 Quality Analysis</span>
-            <span className="feature-badge">🎯 Engagement Optimized</span>
-          </div>
-        </div>
+      {/* Model Info at the top */}
+      <div style={{ marginBottom: 24 }}>
+        <ModelInfo useCase="social_media" platform={platform} />
+      </div>
+      {/* Option/Selector UI */}
+      <SocialMediaPostOptions
+        platforms={platforms}
+        platform={platform}
+        setPlatform={setPlatform}
+        postTypes={postTypes}
+        postType={postType}
+        setPostType={setPostType}
+        tones={tones}
+        tone={tone}
+        setTone={setTone}
+        audiences={audiences}
+        targetAudience={targetAudience}
+        setTargetAudience={setTargetAudience}
+        contentStructures={contentStructures}
+        contentStructure={contentStructure}
+        setContentStructure={setContentStructure}
+        engagementGoals={engagementGoals}
+        engagementGoal={engagementGoal}
+        setEngagementGoal={setEngagementGoal}
+        contentLengths={contentLengths}
+        contentLength={contentLength}
+        setContentLength={setContentLength}
+        customLength={customLength}
+        setCustomLength={setCustomLength}
+        brandVoiceIntensities={brandVoiceIntensities}
+        brandVoiceIntensity={brandVoiceIntensity}
+        setBrandVoiceIntensity={setBrandVoiceIntensity}
+        engagementUrgencies={engagementUrgencies}
+        engagementUrgency={engagementUrgency}
+        setEngagementUrgency={setEngagementUrgency}
+        situations={situations}
+        situation={situation}
+        setSituation={setSituation}
+        showAdvancedOptions={showAdvancedOptions}
+        setShowAdvancedOptions={setShowAdvancedOptions}
+      />
 
-        <div className="post-content">
-          {/* Platform Selection */}
-          <div className="section platform-section-mobile">
-            <h2>📱 Platform Selection</h2>
-            <div className="platform-grid">
-              {platforms.map(p => (
+      {/* Content Input Section */}
+      <div className="section content-input-section">
+        <label htmlFor="content-input" className="content-label">
+          ✍️ Enter your post idea or draft below:
+        </label>
+        <textarea
+          id="content-input"
+          className="content-input"
+          value={content}
+          onChange={e => setContent(e.target.value)}
+          placeholder="Type your post idea, story, or draft here..."
+          rows={5}
+          style={{ width: '100%', marginBottom: 12, fontSize: 16, padding: 12, borderRadius: 8, border: '1px solid #e2e8f0', resize: 'vertical' }}
+        />
+        {/* Suggestions Section */}
+        {showSuggestions && (
+          <div className="suggestions-section" style={{ marginBottom: 12 }}>
+            <div style={{ fontWeight: 600, marginBottom: 6 }}>💡 Need inspiration? Try one of these:</div>
+            <div className="suggestions-list" style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+              {getFollowUpSuggestions().map((suggestion, idx) => (
                 <button
-                  key={p.value}
-                  className={`platform-option ${platform === p.value ? 'active' : ''} ${p.priority ? 'priority' : ''}`}
-                  onClick={() => setPlatform(p.value)}
-                  tabIndex={0}
+                  key={idx}
+                  className="suggestion-btn"
+                  style={{ background: '#f3f4f6', border: '1px solid #e5e7eb', borderRadius: 6, padding: '6px 12px', fontSize: 14, cursor: 'pointer' }}
+                  onClick={() => handleSuggestionClick(suggestion)}
                 >
-                  <span className="platform-icon">{p.icon}</span>
-                  <span className="platform-label">{p.label}</span>
-                  {p.priority && <span className="priority-badge">Recommended</span>}
+                  {suggestion}
                 </button>
               ))}
             </div>
-          </div>
-
-          {/* Content Input */}
-          <div className="section content-section-mobile">
-            <h2>✍️ Your Content</h2>
-            <textarea
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              placeholder="Enter your original content here... What would you like to share on Facebook?"
-              rows={5}
-              className="content-input mobile-friendly-input"
-            />
-            <div className="input-stats">
-              <span>Characters: {content.length}</span>
-              <span>Words: {content.split(/\s+/).filter(word => word.length > 0).length}</span>
-            </div>
-          </div>
-
-          {/* Follow-up Question Suggestions */}
-          <div className="section suggestions-section-mobile">
-            <div className="suggestions-header-mobile">
-              <h2>💡 Need Ideas? Get Inspired!</h2>
-              <button
-                onClick={toggleSuggestions}
-                className={`suggestions-toggle ${showSuggestions ? 'active' : ''}`}
-                tabIndex={0}
-              >
-                <span>{showSuggestions ? '🙈' : '💡'}</span>
-                {showSuggestions ? 'Hide Suggestions' : 'Show Suggestions'}
-              </button>
-            </div>
-            {showSuggestions && (
-              <div className="suggestions-container-mobile">
-                <div className="suggestions-header">
-                  <span style={{ fontSize: '20px' }}>🎯</span>
-                  <h3 className="suggestions-title">
-                    Personalized Suggestions for {getPlatformIcon(platform)} {platforms.find(p => p.value === platform)?.label}
-                  </h3>
-                </div>
-                
-                <p className="suggestions-subtitle">
-                  Based on your selections: <strong>{postTypes.find(pt => pt.value === postType)?.label}</strong> • <strong>{situations.find(s => s.value === situation)?.label}</strong> • <strong>{engagementGoals.find(eg => eg.value === engagementGoal)?.label}</strong>
-                </p>
-
-                {/* Quick Start Prompts */}
-                {!content.trim() && (
-                  <div className="quick-start-container">
-                    <div className="quick-start-header">
-                      <span style={{ fontSize: '18px' }}>🚀</span>
-                      <h4 className="quick-start-title">
-                        Quick Start - Choose a prompt to begin:
-                      </h4>
-                    </div>
-                    <div className="quick-start-grid">
-                      {[
-                        "I want to share a personal story...",
-                        "I have a tip or advice to give...",
-                        "I want to ask my audience something...",
-                        "I want to promote something...",
-                        "I want to educate about a topic...",
-                        "I want to celebrate an achievement..."
-                      ].map((prompt, index) => (
-                        <button
-                          key={index}
-                          onClick={() => setContent(prompt)}
-                          className="quick-start-btn"
-                        >
-                          {prompt}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                <div className="suggestions-grid">
-                  {getFollowUpSuggestions().map((suggestion, index) => (
-                    <button
-                      key={index}
-                      onClick={() => handleSuggestionClick(suggestion)}
-                      className="suggestion-item"
-                    >
-                      <div className="suggestion-add-icon">+</div>
-                      <div className="suggestion-text">
-                        "{suggestion}"
-                      </div>
-                    </button>
-                  ))}
-                </div>
-
-                <div className="suggestions-tip">
-                  💡 <strong>Tip:</strong> Click any suggestion above to add it to your content. You can then edit and personalize it!
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Facebook-Specific Options */}
-          <div className="section config-section-mobile">
-            <h2>🎯 Facebook Post Configuration</h2>
-            
-            {/* Post Type */}
-            <div className="option-group">
-              <label>Post Type</label>
-              <div className="options-grid">
-                {postTypes.map(type => (
-                  <button
-                    key={type.value}
-                    className={`option-btn ${postType === type.value ? 'active' : ''}`}
-                    onClick={() => setPostType(type.value)}
-                  >
-                    <span className="option-icon">{type.icon}</span>
-                    <span className="option-label">{type.label}</span>
-                    <span className="option-description">{type.description}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Content Structure */}
-            <div className="option-group">
-              <label>Content Structure</label>
-              <div className="options-grid">
-                {contentStructures.map(structure => (
-                  <button
-                    key={structure.value}
-                    className={`option-btn ${contentStructure === structure.value ? 'active' : ''}`}
-                    onClick={() => setContentStructure(structure.value)}
-                  >
-                    <span className="option-icon">{structure.icon}</span>
-                    <span className="option-label">{structure.label}</span>
-                    <span className="option-description">{structure.description}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Engagement Goal */}
-            <div className="option-group">
-              <label>Engagement Goal</label>
-              <div className="options-grid">
-                {engagementGoals.map(goal => (
-                  <button
-                    key={goal.value}
-                    className={`option-btn ${engagementGoal === goal.value ? 'active' : ''}`}
-                    onClick={() => setEngagementGoal(goal.value)}
-                  >
-                    <span className="option-icon">{goal.icon}</span>
-                    <span className="option-label">{goal.label}</span>
-                    <span className="option-description">{goal.description}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Dynamic Length Adjustment */}
-            <div className="option-group">
-              <label>📏 Content Length & Optimization</label>
-              <div className="options-grid">
-                {contentLengths.map(length => (
-                  <button
-                    key={length.value}
-                    className={`option-btn ${contentLength === length.value ? 'active' : ''}`}
-                    onClick={() => setContentLength(length.value)}
-                  >
-                    <span className="option-icon">{length.icon}</span>
-                    <span className="option-label">{length.label}</span>
-                    <span className="option-description">{length.description}</span>
-                  </button>
-                ))}
-              </div>
-              
-              {/* Custom Length Input */}
-              {contentLength === 'custom' && (
-                <div className="custom-length-input">
-                  <label>Target Words:</label>
-                  <input
-                    type="number"
-                    value={customLength}
-                    onChange={(e) => setCustomLength(Math.max(20, parseInt(e.target.value) || 100))}
-                    min="20"
-                    max="500"
-                  />
-                  <span className="custom-length-target">
-                    Target: {calculateTargetLength()} words
-                  </span>
-                </div>
-              )}
-            </div>
-
-            {/* Brand Voice & Engagement */}
-            <div className="option-group">
-              <label>🎭 Brand Voice & Engagement</label>
-              <div className="options-grid">
-                {brandVoiceIntensities.map(voice => (
-                  <button
-                    key={voice.value}
-                    className={`option-btn ${brandVoiceIntensity === voice.value ? 'active' : ''}`}
-                    onClick={() => setBrandVoiceIntensity(voice.value)}
-                  >
-                    <span className="option-icon">{voice.icon}</span>
-                    <span className="option-label">{voice.label}</span>
-                    <span className="option-description">{voice.description}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="option-group">
-              <label>🔥 Engagement Urgency</label>
-              <div className="options-grid">
-                {engagementUrgencies.map(urgency => (
-                  <button
-                    key={urgency.value}
-                    className={`option-btn ${engagementUrgency === urgency.value ? 'active' : ''}`}
-                    onClick={() => setEngagementUrgency(urgency.value)}
-                  >
-                    <span className="option-icon">{urgency.icon}</span>
-                    <span className="option-label">{urgency.label}</span>
-                    <span className="option-description">{urgency.description}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Situation Context */}
-            <div className="option-group">
-              <label>🎯 Situation & Context</label>
-              <div className="options-grid">
-                {situations.map(situation => (
-                  <button
-                    key={situation.value}
-                    className={`option-btn ${situation === situation.value ? 'active' : ''}`}
-                    onClick={() => setSituation(situation.value)}
-                  >
-                    <span className="option-icon">{situation.icon}</span>
-                    <span className="option-label">{situation.label}</span>
-                    <span className="option-description">{situation.description}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Length Preview */}
-            <div className="length-preview">
-              <div className="length-preview-header">
-                <span>📊</span>
-                <span className="length-preview-title">Length Optimization Preview</span>
-              </div>
-              <div className="length-preview-grid">
-                <div>
-                  <strong>Base Length:</strong> {contentLengths.find(cl => cl.value === contentLength)?.targetWords || customLength} words
-                </div>
-                <div>
-                  <strong>Brand Voice:</strong> {brandVoiceIntensities.find(bv => bv.value === brandVoiceIntensity)?.label}
-                </div>
-                <div>
-                  <strong>Engagement:</strong> {engagementUrgencies.find(eu => eu.value === engagementUrgency)?.label}
-                </div>
-                <div>
-                  <strong>Situation:</strong> {situations.find(s => s.value === situation)?.label}
-                </div>
-                <div className="length-preview-target">
-                  🎯 Target Length: {calculateTargetLength()} words
-                </div>
-              </div>
-            </div>
-
-            {/* Advanced Options Toggle */}
             <button
-              className="advanced-toggle"
-              onClick={() => setShowAdvancedOptions(!showAdvancedOptions)}
+              className="toggle-suggestions-btn"
+              style={{ marginTop: 8, fontSize: 13, color: '#64748b', background: 'none', border: 'none', cursor: 'pointer' }}
+              onClick={toggleSuggestions}
             >
-              {showAdvancedOptions ? '🔽' : '🔼'} Advanced Options
-            </button>
-
-            {showAdvancedOptions && (
-              <div className="advanced-options">
-                {/* Tone */}
-                <div className="option-group">
-                  <label>Tone</label>
-                  <div className="options-grid">
-                    {tones.map(tone => (
-                      <button
-                        key={tone.value}
-                        className={`option-btn ${tone === tone.value ? 'active' : ''}`}
-                        onClick={() => setTone(tone.value)}
-                      >
-                        <span className="option-icon">{tone.icon}</span>
-                        <span className="option-label">{tone.label}</span>
-                        <span className="option-description">{tone.description}</span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Target Audience */}
-                <div className="option-group">
-                  <label>Target Audience</label>
-                  <div className="options-grid">
-                    {audiences.map(audience => (
-                      <button
-                        key={audience.value}
-                        className={`option-btn ${targetAudience === audience.value ? 'active' : ''}`}
-                        onClick={() => setTargetAudience(audience.value)}
-                      >
-                        <span className="option-icon">{audience.icon}</span>
-                        <span className="option-label">{audience.label}</span>
-                        <span className="option-description">{audience.description}</span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Generate Button */}
-          <div className="section generate-section-mobile">
-            <button
-              className="generate-btn mobile-generate-btn"
-              onClick={generateContent}
-              disabled={isGenerating || !content.trim()}
-            >
-              {isGenerating ? (
-                <>
-                  <span className="loading-spinner"></span>
-                  Creating Facebook Post...
-                </>
-              ) : (
-                <>
-                  <span>🤖</span>
-                  Create Facebook Post
-                </>
-              )}
+              {showSuggestions ? 'Hide suggestions' : 'Show suggestions'}
             </button>
           </div>
-
-          {/* Error Message */}
-          {error && (
-            <div className="error-message mobile-error-message">
-              <span className="error-icon">⚠️</span>
-              {error}
-            </div>
-          )}
-
-          {/* Enhanced Content */}
-          {enhancedContent && (
-            <div className="section result-section mobile-result-section" style={{ position: 'relative' }}>
-              {/* Original Content Display */}
-              {showOriginalContent && (
-                <div className="original-content-section">
-                  <h3 style={{ 
-                    color: '#6b7280', 
-                    fontSize: '18px', 
-                    marginBottom: '12px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px'
-                  }}>
-                    📝 Original Content
-                  </h3>
-                  <div style={{
-                    background: '#f9fafb',
-                    border: '2px solid #e5e7eb',
-                    borderRadius: '12px',
-                    padding: '20px',
-                    marginBottom: '20px',
-                    fontFamily: 'monospace',
-                    fontSize: '14px',
-                    lineHeight: '1.6',
-                    color: '#374151',
-                    whiteSpace: 'pre-wrap',
-                    wordBreak: 'break-word',
-                    position: 'relative'
-                  }}>
-                    <div style={{
-                      position: 'absolute',
-                      top: '8px',
-                      right: '8px',
-                      background: '#6b7280',
-                      color: 'white',
-                      padding: '4px 8px',
-                      borderRadius: '6px',
-                      fontSize: '12px',
-                      fontWeight: '600'
-                    }}>
-                      Original
-                    </div>
-                    {content}
-                  </div>
-                </div>
-              )}
-              {/* Side-by-Side Comparison */}
-              {showComparison && (
-                <div className="comparison-section">
-                  <h3 style={{ 
-                    color: '#8b5cf6', 
-                    fontSize: '18px', 
-                    marginBottom: '16px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px'
-                  }}>
-                    ⚖️ Before vs After Comparison
-                  </h3>
-                  <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: '1fr 1fr',
-                    gap: '20px',
-                    marginBottom: '20px'
-                  }}>
-                    {/* Original Content */}
-                    <div style={{
-                      background: '#f9fafb',
-                      border: '2px solid #e5e7eb',
-                      borderRadius: '12px',
-                      padding: '20px',
-                      position: 'relative'
-                    }}>
-                      <div style={{
-                        position: 'absolute',
-                        top: '8px',
-                        right: '8px',
-                        background: '#6b7280',
-                        color: 'white',
-                        padding: '4px 8px',
-                        borderRadius: '6px',
-                        fontSize: '12px',
-                        fontWeight: '600'
-                      }}>
-                        Before
-                      </div>
-                      <h4 style={{ 
-                        color: '#6b7280', 
-                        marginBottom: '12px',
-                        fontSize: '16px',
-                        fontWeight: '600'
-                      }}>
-                        📝 Original Content
-                      </h4>
-                      <div style={{
-                        fontFamily: 'monospace',
-                        fontSize: '14px',
-                        lineHeight: '1.6',
-                        color: '#374151',
-                        whiteSpace: 'pre-wrap',
-                        wordBreak: 'break-word',
-                        maxHeight: '300px',
-                        overflowY: 'auto'
-                      }}>
-                        {content}
-                      </div>
-                      <div style={{
-                        marginTop: '12px',
-                        paddingTop: '12px',
-                        borderTop: '1px solid #e5e7eb',
-                        fontSize: '12px',
-                        color: '#6b7280'
-                      }}>
-                        Words: {content.split(/\s+/).filter(word => word.length > 0).length} | 
-                        Characters: {content.length}
-                      </div>
-                    </div>
-                    {/* Enhanced Content */}
-                    <div style={{
-                      background: 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)',
-                      border: '2px solid #0ea5e9',
-                      borderRadius: '12px',
-                      padding: '20px',
-                      position: 'relative'
-                    }}>
-                      <div style={{
-                        position: 'absolute',
-                        top: '8px',
-                        right: '8px',
-                        background: '#0ea5e9',
-                        color: 'white',
-                        padding: '4px 8px',
-                        borderRadius: '6px',
-                        fontSize: '12px',
-                        fontWeight: '600'
-                      }}>
-                        After
-                      </div>
-                      <h4 style={{ 
-                        color: '#0ea5e9', 
-                        marginBottom: '12px',
-                        fontSize: '16px',
-                        fontWeight: '600'
-                      }}>
-                        ✨ Enhanced Content
-                      </h4>
-                      <div style={{
-                        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-                        fontSize: '14px',
-                        lineHeight: '1.6',
-                        color: '#1e293b',
-                        whiteSpace: 'pre-wrap',
-                        wordBreak: 'break-word',
-                        maxHeight: '300px',
-                        overflowY: 'auto'
-                      }}>
-                        {reviewedContent || enhancedContent}
-                      </div>
-                      <div style={{
-                        marginTop: '12px',
-                        paddingTop: '12px',
-                        borderTop: '1px solid #0ea5e9',
-                        fontSize: '12px',
-                        color: '#0ea5e9'
-                      }}>
-                        Words: {(reviewedContent || enhancedContent).split(/\s+/).filter(word => word.length > 0).length} | 
-                        Characters: {(reviewedContent || enhancedContent).length}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-              <div className="post-preview mobile-post-preview">
-                <div className="preview-header">
-                  <span className="platform-icon">{getPlatformIcon(platform)}</span>
-                  <span className="preview-title">Facebook Post Preview</span>
-                  <div className="preview-meta">
-                    <span className="meta-item">
-                      {getToneIcon(tone)} {tones.find(t => t.value === tone)?.label}
-                    </span>
-                    <span className="meta-item">
-                      {getAudienceIcon(targetAudience)} {audiences.find(a => a.value === targetAudience)?.label}
-                    </span>
-                  </div>
-                </div>
-                <div className={`preview-content ${isOverLimit ? 'over-limit' : ''} ${platform === 'instagram' ? 'instagram-preview' : ''}`}>
-                  {isReviewing ? (
-                    <span>Reviewing for unnecessary/irrelevant content...</span>
-                  ) : (
-                    <pre style={{
-                      fontFamily: platform === 'instagram' ? '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' : 'monospace',
-                      fontSize: platform === 'instagram' ? '16px' : '14px',
-                      lineHeight: platform === 'instagram' ? '1.8' : '1.4',
-                      color: platform === 'instagram' ? '#2d3748' : '#333',
-                      background: platform === 'instagram' ? 'linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%)' : 'transparent',
-                      padding: platform === 'instagram' ? '20px' : '0',
-                      borderRadius: platform === 'instagram' ? '12px' : '0',
-                      border: platform === 'instagram' ? '2px solid #ec4899' : 'none',
-                      margin: platform === 'instagram' ? '0' : '0'
-                    }}>
-                      {reviewedContent || enhancedContent}
-                    </pre>
-                  )}
-                </div>
-                <div className="preview-footer mobile-preview-footer">
-                  <div className="character-count">
-                    Characters: {(reviewedContent || enhancedContent).length}/{selectedPlatform.maxLength}
-                    {isOverLimit && <span className="limit-warning">⚠️ Over character limit</span>}
-                  </div>
-                </div>
-              </div>
-              {/* Sticky Action Bar */}
-              <div className="sticky-action-bar mobile-sticky-action-bar">
-                <button onClick={() => copyToClipboard(reviewedContent || enhancedContent)} className="action-btn mobile-action-btn">
-                  📋 Copy Post
-                </button>
-                <button 
-                  onClick={() => openPreviewWindow(
-                    reviewedContent || enhancedContent, 
-                    platform, 
-                    postType, 
-                    tone, 
-                    targetAudience
-                  )} 
-                  className="action-btn mobile-action-btn"
-                >
-                  👁️ Preview in New Window
-                </button>
-                <button 
-                  onClick={() => setShowOriginalContent(!showOriginalContent)} 
-                  className="action-btn mobile-action-btn"
-                >
-                  {showOriginalContent ? '🙈' : '📝'} {showOriginalContent ? 'Hide' : 'Show'} Original
-                </button>
-                <button 
-                  onClick={() => setShowComparison(!showComparison)} 
-                  className="action-btn mobile-action-btn"
-                >
-                  {showComparison ? '🙈' : '⚖️'} {showComparison ? 'Hide' : 'Show'} Comparison
-                </button>
-              </div>
-              {/* Quality Analysis */}
-              {qualityAnalysis && (
-                <div className="quality-section">
-                  <h3>📊 Content Quality Analysis</h3>
-                  
-                  {/* Overall Score */}
-                  <div className="quality-overview">
-                    <div className="quality-score">
-                      <span className="score-number">{qualityAnalysis.overallScore || 0}</span>
-                      <span className="score-label">Overall Score</span>
-                    </div>
-                  </div>
-
-                  {/* Key Metrics - Focus on Coherence and Relevance */}
-                  <div className="quality-metrics">
-                    {/* Coherence - Most Important */}
-                    <div className="metric-item coherence">
-                      <div className="metric-label">
-                        <span style={{ color: '#4f8cff', fontWeight: 'bold' }}>🔗 Coherence</span>
-                        <span style={{ fontSize: '12px', color: '#666' }}> (40% weight)</span>
-                      </div>
-                      <div className="metric-score" style={{ color: '#4f8cff' }}>
-                        {Math.round((qualityAnalysis.metrics?.coherence || 0) * 100)}%
-                      </div>
-                    </div>
-
-                    {/* Relevance - Second Most Important */}
-                    <div className="metric-item relevance">
-                      <div className="metric-label">
-                        <span style={{ color: '#10b981', fontWeight: 'bold' }}>🎯 Relevance</span>
-                        <span style={{ fontSize: '12px', color: '#666' }}> (30% weight)</span>
-                      </div>
-                      <div className="metric-score" style={{ color: '#10b981' }}>
-                        {Math.round((qualityAnalysis.metrics?.relevance || 0) * 100)}%
-                      </div>
-                    </div>
-
-                    {/* Clarity */}
-                    <div className="metric-item clarity">
-                      <div className="metric-label">
-                        <span style={{ color: '#f59e0b', fontWeight: 'bold' }}>💡 Clarity</span>
-                        <span style={{ fontSize: '12px', color: '#666' }}> (15% weight)</span>
-                      </div>
-                      <div className="metric-score" style={{ color: '#f59e0b' }}>
-                        {Math.round((qualityAnalysis.metrics?.clarity || 0) * 100)}%
-                      </div>
-                    </div>
-
-                    {/* Engagement */}
-                    <div className="metric-item engagement">
-                      <div className="metric-label">
-                        <span style={{ color: '#ef4444', fontWeight: 'bold' }}>🔥 Engagement</span>
-                        <span style={{ fontSize: '12px', color: '#666' }}> (15% weight)</span>
-                      </div>
-                      <div className="metric-score" style={{ color: '#ef4444' }}>
-                        {Math.round((qualityAnalysis.metrics?.engagement || 0) * 100)}%
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Detailed Analysis */}
-                  {qualityAnalysis.metrics && (
-                    <div style={{ marginTop: '20px' }}>
-                      {/* Coherence Analysis */}
-                      {qualityAnalysis.metrics.coherence && (
-                        <div style={{ 
-                          background: 'rgba(79, 140, 255, 0.1)', 
-                          padding: '12px', 
-                          borderRadius: '8px', 
-                          marginBottom: '12px',
-                          border: '1px solid rgba(79, 140, 255, 0.2)'
-                        }}>
-                          <div style={{ fontWeight: 'bold', color: '#4f8cff', marginBottom: '8px' }}>
-                            🔗 Coherence Analysis:
-                          </div>
-                          <div style={{ fontSize: '14px', color: '#374151', lineHeight: '1.5' }}>
-                            {qualityAnalysis.metrics.coherence.analysis || 'Logical flow and structure analysis'}
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Relevance Analysis */}
-                      {qualityAnalysis.metrics.relevance && (
-                        <div style={{ 
-                          background: 'rgba(16, 185, 129, 0.1)', 
-                          padding: '12px', 
-                          borderRadius: '8px', 
-                          marginBottom: '12px',
-                          border: '1px solid rgba(16, 185, 129, 0.2)'
-                        }}>
-                          <div style={{ fontWeight: 'bold', color: '#10b981', marginBottom: '8px' }}>
-                            🎯 Relevance Analysis:
-                          </div>
-                          <div style={{ fontSize: '14px', color: '#374151', lineHeight: '1.5' }}>
-                            {qualityAnalysis.metrics.relevance.analysis || 'Audience and context relevance analysis'}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  )}
-
-                  {/* Strengths and Weaknesses */}
-                  <div style={{ marginTop: '20px' }}>
-                    {qualityAnalysis.strengths && qualityAnalysis.strengths.length > 0 && (
-                      <div style={{ marginBottom: '16px' }}>
-                        <h4 style={{ color: '#10b981', marginBottom: '8px' }}>✅ Strengths:</h4>
-                        <ul style={{ margin: '0', paddingLeft: '20px' }}>
-                          {qualityAnalysis.strengths.map((strength, index) => (
-                            <li key={index} style={{ marginBottom: '4px', color: '#374151' }}>{strength}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-
-                    {qualityAnalysis.weaknesses && qualityAnalysis.weaknesses.length > 0 && (
-                      <div style={{ marginBottom: '16px' }}>
-                        <h4 style={{ color: '#ef4444', marginBottom: '8px' }}>⚠️ Areas for Improvement:</h4>
-                        <ul style={{ margin: '0', paddingLeft: '20px' }}>
-                          {qualityAnalysis.weaknesses.map((weakness, index) => (
-                            <li key={index} style={{ marginBottom: '4px', color: '#374151' }}>{weakness}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Suggestions */}
-                  {qualityAnalysis.suggestions && qualityAnalysis.suggestions.length > 0 && (
-                    <div className="suggestions">
-                      <h4 style={{ color: '#4f8cff', marginBottom: '12px' }}>💡 Suggestions for Improvement:</h4>
-                      <ul style={{ margin: '0', paddingLeft: '20px' }}>
-                        {qualityAnalysis.suggestions.map((suggestion, index) => (
-                          <li key={index} style={{ 
-                            marginBottom: '8px', 
-                            color: '#374151', 
-                            lineHeight: '1.5',
-                            fontSize: '14px'
-                          }}>
-                            {suggestion}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Generation History - Categorized by Platform */}
-          <div className="section history-section mobile-history-section">
-            <h2>📚 Previous Posts by Platform</h2>
-            <p style={{ margin: '0', color: '#666', fontSize: '14px', fontStyle: 'italic' }}>
-              Your recently generated posts, grouped by platform. Click on any post to view the full content and copy it.
-            </p>
-            {isHistoryLoading ? (
-              <div style={{ color: '#64748b', fontSize: '16px', padding: '24px 0' }}>Loading global history...</div>
-            ) : historyError ? (
-              <div style={{ color: '#ef4444', fontSize: '16px', padding: '24px 0' }}>{historyError}</div>
-            ) : (
-              <div style={{ marginTop: '24px' }}>
-                {Object.entries(groupHistoryByPlatform(globalHistory)).length > 0 ? (
-                  Object.entries(groupHistoryByPlatform(globalHistory)).map(([platformKey, posts]) => (
-                    <div key={platformKey} style={{ marginBottom: '32px' }}>
-                      <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#2d3748', fontSize: '20px', fontWeight: '700' }}>
-                        <span>{getPlatformIcon(platformKey)}</span>
-                        <span>{platforms.find(p => p.value === platformKey)?.label || platformKey}</span>
-                        <span style={{ color: '#718096', fontSize: '14px', fontWeight: '400', marginLeft: '8px' }}>({posts.length} post{posts.length > 1 ? 's' : ''})</span>
-                      </h3>
-                      <div className="history-list">
-                        {posts.map((item, index) => (
-                          <div key={item._id || item.id} className="history-item">
-                            <div className="history-meta">
-                              <span className="history-platform">
-                                {getPlatformIcon(item.platform)} {platforms.find(p => p.value === item.platform)?.label}
-                              </span>
-                              <span className="history-type">
-                                {postTypes.find(pt => pt.value === item.postType)?.label}
-                              </span>
-                              <span className="history-time">
-                                {new Date(item.timestamp).toLocaleString()}
-                              </span>
-                            </div>
-                            <div className="history-content">
-                              <div className="history-original">
-                                <strong>Original:</strong> {item.original.substring(0, 100)}...
-                              </div>
-                              <div className="history-enhanced">
-                                <strong>Enhanced:</strong> {item.enhanced.substring(0, 150)}...
-                              </div>
-                              <div className="history-length-info">
-                                <div className="history-length-item">
-                                  <span>📏 Target:</span> {item.length || 'N/A'} words
-                                </div>
-                                <div className="history-length-item">
-                                  <span>🎭</span> {brandVoiceIntensities.find(bv => bv.value === item.brandVoiceIntensity)?.label || 'N/A'}
-                                </div>
-                                <div className="history-length-item">
-                                  <span>🔥</span> {engagementUrgencies.find(eu => eu.value === item.engagementUrgency)?.label || 'N/A'}
-                                </div>
-                              </div>
-                            </div>
-                            <div className="history-actions">
-                              <button 
-                                onClick={() => {
-                                  setContent(item.original);
-                                  setEnhancedContent(item.enhanced);
-                                  setPlatform(item.platform);
-                                  setPostType(item.postType);
-                                  setTone(item.tone);
-                                  setTargetAudience(item.targetAudience);
-                                  setContentStructure(item.contentStructure);
-                                  setEngagementGoal(item.engagementGoal);
-                                  setContentLength(item.contentLength || 'optimal');
-                                  setBrandVoiceIntensity(item.brandVoiceIntensity);
-                                  setEngagementUrgency(item.engagementUrgency);
-                                  setSituation(item.situation);
-                                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                                }} 
-                                className="history-btn"
-                                style={{ marginRight: '8px' }}
-                              >
-                                🔄 Load
-                              </button>
-                              <button 
-                                onClick={() => copyToClipboard(item.enhanced)} 
-                                className="history-btn"
-                                style={{ marginRight: '8px' }}
-                              >
-                                📋 Copy
-                              </button>
-                              <button
-                                onClick={() => openPreviewWindow(
-                                  item.enhanced,
-                                  item.platform,
-                                  item.postType,
-                                  item.tone,
-                                  item.targetAudience
-                                )}
-                                className="history-btn preview"
-                              >
-                                👁️ Preview
-                              </button>
-                              <button
-                                onClick={() => setModalPost(item)}
-                                className="history-btn"
-                              >
-                                📄 View Full Post
-                              </button>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  ))
-                ) : (
-                  // Show all platforms with empty state if no posts
-                  platforms.map(p => (
-                    <div key={p.value} style={{ marginBottom: '32px' }}>
-                      <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#2d3748', fontSize: '20px', fontWeight: '700' }}>
-                        <span>{p.icon}</span>
-                        <span>{p.label}</span>
-                        <span style={{ color: '#718096', fontSize: '14px', fontWeight: '400', marginLeft: '8px' }}>(0 posts)</span>
-                      </h3>
-                      <div className="history-list">
-                        <div className="history-item" style={{ color: '#a0aec0', fontStyle: 'italic', padding: '18px 0', fontSize: '16px' }}>
-                          No posts yet for {p.label}. Create a post above and it will appear here!
-                        </div>
-                      </div>
-                    </div>
-                  ))
-                )}
-              </div>
-            )}
-
-            {/* Modal for full post view */}
-            {modalPost && (
-              <div 
-                className="modal-overlay"
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  animation: 'fadeIn 0.3s ease-out',
-                }}
-                onClick={() => setModalPost(null)}
-              >
-                <div
-                  className="modal-content"
-                  style={{
-                    padding: '48px 36px 36px 36px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    minHeight: '340px',
-                  }}
-                  onClick={e => e.stopPropagation()}
-                >
-                  <button
-                    className="modal-close-btn"
-                    onClick={() => setModalPost(null)}
-                    style={{
-                      background: '#ef4444',
-                      color: '#fff',
-                      border: 'none',
-                      borderRadius: '10px',
-                      padding: '10px 22px',
-                      fontSize: '18px',
-                      fontWeight: '700',
-                      cursor: 'pointer',
-                      boxShadow: '0 4px 12px rgba(239,68,68,0.25)',
-                      transition: 'all 0.2s ease',
-                    }}
-                    onMouseEnter={(e) => {
-                      e.target.style.background = '#dc2626';
-                      e.target.style.transform = 'scale(1.05)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.background = '#ef4444';
-                      e.target.style.transform = 'scale(1)';
-                    }}
-                  >
-                    ✖ Close
-                  </button>
-                  <h2 style={{
-                    marginBottom: '16px',
-                    color: '#3730a3',
-                    fontSize: '2.1rem',
-                    fontWeight: 800,
-                    letterSpacing: '0.5px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '12px',
-                  }}>
-                    {getPlatformIcon(modalPost.platform)} {platforms.find(p => p.value === modalPost.platform)?.label} Post
-                  </h2>
-                  <div style={{ color: '#64748b', fontSize: '15px', marginBottom: '18px', fontWeight: 500 }}>
-                    {new Date(modalPost.timestamp).toLocaleString()} • {postTypes.find(pt => pt.value === modalPost.postType)?.label}
-                  </div>
-                  <div style={{
-                    background: 'rgba(255,255,255,0.98)',
-                    border: '1.5px solid #c7d2fe',
-                    borderRadius: '12px',
-                    padding: '28px',
-                    fontSize: '1.25rem',
-                    color: '#1e293b',
-                    whiteSpace: 'pre-wrap',
-                    marginBottom: '24px',
-                    lineHeight: 1.7,
-                    fontWeight: 500,
-                    boxShadow: '0 4px 20px rgba(102,126,234,0.12)',
-                    wordBreak: 'break-word',
-                    minHeight: '120px',
-                  }}>
-                    {modalPost.enhanced}
-                  </div>
-                  
-                  {/* Original Content in Modal */}
-                  <div style={{
-                    background: '#f9fafb',
-                    border: '1.5px solid #e5e7eb',
-                    borderRadius: '12px',
-                    padding: '20px',
-                    marginBottom: '24px',
-                    position: 'relative'
-                  }}>
-                    <div style={{
-                      position: 'absolute',
-                      top: '8px',
-                      right: '8px',
-                      background: '#6b7280',
-                      color: 'white',
-                      padding: '4px 8px',
-                      borderRadius: '6px',
-                      fontSize: '12px',
-                      fontWeight: '600'
-                    }}>
-                      Original
-                    </div>
-                    <h4 style={{ 
-                      color: '#6b7280', 
-                      marginBottom: '12px',
-                      fontSize: '16px',
-                      fontWeight: '600'
-                    }}>
-                      📝 Original Content
-                    </h4>
-                    <div style={{
-                      fontFamily: 'monospace',
-                      fontSize: '14px',
-                      lineHeight: '1.6',
-                      color: '#374151',
-                      whiteSpace: 'pre-wrap',
-                      wordBreak: 'break-word'
-                    }}>
-                      {modalPost.original}
-                    </div>
-                  </div>
-                  <div style={{ display: 'flex', gap: '12px', marginTop: '8px' }}>
-                    <button
-                      onClick={() => copyToClipboard(modalPost.enhanced)}
-                      style={{
-                        background: '#667eea',
-                        color: 'white',
-                        border: 'none',
-                        padding: '12px 28px',
-                        borderRadius: '10px',
-                        cursor: 'pointer',
-                        fontSize: '1.1rem',
-                        fontWeight: 600,
-                        boxShadow: '0 2px 8px rgba(102,126,234,0.15)',
-                        transition: 'all 0.2s ease',
-                      }}
-                      onMouseEnter={(e) => {
-                        e.target.style.background = '#5a67d8';
-                        e.target.style.transform = 'translateY(-1px)';
-                        e.target.style.boxShadow = '0 4px 12px rgba(102,126,234,0.25)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.target.style.background = '#667eea';
-                        e.target.style.transform = 'translateY(0)';
-                        e.target.style.boxShadow = '0 2px 8px rgba(102,126,234,0.15)';
-                      }}
-                    >
-                      📋 Copy Post
-                    </button>
-                    <button
-                      onClick={() => openPreviewWindow(
-                        modalPost.enhanced,
-                        modalPost.platform,
-                        modalPost.postType,
-                        modalPost.tone,
-                        modalPost.targetAudience
-                      )}
-                      style={{
-                        background: '#10b981',
-                        color: 'white',
-                        border: 'none',
-                        padding: '12px 28px',
-                        borderRadius: '10px',
-                        cursor: 'pointer',
-                        fontSize: '1.1rem',
-                        fontWeight: 600,
-                        boxShadow: '0 2px 8px rgba(16,185,129,0.15)',
-                        transition: 'all 0.2s ease',
-                      }}
-                      onMouseEnter={(e) => {
-                        e.target.style.background = '#059669';
-                        e.target.style.transform = 'translateY(-1px)';
-                        e.target.style.boxShadow = '0 4px 12px rgba(16,185,129,0.25)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.target.style.background = '#10b981';
-                        e.target.style.transform = 'translateY(0)';
-                        e.target.style.boxShadow = '0 2px 8px rgba(16,185,129,0.15)';
-                      }}
-                    >
-                      👁️ Preview in New Window
-                    </button>
-                    <button
-                      onClick={() => setModalPost(null)}
-                      style={{
-                        background: '#e0e7ff',
-                        color: '#3730a3',
-                        border: 'none',
-                        padding: '12px 28px',
-                        borderRadius: '10px',
-                        cursor: 'pointer',
-                        fontSize: '1.1rem',
-                        fontWeight: 600,
-                        boxShadow: '0 2px 8px rgba(102,126,234,0.12)',
-                        transition: 'all 0.2s ease',
-                      }}
-                      onMouseEnter={(e) => {
-                        e.target.style.background = '#c7d2fe';
-                        e.target.style.transform = 'translateY(-1px)';
-                        e.target.style.boxShadow = '0 4px 12px rgba(102,126,234,0.2)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.target.style.background = '#e0e7ff';
-                        e.target.style.transform = 'translateY(0)';
-                        e.target.style.boxShadow = '0 2px 8px rgba(102,126,234,0.12)';
-                      }}
-                    >
-                      Close
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Clear Button */}
-          <div className="section clear-section-mobile">
-            <button onClick={clearAll} className="clear-btn mobile-clear-btn">
-              🗑️ Clear All
-            </button>
-          </div>
+        )}
+        {/* Error Message */}
+        {error && (
+          <div className="error-message" style={{ color: '#ef4444', marginBottom: 8, fontWeight: 500 }}>{error}</div>
+        )}
+        {/* Action Buttons */}
+        <div className="content-actions" style={{ display: 'flex', gap: 12, marginTop: 8 }}>
+          <button
+            className="generate-btn"
+            style={{ background: '#2563eb', color: 'white', border: 'none', borderRadius: 8, padding: '10px 24px', fontWeight: 600, fontSize: 16, cursor: 'pointer' }}
+            onClick={generateContent}
+            disabled={isGenerating || !content.trim()}
+          >
+            {isGenerating ? 'Generating...' : '✨ Generate Post'}
+          </button>
+          <button
+            className="clear-btn"
+            style={{ background: '#e5e7eb', color: '#374151', border: 'none', borderRadius: 8, padding: '10px 24px', fontWeight: 500, fontSize: 16, cursor: 'pointer' }}
+            onClick={clearAll}
+            disabled={isGenerating && !content.trim()}
+          >
+            Clear
+          </button>
         </div>
       </div>
+
+      <SocialMediaPostResult
+        enhancedContent={enhancedContent}
+        reviewedContent={reviewedContent}
+        isReviewing={isReviewing}
+        showOriginalContent={showOriginalContent}
+        setShowOriginalContent={setShowOriginalContent}
+        showComparison={showComparison}
+        setShowComparison={setShowComparison}
+        content={content}
+        platform={platform}
+        postType={postType}
+        tone={tone}
+        targetAudience={targetAudience}
+        getPlatformIcon={getPlatformIcon}
+        getToneIcon={getToneIcon}
+        getAudienceIcon={getAudienceIcon}
+        tones={tones}
+        audiences={audiences}
+        platforms={platforms}
+        selectedPlatform={platforms.find(p => p.value === platform)}
+        isOverLimit={enhancedContent.length > (platforms.find(p => p.value === platform)?.maxLength || 1000)}
+        qualityAnalysis={qualityAnalysis}
+        copyToClipboard={copyToClipboard}
+        openPreviewWindow={openPreviewWindow}
+        generationHistory={generationHistory}
+        setContent={setContent}
+        setEnhancedContent={setEnhancedContent}
+        setPlatform={setPlatform}
+        setPostType={setPostType}
+        setTone={setTone}
+        setTargetAudience={setTargetAudience}
+        setContentStructure={setContentStructure}
+        setEngagementGoal={setEngagementGoal}
+        setContentLength={setContentLength}
+        setBrandVoiceIntensity={setBrandVoiceIntensity}
+        setEngagementUrgency={setEngagementUrgency}
+        setSituation={setSituation}
+        postTypes={postTypes}
+        brandVoiceIntensities={brandVoiceIntensities}
+        engagementUrgencies={engagementUrgencies}
+        situations={situations}
+        modalPost={modalPost}
+        setModalPost={setModalPost}
+        globalHistory={globalHistory}
+        isHistoryLoading={isHistoryLoading}
+        historyError={historyError}
+        groupHistoryByPlatform={groupHistoryByPlatform}
+      />
     </div>
   );
 };

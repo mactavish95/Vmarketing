@@ -200,6 +200,9 @@ router.post('/blog/generate', async (req, res) => {
       case 'long':
         targetWordCount = '900-1200';
         break;
+      case 'extra_long':
+        targetWordCount = '1500-3000';
+        break;
       default:
         targetWordCount = '600-800';
     }

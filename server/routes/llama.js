@@ -41,10 +41,10 @@ function selectModel(useCase) {
       description: 'Optimized for detailed voice analysis'
     },
     blogGenerator: {
-      name: 'nvidia/llama-3.3-nemotron-super-49b-v1',
+      name: 'nvidia/Llama-3_1-Nemotron-Ultra-253B-v1',
       baseURL: 'https://integrate.api.nvidia.com/v1/chat/completions',
       temperature: 0.6,
-      maxTokens: 4096,
+      maxTokens: 6000, // Increased to allow for >1500 words
       top_p: 0.95,
       frequency_penalty: 0,
       presence_penalty: 0,
@@ -52,7 +52,7 @@ function selectModel(useCase) {
       description: 'Optimized for creating engaging, SEO-friendly blog content with detailed thinking'
     },
     socialMedia: {
-      name: 'nvidia/llama-3.3-nemotron-super-49b-v1',
+      name: 'meta/llama-3.1-70b-instruct',
       baseURL: 'https://integrate.api.nvidia.com/v1/chat/completions',
       temperature: 0.7,
       maxTokens: 1500,
@@ -350,7 +350,7 @@ Be objective and constructive in your analysis.`;
         }
       ],
       temperature: 0.3,
-      max_tokens: 2048,
+      max_tokens: model.maxTokens, // Use the model's maxTokens for analysis
       top_p: 0.95,
       frequency_penalty: 0,
       presence_penalty: 0,
@@ -460,6 +460,21 @@ Be objective and constructive in your analysis.`;
       code: 'ANALYSIS_ERROR'
     });
   }
+});
+
+// GET /llama/model - Return current model info for a given useCase
+router.get('/llama/model', (req, res) => {
+  const useCase = req.query.useCase || 'review_generation';
+  const model = selectModel(useCase);
+  res.json({
+    success: true,
+    model: {
+      name: model.name,
+      description: model.description,
+      strengths: model.strengths,
+      baseURL: model.baseURL
+    }
+  });
 });
 
 module.exports = router; 

@@ -1,11 +1,75 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import './Header.css';
 import { useTranslation } from 'react-i18next';
 
 const Header = ({ location }) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
     const { t, i18n } = useTranslation();
+
+    // Language configuration with flags
+    const languages = [
+        { code: 'en', name: t('english'), flag: '🇺🇸', shortName: 'EN', supported: true },
+        { code: 'vi', name: t('vietnamese'), flag: '🇻🇳', shortName: 'VI', supported: true },
+        { code: 'es', name: 'Español', flag: '🇪🇸', shortName: 'ES', supported: false },
+        { code: 'fr', name: 'Français', flag: '🇫🇷', shortName: 'FR', supported: false },
+        { code: 'de', name: 'Deutsch', flag: '🇩🇪', shortName: 'DE', supported: false },
+        { code: 'zh', name: '中文', flag: '🇨🇳', shortName: 'ZH', supported: false },
+        { code: 'ja', name: '日本語', flag: '🇯🇵', shortName: 'JA', supported: false },
+        { code: 'ko', name: '한국어', flag: '🇰🇷', shortName: 'KO', supported: false }
+    ];
+
+    // Filter to only show supported languages
+    const supportedLanguages = languages.filter(lang => lang.supported);
+
+    // Function to get flag emoji with fallback
+    const getFlagEmoji = (countryCode) => {
+        const flagMap = {
+            'en': '🇺🇸',
+            'vi': '🇻🇳',
+            'es': '🇪🇸',
+            'fr': '🇫🇷',
+            'de': '🇩🇪',
+            'zh': '🇨🇳',
+            'ja': '🇯🇵',
+            'ko': '🇰🇷'
+        };
+        
+        // Simple fallback check - if the flag renders as a single character, it's likely supported
+        const testFlag = flagMap[countryCode] || '🇺🇸';
+        
+        // Try to detect if emoji is supported by checking if it's a single character
+        // This is a simple heuristic that works in most cases
+        if (testFlag.length === 2) { // Flag emojis are typically 2 characters in JS
+            return flagMap[countryCode] || '🌐';
+        } else {
+            // Fallback to country codes if flags don't render properly
+            const codeMap = {
+                'en': '🇺🇸',
+                'vi': '🇻🇳',
+                'es': '🇪🇸',
+                'fr': '🇫🇷',
+                'de': '🇩🇪',
+                'zh': '🇨🇳',
+                'ja': '🇯🇵',
+                'ko': '🇰🇷'
+            };
+            return codeMap[countryCode] || '🌐';
+        }
+    };
+
+    // Check if screen is mobile size
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth <= 768);
+        };
+        
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
@@ -18,6 +82,9 @@ const Header = ({ location }) => {
     const changeLanguage = (lng) => {
         i18n.changeLanguage(lng);
     };
+
+    // Get current language info
+    const currentLanguage = supportedLanguages.find(lang => lang.code === i18n.language) || supportedLanguages[0];
 
     return (
         <header className="header">
@@ -136,16 +203,39 @@ const Header = ({ location }) => {
                 <div className="mobile-overlay" onClick={closeMenu}></div>
             )}
 
-            <div style={{ position: 'absolute', right: 20, top: 20, zIndex: 100 }}>
-                <label htmlFor="lang-switch" style={{ marginRight: 8 }}>{t('language')}:</label>
+            <div className="language-selector" style={{ 
+                position: 'absolute', 
+                right: isMobile ? 60 : 20, 
+                top: isMobile ? 15 : 20, 
+                zIndex: 100
+            }}>
+                <label 
+                    htmlFor="lang-switch" 
+                    style={{ 
+                        marginRight: isMobile ? 4 : 8,
+                        fontSize: isMobile ? '12px' : '14px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '4px'
+                    }}
+                >
+                    {isMobile ? '🌐' : `${getFlagEmoji(currentLanguage.code)} ${t('language')}`}:
+                </label>
                 <select
                     id="lang-switch"
                     value={i18n.language}
                     onChange={e => changeLanguage(e.target.value)}
-                    style={{ padding: '4px 8px', borderRadius: 6 }}
+                    style={{ 
+                        padding: isMobile ? '2px 4px' : '4px 8px', 
+                        fontSize: isMobile ? '12px' : '14px',
+                        minWidth: isMobile ? '60px' : '100px'
+                    }}
                 >
-                    <option value="en">{t('english')}</option>
-                    <option value="vi">{t('vietnamese')}</option>
+                    {supportedLanguages.map(lang => (
+                        <option key={lang.code} value={lang.code} style={{ fontSize: '14px' }}>
+                            {getFlagEmoji(lang.code)} {isMobile ? lang.shortName : lang.name}
+                        </option>
+                    ))}
                 </select>
             </div>
         </header>

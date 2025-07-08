@@ -1,0 +1,221 @@
+import React from 'react';
+
+// SocialMediaPostOptions: Renders all option/selector UIs for SocialMediaPost
+const SocialMediaPostOptions = ({
+  platforms, platform, setPlatform,
+  postTypes, postType, setPostType,
+  tones, tone, setTone,
+  audiences, targetAudience, setTargetAudience,
+  contentStructures, contentStructure, setContentStructure,
+  engagementGoals, engagementGoal, setEngagementGoal,
+  contentLengths, contentLength, setContentLength,
+  customLength, setCustomLength,
+  brandVoiceIntensities, brandVoiceIntensity, setBrandVoiceIntensity,
+  engagementUrgencies, engagementUrgency, setEngagementUrgency,
+  situations, situation, setSituation,
+  showAdvancedOptions, setShowAdvancedOptions
+}) => {
+  return (
+    <>
+      {/* Platform Selection */}
+      <div className="section platform-section-mobile">
+        <h2>📱 Platform Selection</h2>
+        <div className="platform-grid">
+          {platforms.map(p => (
+            <button
+              key={p.value}
+              className={`platform-option ${platform === p.value ? 'active' : ''} ${p.priority ? 'priority' : ''}`}
+              onClick={() => setPlatform(p.value)}
+              tabIndex={0}
+            >
+              <span className="platform-icon">{p.icon}</span>
+              <span className="platform-label">{p.label}</span>
+              {p.priority && <span className="priority-badge">Recommended</span>}
+            </button>
+          ))}
+        </div>
+      </div>
+      {/* Post Type */}
+      <div className="option-group">
+        <label>Post Type</label>
+        <div className="options-grid">
+          {postTypes.map(type => (
+            <button
+              key={type.value}
+              className={`option-btn ${postType === type.value ? 'active' : ''}`}
+              onClick={() => setPostType(type.value)}
+            >
+              <span className="option-icon">{type.icon}</span>
+              <span className="option-label">{type.label}</span>
+              <span className="option-description">{type.description}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+      {/* Content Structure */}
+      <div className="option-group">
+        <label>Content Structure</label>
+        <div className="options-grid">
+          {contentStructures.map(structure => (
+            <button
+              key={structure.value}
+              className={`option-btn ${contentStructure === structure.value ? 'active' : ''}`}
+              onClick={() => setContentStructure(structure.value)}
+            >
+              <span className="option-icon">{structure.icon}</span>
+              <span className="option-label">{structure.label}</span>
+              <span className="option-description">{structure.description}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+      {/* Engagement Goal */}
+      <div className="option-group">
+        <label>Engagement Goal</label>
+        <div className="options-grid">
+          {engagementGoals.map(goal => (
+            <button
+              key={goal.value}
+              className={`option-btn ${engagementGoal === goal.value ? 'active' : ''}`}
+              onClick={() => setEngagementGoal(goal.value)}
+            >
+              <span className="option-icon">{goal.icon}</span>
+              <span className="option-label">{goal.label}</span>
+              <span className="option-description">{goal.description}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+      {/* Dynamic Length Adjustment */}
+      <div className="option-group">
+        <label>📏 Content Length & Optimization</label>
+        <div className="options-grid">
+          {contentLengths.map(length => (
+            <button
+              key={length.value}
+              className={`option-btn ${contentLength === length.value ? 'active' : ''}`}
+              onClick={() => setContentLength(length.value)}
+            >
+              <span className="option-icon">{length.icon}</span>
+              <span className="option-label">{length.label}</span>
+              <span className="option-description">{length.description}</span>
+            </button>
+          ))}
+        </div>
+        {/* Custom Length Input */}
+        {contentLength === 'custom' && (
+          <div className="custom-length-input">
+            <label>Target Words:</label>
+            <input
+              type="number"
+              value={customLength}
+              onChange={e => setCustomLength(Math.max(20, parseInt(e.target.value) || 100))}
+              min="20"
+              max="500"
+            />
+            <span className="custom-length-target">
+              Target: {customLength} words
+            </span>
+          </div>
+        )}
+      </div>
+      {/* Brand Voice & Engagement */}
+      <div className="option-group">
+        <label>🎭 Brand Voice & Engagement</label>
+        <div className="options-grid">
+          {brandVoiceIntensities.map(voice => (
+            <button
+              key={voice.value}
+              className={`option-btn ${brandVoiceIntensity === voice.value ? 'active' : ''}`}
+              onClick={() => setBrandVoiceIntensity(voice.value)}
+            >
+              <span className="option-icon">{voice.icon}</span>
+              <span className="option-label">{voice.label}</span>
+              <span className="option-description">{voice.description}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+      <div className="option-group">
+        <label>🔥 Engagement Urgency</label>
+        <div className="options-grid">
+          {engagementUrgencies.map(urgency => (
+            <button
+              key={urgency.value}
+              className={`option-btn ${engagementUrgency === urgency.value ? 'active' : ''}`}
+              onClick={() => setEngagementUrgency(urgency.value)}
+            >
+              <span className="option-icon">{urgency.icon}</span>
+              <span className="option-label">{urgency.label}</span>
+              <span className="option-description">{urgency.description}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+      {/* Situation Context */}
+      <div className="option-group">
+        <label>🎯 Situation & Context</label>
+        <div className="options-grid">
+          {situations.map(situation => (
+            <button
+              key={situation.value}
+              className={`option-btn ${situation === situation.value ? 'active' : ''}`}
+              onClick={() => setSituation(situation.value)}
+            >
+              <span className="option-icon">{situation.icon}</span>
+              <span className="option-label">{situation.label}</span>
+              <span className="option-description">{situation.description}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+      {/* Advanced Options Toggle */}
+      <button
+        className="advanced-toggle"
+        onClick={() => setShowAdvancedOptions(!showAdvancedOptions)}
+      >
+        {showAdvancedOptions ? '🔽' : '🔼'} Advanced Options
+      </button>
+      {showAdvancedOptions && (
+        <div className="advanced-options">
+          {/* Tone */}
+          <div className="option-group">
+            <label>Tone</label>
+            <div className="options-grid">
+              {tones.map(tone => (
+                <button
+                  key={tone.value}
+                  className={`option-btn ${tone === tone.value ? 'active' : ''}`}
+                  onClick={() => setTone(tone.value)}
+                >
+                  <span className="option-icon">{tone.icon}</span>
+                  <span className="option-label">{tone.label}</span>
+                  <span className="option-description">{tone.description}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+          {/* Target Audience */}
+          <div className="option-group">
+            <label>Target Audience</label>
+            <div className="options-grid">
+              {audiences.map(audience => (
+                <button
+                  key={audience.value}
+                  className={`option-btn ${targetAudience === audience.value ? 'active' : ''}`}
+                  onClick={() => setTargetAudience(audience.value)}
+                >
+                  <span className="option-icon">{audience.icon}</span>
+                  <span className="option-label">{audience.label}</span>
+                  <span className="option-description">{audience.description}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+};
+
+export default SocialMediaPostOptions; 
