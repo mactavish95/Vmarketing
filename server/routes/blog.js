@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const axios = require('axios');
+const { BlogPost, isMongoDBAvailable, safeSave } = require('../config/database');
 
 // Import the selectModel function with updated model configuration
 function selectModel(useCase) {
@@ -456,6 +457,80 @@ ${imageAnalysis ? 'You excel at naturally integrating images into blog content w
   }
 });
 
+// Save a generated blog post to the database
+router.post('/blog/save', async (req, res) => {
+  try {
+    if (!isMongoDBAvailable()) {
+      return res.status(503).json({
+        success: false,
+        error: 'Database not available',
+        code: 'DB_UNAVAILABLE'
+      });
+    }
+    const {
+      topic,
+      restaurantName,
+      restaurantType,
+      cuisine,
+      location,
+      targetAudience,
+      tone,
+      length,
+      keyPoints,
+      specialFeatures,
+      blogPost,
+      images,
+      imageAnalysis,
+      model,
+      wordCount,
+      metadata
+    } = req.body;
+
+    if (!topic || !restaurantName || !blogPost) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required fields: topic, restaurantName, and blogPost are required.'
+      });
+    }
+
+    const newBlog = await safeSave(BlogPost, {
+      topic,
+      restaurantName,
+      restaurantType,
+      cuisine,
+      location,
+      targetAudience,
+      tone,
+      length,
+      keyPoints,
+      specialFeatures,
+      blogPost,
+      images,
+      imageAnalysis,
+      model,
+      wordCount,
+      metadata
+    });
+
+    if (newBlog) {
+      res.json({ success: true, blog: newBlog });
+    } else {
+      res.status(500).json({
+        success: false,
+        error: 'Failed to save blog post to database',
+        code: 'SAVE_ERROR'
+      });
+    }
+  } catch (error) {
+    console.error('Blog post save error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to save blog post',
+      code: 'INTERNAL_ERROR'
+    });
+  }
+});
+
 // Image processing endpoint (for future use with dedicated image analysis APIs)
 router.post('/blog/process-images', async (req, res) => {
   try {
@@ -544,6 +619,28 @@ router.get('/blog/model', (req, res) => {
     res.status(500).json({
       success: false,
       error: 'Failed to get blog model information'
+    });
+  }
+});
+
+// List all saved blog posts
+router.get('/blog/list', async (req, res) => {
+  try {
+    if (!isMongoDBAvailable()) {
+      return res.status(503).json({
+        success: false,
+        error: 'Database not available',
+        code: 'DB_UNAVAILABLE'
+      });
+    }
+    const blogs = await BlogPost.find().sort({ createdAt: -1 });
+    res.json({ success: true, blogs });
+  } catch (error) {
+    console.error('Blog post list error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to retrieve blog posts',
+      code: 'INTERNAL_ERROR'
     });
   }
 });

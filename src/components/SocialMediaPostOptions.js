@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 // SocialMediaPostOptions: Renders all option/selector UIs for SocialMediaPost
 const SocialMediaPostOptions = ({
@@ -15,11 +16,12 @@ const SocialMediaPostOptions = ({
   situations, situation, setSituation,
   showAdvancedOptions, setShowAdvancedOptions
 }) => {
+  const { t } = useTranslation();
   return (
     <>
       {/* Platform Selection */}
       <div className="section platform-section-mobile">
-        <h2>📱 Platform Selection</h2>
+        <h2>📱 {t('socialMedia.platformSelection')}</h2>
         <div className="platform-grid">
           {platforms.map(p => (
             <button
@@ -30,14 +32,14 @@ const SocialMediaPostOptions = ({
             >
               <span className="platform-icon">{p.icon}</span>
               <span className="platform-label">{p.label}</span>
-              {p.priority && <span className="priority-badge">Recommended</span>}
+              {p.priority && <span className="priority-badge">{t('socialMedia.recommended')}</span>}
             </button>
           ))}
         </div>
       </div>
       {/* Post Type */}
       <div className="option-group">
-        <label>Post Type</label>
+        <label>{t('socialMedia.postType')}</label>
         <div className="options-grid">
           {postTypes.map(type => (
             <button
@@ -54,7 +56,7 @@ const SocialMediaPostOptions = ({
       </div>
       {/* Content Structure */}
       <div className="option-group">
-        <label>Content Structure</label>
+        <label>{t('socialMedia.contentStructure')}</label>
         <div className="options-grid">
           {contentStructures.map(structure => (
             <button
@@ -71,7 +73,7 @@ const SocialMediaPostOptions = ({
       </div>
       {/* Engagement Goal */}
       <div className="option-group">
-        <label>Engagement Goal</label>
+        <label>{t('socialMedia.engagementGoal')}</label>
         <div className="options-grid">
           {engagementGoals.map(goal => (
             <button
@@ -88,7 +90,7 @@ const SocialMediaPostOptions = ({
       </div>
       {/* Dynamic Length Adjustment */}
       <div className="option-group">
-        <label>📏 Content Length & Optimization</label>
+        <label>📏 {t('socialMedia.contentLengthOptimization')}</label>
         <div className="options-grid">
           {contentLengths.map(length => (
             <button
@@ -105,7 +107,7 @@ const SocialMediaPostOptions = ({
         {/* Custom Length Input */}
         {contentLength === 'custom' && (
           <div className="custom-length-input">
-            <label>Target Words:</label>
+            <label>{t('socialMedia.targetWords')}:</label>
             <input
               type="number"
               value={customLength}
@@ -114,14 +116,14 @@ const SocialMediaPostOptions = ({
               max="500"
             />
             <span className="custom-length-target">
-              Target: {customLength} words
+              {t('socialMedia.target')}: {customLength} {t('socialMedia.words')}
             </span>
           </div>
         )}
       </div>
       {/* Brand Voice & Engagement */}
       <div className="option-group">
-        <label>🎭 Brand Voice & Engagement</label>
+        <label>🎭 {t('socialMedia.brandVoiceEngagement')}</label>
         <div className="options-grid">
           {brandVoiceIntensities.map(voice => (
             <button
@@ -137,7 +139,7 @@ const SocialMediaPostOptions = ({
         </div>
       </div>
       <div className="option-group">
-        <label>🔥 Engagement Urgency</label>
+        <label>🔥 {t('socialMedia.engagementUrgency')}</label>
         <div className="options-grid">
           {engagementUrgencies.map(urgency => (
             <button
@@ -154,7 +156,7 @@ const SocialMediaPostOptions = ({
       </div>
       {/* Situation Context */}
       <div className="option-group">
-        <label>🎯 Situation & Context</label>
+        <label>🎯 {t('socialMedia.situationContext')}</label>
         <div className="options-grid">
           {situations.map(situation => (
             <button
@@ -174,13 +176,13 @@ const SocialMediaPostOptions = ({
         className="advanced-toggle"
         onClick={() => setShowAdvancedOptions(!showAdvancedOptions)}
       >
-        {showAdvancedOptions ? '🔽' : '🔼'} Advanced Options
+        {showAdvancedOptions ? '🔽' : '🔼'} {t('socialMedia.advancedOptions')}
       </button>
       {showAdvancedOptions && (
         <div className="advanced-options">
           {/* Tone */}
           <div className="option-group">
-            <label>Tone</label>
+            <label>{t('socialMedia.tone')}</label>
             <div className="options-grid">
               {tones.map(tone => (
                 <button
@@ -197,7 +199,7 @@ const SocialMediaPostOptions = ({
           </div>
           {/* Target Audience */}
           <div className="option-group">
-            <label>Target Audience</label>
+            <label>{t('socialMedia.targetAudience')}</label>
             <div className="options-grid">
               {audiences.map(audience => (
                 <button

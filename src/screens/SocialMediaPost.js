@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import apiConfig from '../config/api';
 import './SocialMediaPost.css';
+import { useTranslation } from 'react-i18next';
 
 // [EXTRACT] Move all option/selector UI (platform, post type, tone, audience, content structure, engagement goal, length, brand voice, urgency, situation, advanced options) into a new component SocialMediaPostOptions.js
 import SocialMediaPostOptions from '../components/SocialMediaPostOptions';
@@ -8,6 +9,7 @@ import SocialMediaPostResult from '../components/SocialMediaPostResult';
 import ModelInfo from '../components/ModelInfo';
 
 const SocialMediaPost = () => {
+  const { t } = useTranslation();
   const [content, setContent] = useState('');
   const [platform, setPlatform] = useState('facebook');
   const [postType, setPostType] = useState('general');
@@ -52,101 +54,101 @@ const SocialMediaPost = () => {
   const [showComparison, setShowComparison] = useState(false);
 
   const platforms = [
-    { value: 'facebook', label: 'Facebook', icon: '📘', maxLength: 63206, priority: true },
-    { value: 'instagram', label: 'Instagram', icon: '📸', maxLength: 2200, priority: true },
-    { value: 'tiktok', label: 'TikTok', icon: '🎵', maxLength: 150, priority: true },
-    { value: 'twitter', label: 'Twitter/X', icon: '🐦', maxLength: 280 },
-    { value: 'linkedin', label: 'LinkedIn', icon: '💼', maxLength: 3000 },
-    { value: 'youtube', label: 'YouTube', icon: '📺', maxLength: 5000 }
+    { value: 'facebook', label: t('socialMedia.platforms.facebook'), icon: '📘', maxLength: 63206, priority: true },
+    { value: 'instagram', label: t('socialMedia.platforms.instagram'), icon: '📸', maxLength: 2200, priority: true },
+    { value: 'tiktok', label: t('socialMedia.platforms.tiktok'), icon: '🎵', maxLength: 150, priority: true },
+    { value: 'twitter', label: t('socialMedia.platforms.twitter'), icon: '🐦', maxLength: 280 },
+    { value: 'linkedin', label: t('socialMedia.platforms.linkedin'), icon: '💼', maxLength: 3000 },
+    { value: 'youtube', label: t('socialMedia.platforms.youtube'), icon: '📺', maxLength: 5000 }
   ];
 
   // Facebook-specific post types
   const postTypes = [
-    { value: 'general', label: 'General Post', icon: '📝', description: 'Standard Facebook post' },
-    { value: 'story', label: 'Story/Personal', icon: '📖', description: 'Personal story or experience' },
-    { value: 'educational', label: 'Educational', icon: '📚', description: 'Informative or how-to content' },
-    { value: 'promotional', label: 'Promotional', icon: '🎯', description: 'Product or service promotion' },
-    { value: 'community', label: 'Community', icon: '🤝', description: 'Community engagement or events' },
-    { value: 'inspirational', label: 'Inspirational', icon: '✨', description: 'Motivational or uplifting content' },
-    { value: 'question', label: 'Question/Poll', icon: '❓', description: 'Engaging questions or polls' },
-    { value: 'announcement', label: 'Announcement', icon: '📢', description: 'Important announcements or news' }
+    { value: 'general', label: t('socialMedia.postTypes.general'), icon: '📝', description: t('socialMedia.descriptions.generalPost') },
+    { value: 'story', label: t('socialMedia.postTypes.story'), icon: '📖', description: t('socialMedia.descriptions.storyPersonal') },
+    { value: 'educational', label: t('socialMedia.postTypes.educational'), icon: '📚', description: t('socialMedia.descriptions.educational') },
+    { value: 'promotional', label: t('socialMedia.postTypes.promotional'), icon: '🎯', description: t('socialMedia.descriptions.promotional') },
+    { value: 'community', label: t('socialMedia.postTypes.community'), icon: '🤝', description: t('socialMedia.descriptions.community') },
+    { value: 'inspirational', label: t('socialMedia.postTypes.inspirational'), icon: '✨', description: t('socialMedia.descriptions.inspirational') },
+    { value: 'question', label: t('socialMedia.postTypes.question'), icon: '❓', description: t('socialMedia.descriptions.questionPoll') },
+    { value: 'announcement', label: t('socialMedia.postTypes.announcement'), icon: '📢', description: t('socialMedia.descriptions.announcement') }
   ];
 
   const tones = [
-    { value: 'engaging', label: 'Engaging', icon: '🎯', description: 'Interactive and conversation-starting' },
-    { value: 'professional', label: 'Professional', icon: '💼', description: 'Formal and business-like' },
-    { value: 'casual', label: 'Casual', icon: '😊', description: 'Friendly and relaxed' },
-    { value: 'humorous', label: 'Humorous', icon: '😂', description: 'Funny and entertaining' },
-    { value: 'inspirational', label: 'Inspirational', icon: '✨', description: 'Motivational and uplifting' },
-    { value: 'educational', label: 'Educational', icon: '📚', description: 'Informative and helpful' },
-    { value: 'empathetic', label: 'Empathetic', icon: '🤗', description: 'Understanding and supportive' },
-    { value: 'authoritative', label: 'Authoritative', icon: '👑', description: 'Confident and expert-like' }
+    { value: 'engaging', label: t('socialMedia.tones.engaging'), icon: '🎯', description: t('socialMedia.descriptions.engaging') },
+    { value: 'professional', label: t('socialMedia.tones.professional'), icon: '💼', description: t('socialMedia.descriptions.professional') },
+    { value: 'casual', label: t('socialMedia.tones.casual'), icon: '😊', description: t('socialMedia.descriptions.casual') },
+    { value: 'humorous', label: t('socialMedia.tones.humorous'), icon: '😂', description: t('socialMedia.descriptions.humorous') },
+    { value: 'inspirational', label: t('socialMedia.tones.inspirational'), icon: '✨', description: t('socialMedia.descriptions.inspirationalTone') },
+    { value: 'educational', label: t('socialMedia.tones.educational'), icon: '📚', description: t('socialMedia.descriptions.educationalTone') },
+    { value: 'empathetic', label: t('socialMedia.tones.empathetic'), icon: '🤗', description: t('socialMedia.descriptions.empathetic') },
+    { value: 'authoritative', label: t('socialMedia.tones.authoritative'), icon: '👑', description: t('socialMedia.descriptions.authoritative') }
   ];
 
   const audiences = [
-    { value: 'general', label: 'General', icon: '👥', description: 'Broad audience' },
-    { value: 'business', label: 'Business', icon: '🏢', description: 'Business professionals' },
-    { value: 'youth', label: 'Youth', icon: '👨‍🎓', description: 'Young adults and students' },
-    { value: 'parents', label: 'Parents', icon: '👨‍👩‍👧‍👦', description: 'Parents and families' },
-    { value: 'professionals', label: 'Professionals', icon: '👔', description: 'Working professionals' },
-    { value: 'creatives', label: 'Creatives', icon: '🎨', description: 'Creative professionals' },
-    { value: 'seniors', label: 'Seniors', icon: '👴', description: 'Older adults' },
-    { value: 'local', label: 'Local Community', icon: '🏘️', description: 'Local community members' }
+    { value: 'general', label: t('socialMedia.audiences.general'), icon: '👥', description: t('socialMedia.descriptions.generalAudience') },
+    { value: 'business', label: t('socialMedia.audiences.business'), icon: '🏢', description: t('socialMedia.descriptions.businessAudience') },
+    { value: 'youth', label: t('socialMedia.audiences.youth'), icon: '👨‍🎓', description: t('socialMedia.descriptions.youthAudience') },
+    { value: 'parents', label: t('socialMedia.audiences.parents'), icon: '👨‍👩‍👧‍👦', description: t('socialMedia.descriptions.parentsAudience') },
+    { value: 'professionals', label: t('socialMedia.audiences.professionals'), icon: '👔', description: t('socialMedia.descriptions.professionalsAudience') },
+    { value: 'creatives', label: t('socialMedia.audiences.creatives'), icon: '🎨', description: t('socialMedia.descriptions.creativesAudience') },
+    { value: 'seniors', label: t('socialMedia.audiences.seniors'), icon: '👴', description: t('socialMedia.descriptions.seniorsAudience') },
+    { value: 'local', label: t('socialMedia.audiences.local'), icon: '🏘️', description: t('socialMedia.descriptions.localCommunity') }
   ];
 
   // Facebook-specific content structures
   const contentStructures = [
-    { value: 'story', label: 'Story Format', icon: '📖', description: 'Narrative with beginning, middle, end' },
-    { value: 'problem-solution', label: 'Problem-Solution', icon: '🔧', description: 'Identify problem, offer solution' },
-    { value: 'list', label: 'List Format', icon: '📋', description: 'Numbered or bulleted list' },
-    { value: 'question-answer', label: 'Q&A Format', icon: '❓', description: 'Question followed by answer' },
-    { value: 'before-after', label: 'Before-After', icon: '🔄', description: 'Compare two states or situations' },
-    { value: 'tips', label: 'Tips Format', icon: '💡', description: 'Actionable tips or advice' },
-    { value: 'quote', label: 'Quote Format', icon: '💬', description: 'Quote with commentary' },
-    { value: 'announcement', label: 'Announcement', icon: '📢', description: 'Clear announcement structure' }
+    { value: 'story', label: t('socialMedia.contentStructures.story'), icon: '📖', description: t('socialMedia.descriptions.storyFormat') },
+    { value: 'problem-solution', label: t('socialMedia.contentStructures.problemSolution'), icon: '🔧', description: t('socialMedia.descriptions.problemSolution') },
+    { value: 'list', label: t('socialMedia.contentStructures.list'), icon: '📋', description: t('socialMedia.descriptions.listFormat') },
+    { value: 'question-answer', label: t('socialMedia.contentStructures.questionAnswer'), icon: '❓', description: t('socialMedia.descriptions.questionAnswer') },
+    { value: 'before-after', label: t('socialMedia.contentStructures.beforeAfter'), icon: '🔄', description: t('socialMedia.descriptions.beforeAfter') },
+    { value: 'tips', label: t('socialMedia.contentStructures.tips'), icon: '💡', description: t('socialMedia.descriptions.tipsFormat') },
+    { value: 'quote', label: t('socialMedia.contentStructures.quote'), icon: '💬', description: t('socialMedia.descriptions.quoteFormat') },
+    { value: 'announcement', label: t('socialMedia.contentStructures.announcement'), icon: '📢', description: t('socialMedia.descriptions.clearAnnouncement') }
   ];
 
   const engagementGoals = [
-    { value: 'awareness', label: 'Brand Awareness', icon: '👁️', description: 'Increase visibility' },
-    { value: 'engagement', label: 'Engagement', icon: '💬', description: 'Likes, comments, shares' },
-    { value: 'conversation', label: 'Conversation', icon: '🗣️', description: 'Start discussions' },
-    { value: 'education', label: 'Education', icon: '📚', description: 'Inform and teach' },
-    { value: 'conversion', label: 'Conversion', icon: '🎯', description: 'Drive actions' },
-    { value: 'community', label: 'Community Building', icon: '🤝', description: 'Build relationships' }
+    { value: 'awareness', label: t('socialMedia.engagementGoals.awareness'), icon: '👁️', description: t('socialMedia.descriptions.brandAwareness') },
+    { value: 'engagement', label: t('socialMedia.engagementGoals.engagement'), icon: '💬', description: t('socialMedia.descriptions.engagement') },
+    { value: 'conversation', label: t('socialMedia.engagementGoals.conversation'), icon: '🗣️', description: t('socialMedia.descriptions.conversation') },
+    { value: 'education', label: t('socialMedia.engagementGoals.education'), icon: '📚', description: t('socialMedia.descriptions.education') },
+    { value: 'conversion', label: t('socialMedia.engagementGoals.conversion'), icon: '🎯', description: t('socialMedia.descriptions.conversion') },
+    { value: 'community', label: t('socialMedia.engagementGoals.community'), icon: '🤝', description: t('socialMedia.descriptions.communityBuilding') }
   ];
 
   // New dynamic length options
   const contentLengths = [
-    { value: 'concise', label: 'Concise', icon: '📝', description: 'Short and to the point (20-40 words)', targetWords: 30 },
-    { value: 'optimal', label: 'Optimal', icon: '⚡', description: 'Platform-optimized length (40-80 words)', targetWords: 60 },
-    { value: 'detailed', label: 'Detailed', icon: '📄', description: 'Comprehensive content (80-150 words)', targetWords: 120 },
-    { value: 'comprehensive', label: 'Comprehensive', icon: '📚', description: 'In-depth content (150-300 words)', targetWords: 225 },
-    { value: 'custom', label: 'Custom', icon: '🎛️', description: 'Specify exact word count', targetWords: null }
+    { value: 'concise', label: t('socialMedia.contentLengths.concise'), icon: '📝', description: t('socialMedia.descriptions.concise'), targetWords: 30 },
+    { value: 'optimal', label: t('socialMedia.contentLengths.optimal'), icon: '⚡', description: t('socialMedia.descriptions.optimal'), targetWords: 60 },
+    { value: 'detailed', label: t('socialMedia.contentLengths.detailed'), icon: '📄', description: t('socialMedia.descriptions.detailed'), targetWords: 120 },
+    { value: 'comprehensive', label: t('socialMedia.contentLengths.comprehensive'), icon: '📚', description: t('socialMedia.descriptions.comprehensive'), targetWords: 225 },
+    { value: 'custom', label: t('socialMedia.contentLengths.custom'), icon: '🎛️', description: t('socialMedia.descriptions.custom'), targetWords: null }
   ];
 
   const brandVoiceIntensities = [
-    { value: 'subtle', label: 'Subtle', icon: '🤫', description: 'Minimal brand voice influence' },
-    { value: 'moderate', label: 'Moderate', icon: '🎯', description: 'Balanced brand voice' },
-    { value: 'strong', label: 'Strong', icon: '💪', description: 'Prominent brand voice' },
-    { value: 'dominant', label: 'Dominant', icon: '👑', description: 'Very strong brand voice' }
+    { value: 'subtle', label: t('socialMedia.brandVoiceIntensities.subtle'), icon: '🤫', description: t('socialMedia.descriptions.subtle') },
+    { value: 'moderate', label: t('socialMedia.brandVoiceIntensities.moderate'), icon: '🎯', description: t('socialMedia.descriptions.moderate') },
+    { value: 'strong', label: t('socialMedia.brandVoiceIntensities.strong'), icon: '💪', description: t('socialMedia.descriptions.strong') },
+    { value: 'dominant', label: t('socialMedia.brandVoiceIntensities.dominant'), icon: '👑', description: t('socialMedia.descriptions.dominant') }
   ];
 
   const engagementUrgencies = [
-    { value: 'low', label: 'Low', icon: '😴', description: 'Relaxed, no urgency' },
-    { value: 'normal', label: 'Normal', icon: '😊', description: 'Standard engagement level' },
-    { value: 'high', label: 'High', icon: '🔥', description: 'High engagement urgency' },
-    { value: 'urgent', label: 'Urgent', icon: '🚨', description: 'Maximum engagement urgency' }
+    { value: 'low', label: t('socialMedia.engagementUrgencies.low'), icon: '😴', description: t('socialMedia.descriptions.low') },
+    { value: 'normal', label: t('socialMedia.engagementUrgencies.normal'), icon: '😊', description: t('socialMedia.descriptions.normal') },
+    { value: 'high', label: t('socialMedia.engagementUrgencies.high'), icon: '🔥', description: t('socialMedia.descriptions.high') },
+    { value: 'urgent', label: t('socialMedia.engagementUrgencies.urgent'), icon: '🚨', description: t('socialMedia.descriptions.urgent') }
   ];
 
   const situations = [
-    { value: 'general', label: 'General', icon: '📝', description: 'Regular posting' },
-    { value: 'promotional', label: 'Promotional', icon: '🎯', description: 'Product/service promotion' },
-    { value: 'crisis', label: 'Crisis Response', icon: '⚠️', description: 'Addressing issues or concerns' },
-    { value: 'celebration', label: 'Celebration', icon: '🎉', description: 'Celebrating achievements' },
-    { value: 'educational', label: 'Educational', icon: '📚', description: 'Teaching or informing' },
-    { value: 'community', label: 'Community', icon: '🤝', description: 'Community engagement' },
-    { value: 'trending', label: 'Trending', icon: '📈', description: 'Riding current trends' },
-    { value: 'seasonal', label: 'Seasonal', icon: '🌱', description: 'Seasonal or holiday content' }
+    { value: 'general', label: t('socialMedia.situations.general'), icon: '📝', description: t('socialMedia.descriptions.general') },
+    { value: 'promotional', label: t('socialMedia.situations.promotional'), icon: '🎯', description: t('socialMedia.descriptions.promotional') },
+    { value: 'crisis', label: t('socialMedia.situations.crisis'), icon: '⚠️', description: t('socialMedia.descriptions.crisis') },
+    { value: 'celebration', label: t('socialMedia.situations.celebration'), icon: '🎉', description: t('socialMedia.descriptions.celebration') },
+    { value: 'educational', label: t('socialMedia.situations.educational'), icon: '📚', description: t('socialMedia.descriptions.educational') },
+    { value: 'community', label: t('socialMedia.situations.community'), icon: '🤝', description: t('socialMedia.descriptions.community') },
+    { value: 'trending', label: t('socialMedia.situations.trending'), icon: '📈', description: t('socialMedia.descriptions.trending') },
+    { value: 'seasonal', label: t('socialMedia.situations.seasonal'), icon: '🌱', description: t('socialMedia.descriptions.seasonal') }
   ];
 
   // Calculate target length based on all factors
@@ -201,7 +203,7 @@ const SocialMediaPost = () => {
 
   const generateContent = async () => {
     if (!content.trim()) {
-      setError('Please enter some content to enhance.');
+      setError(t('socialMedia.pleaseEnterContent'));
       return;
     }
 
@@ -218,79 +220,12 @@ const SocialMediaPost = () => {
       const maxWords = Math.round(targetLength * 1.2);
       
       // Enhanced prompt focusing on relevance, precision, and clarity (no markdown, emojis, or unnecessary marks)
-      const enhancedPrompt = `You are an expert social media content creator specializing in ${platform} posts. Your goal is to create content that is:
-
-**RELEVANCE & PRECISION:**
-- Only include information that is directly relevant to the main message
-- Remove any unnecessary, off-topic, or verbose content
-- Be concise and precise in your wording
-- Avoid filler, repetition, or generic statements
-
-**CLARITY:**
-- Use simple, direct language that anyone can understand
-- Structure content with a clear beginning, middle, and end
-- Make each sentence build naturally on the previous one
-
-**FORMATTING:**
-${platform === 'instagram' ? `
-**INSTAGRAM-SPECIFIC FORMATTING:**
-- Use emojis strategically to make content visually appealing and engaging
-- Include 3-5 relevant hashtags at the end of the post
-- Use bullet points (•) to highlight key points and make content scannable
-- Break up text with line breaks for better readability
-- Use bold formatting (**text**) for emphasis on important points
-- Include call-to-action emojis (👉 🎯 💡 ✨ 🔥) to encourage engagement
-- Use food, lifestyle, and aesthetic emojis relevant to the content
-- Keep paragraphs short (2-3 lines max) for mobile viewing
-- End with a compelling call-to-action and relevant hashtags` : `
-- Do NOT Over use markdown, emojis, or any unnecessary formatting or symbols
-- Do NOT Over use bullet points, numbered lists, or headings
-- Write as a single, well-structured paragraph or two
-- Do NOT include hashtags in the main content (they will be added separately)`}
-
-**CONTENT STRUCTURE:**
-- Platform: ${platform} (${postType} post)
-- Content structure: ${contentStructure}
-- Engagement goal: ${engagementGoal}
-- Brand voice intensity: ${brandVoiceIntensity}
-- Situation context: ${situation}
-
-**ORIGINAL CONTENT TO ENHANCE:**
-${content}
-
-**INSTRUCTIONS:**
-1. Transform this into a ${platform}-optimized post that is concise, relevant, and precise
-2. Remove any irrelevant or unnecessary information
-3. Use the ${tone} tone consistently
-4. Target ${targetAudience} audience specifically
-5. Focus on ${engagementGoal} as the primary goal
-6. Ensure every sentence flows logically to the next
-7. Make the content immediately understandable and relatable
-8. End with a clear call-to-action that fits the ${engagementGoal}
-${platform === 'instagram' ? `
-9. **INSTAGRAM ENHANCEMENTS:**
-   - Add 3-5 relevant emojis throughout the content
-   - Use bullet points (•) to highlight 2-3 key points
-   - Include bold formatting (**text**) for emphasis
-   - Add 3-5 relevant hashtags at the end
-   - Use line breaks to create visual appeal
-   - Include engagement emojis (💬 ❤️ 🔥 ✨) in call-to-action
-   - Make it visually appealing for Instagram's aesthetic-focused audience` : ''}
-
-**LENGTH REQUIREMENT:**
-- Write a comprehensive post of at least ${minWords} words, but not more than ${maxWords} words.
-- The post should be in-depth, detailed, and provide substantial value to the reader.
-- Do NOT stop early; ensure the post meets the minimum word count.
-
-**QUALITY REQUIREMENTS:**
-- Relevance: Every detail should matter to the target audience
-- Precision: No filler, no off-topic content
-- Clarity: Use simple, powerful words that convey meaning instantly
-- Engagement: Encourage interaction and sharing
-- Authenticity: Make it feel genuine and personal, not generic
-${platform === 'instagram' ? '- Visual Appeal: Use emojis and formatting to make it Instagram-worthy' : '- NO MARKDOWN, NO EMOJIS, NO SYMBOLS, NO BULLETS, NO HEADINGS'}
-
-Generate a post that is concise, relevant, and precise${platform === 'instagram' ? ', with strategic emojis, bullet points, and hashtags for Instagram engagement' : ', with no markdown, emojis, or unnecessary marks'}. Output only the post text, nothing else.`;
+      let enhancedPrompt;
+      if (platform === 'linkedin') {
+        enhancedPrompt = `You are an expert LinkedIn content creator. Your goal is to write a post that is:\n\n- Professional, concise, and clear\n- Delivers a strong message or insight relevant to business or career\n- Uses **bold** and *italics* for emphasis (but do not overuse)\n- Includes a few professional and relevant icons/emojis (e.g., 🚀, 🤝, 🛠️, 📈, 💡, 🏆, 📣) to enhance engagement and visual appeal (but do not overuse)\n- May include a relevant analogy or a touch of tasteful humor, but only if it is appropriate and enhances the message\n- Structured for LinkedIn: a strong opening, a clear point, and a call to action or reflection\n- Follows LinkedIn's markdown formatting (bold, italics)\n\nORIGINAL CONTENT TO ENHANCE:\n${content}\n\nINSTRUCTIONS:\n1. Transform this into a LinkedIn-optimized post that is concise, clear, and professional.\n2. Use the professional tone as the base. Only include a witty line, analogy, or light-hearted touch if it is appropriate and enhances the message.\n3. Use **bold** and *italics* for emphasis where appropriate, but do not overuse.\n4. Add a few professional and relevant icons/emojis (e.g., 🚀, 🤝, 🛠️, 📈, 💡, 🏆, 📣) to enhance engagement and visual appeal, but do not overuse.\n5. Avoid filler, repetition, or generic statements.\n6. Do not use informal language or slang.\n7. Output only the post text, nothing else, using LinkedIn markdown formatting.`;
+      } else {
+        enhancedPrompt = `You are an expert social media content creator specializing in ${platform} posts. Your goal is to create content that is:\n\n**RELEVANCE & PRECISION:**\n- Only include information that is directly relevant to the main message\n- Remove any unnecessary, off-topic, or verbose content\n- Be concise and precise in your wording\n- Avoid filler, repetition, or generic statements\n\n**CLARITY:**\n- Use simple, direct language that anyone can understand\n- Structure content with a clear beginning, middle, and end\n- Make each sentence build naturally on the previous one\n\n**FORMATTING:**\n${platform === 'instagram' ? `\n**INSTAGRAM-SPECIFIC FORMATTING:**\n- Use emojis strategically to make content visually appealing and engaging\n- Include 3-5 relevant hashtags at the end of the post\n- Use bullet points (•) to highlight key points and make content scannable\n- Break up text with line breaks for better readability\n- Use bold formatting (**text**) for emphasis on important points\n- Include call-to-action emojis (👉 🎯 💡 ✨ 🔥) to encourage engagement\n- Use food, lifestyle, and aesthetic emojis relevant to the content\n- Keep paragraphs short (2-3 lines max) for mobile viewing\n- End with a compelling call-to-action and relevant hashtags` : `\n- Do NOT Over use markdown, emojis, or any unnecessary formatting or symbols\n- Do NOT Over use bullet points, numbered lists, or headings\n- Write as a single, well-structured paragraph or two\n- Do NOT include hashtags in the main content (they will be added separately)`}\n\n**CONTENT STRUCTURE:**\n- Platform: ${platform} (${postType} post)\n- Content structure: ${contentStructure}\n- Engagement goal: ${engagementGoal}\n- Brand voice intensity: ${brandVoiceIntensity}\n- Situation context: ${situation}\n\n**ORIGINAL CONTENT TO ENHANCE:**\n${content}\n\n**INSTRUCTIONS:**\n1. Transform this into a ${platform}-optimized post that is concise, relevant, and precise\n2. Remove any irrelevant or unnecessary information\n3. Use the ${tone} tone consistently\n4. Target ${targetAudience} audience specifically\n5. Focus on ${engagementGoal} as the primary goal\n6. Ensure every sentence flows logically to the next\n7. Make the content immediately understandable and relatable\n8. End with a clear call-to-action that fits the ${engagementGoal}\n${platform === 'instagram' ? `\n9. **INSTAGRAM ENHANCEMENTS:**\n   - Add 3-5 relevant emojis throughout the content\n   - Use bullet points (•) to highlight 2-3 key points\n   - Include bold formatting (**text**) for emphasis\n   - Add 3-5 relevant hashtags at the end\n   - Use line breaks to create visual appeal\n   - Include engagement emojis (💬 ❤️ 🔥 ✨) in call-to-action\n   - Make it visually appealing for Instagram's aesthetic-focused audience` : ''}\n\n**LENGTH REQUIREMENT:**\n- Write a comprehensive post of at least ${minWords} words, but not more than ${maxWords} words.\n- The post should be in-depth, detailed, and provide substantial value to the reader.\n- Do NOT stop early; ensure the post meets the minimum word count.\n\n**QUALITY REQUIREMENTS:**\n- Relevance: Every detail should matter to the target audience\n- Precision: No filler, no off-topic content\n- Clarity: Use simple, powerful words that convey meaning instantly\n- Engagement: Encourage interaction and sharing\n- Authenticity: Make it feel genuine and personal, not generic\n${platform === 'instagram' ? '- Visual Appeal: Use emojis and formatting to make it Instagram-worthy' : '- NO MARKDOWN, NO EMOJIS, NO SYMBOLS, NO BULLETS, NO HEADINGS'}\n\nGenerate a post that is concise, relevant, and precise${platform === 'instagram' ? ', with strategic emojis, bullet points, and hashtags for Instagram engagement' : ', with no markdown, emojis, or unnecessary marks'}. Output only the post text, nothing else.`;
+      }
 
       // Force production URL if we're on Netlify
       const isNetlify = window.location.hostname.includes('netlify.app') || window.location.hostname.includes('vmarketing.netlify.app');
@@ -393,7 +328,7 @@ Generate a post that is concise, relevant, and precise${platform === 'instagram'
         // FALLBACK: If cleaning results in empty content, use the original
         if (!generatedContent.trim()) {
           console.warn('⚠️ WARNING: Cleaning resulted in empty content. Using original response.');
-          setError('The generated content was empty after cleaning. Using the original response.');
+          setError(t('socialMedia.generatedContentEmpty'));
           setEnhancedContent(data.response);
         } else {
           setEnhancedContent(generatedContent);
@@ -426,11 +361,11 @@ Generate a post that is concise, relevant, and precise${platform === 'instagram'
         // Analyze quality with focus on coherence and relevance
         await analyzeQuality(generatedContent);
       } else {
-        setError(data.error || 'Failed to generate content');
+        setError(data.error || t('socialMedia.failedToGenerate'));
       }
     } catch (err) {
       console.error('Generation error:', err);
-      setError('Network error. Please try again.');
+      setError(t('socialMedia.networkError'));
     } finally {
       setIsGenerating(false);
     }
@@ -482,7 +417,7 @@ Generate a post that is concise, relevant, and precise${platform === 'instagram'
 
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text);
-    alert('Content copied to clipboard!');
+    alert(t('socialMedia.contentCopied'));
   };
 
   // Function to format Instagram content for preview
@@ -1376,7 +1311,7 @@ ${content}`;
           lineHeight: '1.1',
           animation: 'fadeIn 0.8s ease-out 0.1s both'
         }}>
-          Social Media Post Generator
+          {t('socialMedia.title')}
         </h1>
         <p style={{
           margin: '0 0 32px 0',
@@ -1390,7 +1325,7 @@ ${content}`;
           marginRight: 'auto',
           animation: 'fadeIn 0.8s ease-out 0.2s both'
         }}>
-          Create engaging, platform-optimized social media content with AI-powered enhancement
+          {t('socialMedia.subtitle')}
         </p>
         <div style={{
           display: 'flex',
@@ -1503,21 +1438,21 @@ ${content}`;
       {/* Content Input Section */}
       <div className="section content-input-section">
         <label htmlFor="content-input" className="content-label">
-          ✍️ Enter your post idea or draft below:
+          ✍️ {t('socialMedia.enterContent')}
         </label>
         <textarea
           id="content-input"
           className="content-input"
           value={content}
           onChange={e => setContent(e.target.value)}
-          placeholder="Type your post idea, story, or draft here..."
+          placeholder={t('socialMedia.contentPlaceholder')}
           rows={5}
           style={{ width: '100%', marginBottom: 12, fontSize: 16, padding: 12, borderRadius: 8, border: '1px solid #e2e8f0', resize: 'vertical' }}
         />
         {/* Suggestions Section */}
         {showSuggestions && (
           <div className="suggestions-section" style={{ marginBottom: 12 }}>
-            <div style={{ fontWeight: 600, marginBottom: 6 }}>💡 Need inspiration? Try one of these:</div>
+            <div style={{ fontWeight: 600, marginBottom: 6 }}>💡 {t('socialMedia.needInspiration')}</div>
             <div className="suggestions-list" style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
               {getFollowUpSuggestions().map((suggestion, idx) => (
                 <button
@@ -1535,7 +1470,7 @@ ${content}`;
               style={{ marginTop: 8, fontSize: 13, color: '#64748b', background: 'none', border: 'none', cursor: 'pointer' }}
               onClick={toggleSuggestions}
             >
-              {showSuggestions ? 'Hide suggestions' : 'Show suggestions'}
+              {showSuggestions ? t('socialMedia.hideSuggestions') : t('socialMedia.showSuggestions')}
             </button>
           </div>
         )}
@@ -1551,7 +1486,7 @@ ${content}`;
             onClick={generateContent}
             disabled={isGenerating || !content.trim()}
           >
-            {isGenerating ? 'Generating...' : '✨ Generate Post'}
+            {isGenerating ? t('socialMedia.generating') : `✨ ${t('socialMedia.generatePost')}`}
           </button>
           <button
             className="clear-btn"
@@ -1559,7 +1494,7 @@ ${content}`;
             onClick={clearAll}
             disabled={isGenerating && !content.trim()}
           >
-            Clear
+            {t('socialMedia.clear')}
           </button>
         </div>
       </div>

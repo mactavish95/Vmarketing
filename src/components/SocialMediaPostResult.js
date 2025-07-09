@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 const SocialMediaPostResult = ({
   enhancedContent,
@@ -48,6 +49,8 @@ const SocialMediaPostResult = ({
   historyError,
   groupHistoryByPlatform
 }) => {
+  const { t } = useTranslation();
+  
   const getQualityColor = (score) => {
     if (score >= 0.8) return '#10b981';
     if (score >= 0.6) return '#f59e0b';
@@ -55,10 +58,10 @@ const SocialMediaPostResult = ({
   };
 
   const getQualityLabel = (score) => {
-    if (score >= 0.8) return 'Excellent';
-    if (score >= 0.6) return 'Good';
-    if (score >= 0.4) return 'Fair';
-    return 'Poor';
+    if (score >= 0.8) return t('socialMedia.quality.excellent');
+    if (score >= 0.6) return t('socialMedia.quality.good');
+    if (score >= 0.4) return t('socialMedia.quality.fair');
+    return t('socialMedia.quality.poor');
   };
 
   return (
@@ -66,7 +69,7 @@ const SocialMediaPostResult = ({
       {/* Enhanced Content/Result Section */}
       {enhancedContent && (
         <div className="section result-section mobile-result-section" style={{ position: 'relative' }}>
-          <h2>✨ Enhanced Post</h2>
+          <h2>✨ {t('socialMedia.enhancedPost')}</h2>
           
           {/* Platform-Specific Post Preview */}
           <div className="platform-preview-container" style={{
@@ -139,7 +142,7 @@ const SocialMediaPostResult = ({
                       color: '#050505',
                       marginBottom: '2px'
                     }}>
-                      Your Page Name
+                      {t('socialMedia.yourPageName')}
                     </div>
                     <div style={{
                       fontSize: '13px',
@@ -148,7 +151,7 @@ const SocialMediaPostResult = ({
                       alignItems: 'center',
                       gap: '4px'
                     }}>
-                      <span>Just now</span>
+                      <span>{t('socialMedia.justNow')}</span>
                       <span>•</span>
                       <span>{getToneIcon(tone)} {tones.find(t => t.value === tone)?.label}</span>
                       <span>•</span>
@@ -206,7 +209,7 @@ const SocialMediaPostResult = ({
                       borderRadius: '6px',
                       transition: 'background-color 0.2s'
                     }} onMouseEnter={(e) => e.target.style.backgroundColor = '#e4e6ea'} onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}>
-                      👍 Like
+                      👍 {t('socialMedia.like')}
                     </button>
                     <button style={{
                       display: 'flex',
@@ -220,7 +223,7 @@ const SocialMediaPostResult = ({
                       borderRadius: '6px',
                       transition: 'background-color 0.2s'
                     }} onMouseEnter={(e) => e.target.style.backgroundColor = '#e4e6ea'} onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}>
-                      💬 Comment
+                      💬 {t('socialMedia.comment')}
                     </button>
                     <button style={{
                       display: 'flex',
@@ -234,11 +237,11 @@ const SocialMediaPostResult = ({
                       borderRadius: '6px',
                       transition: 'background-color 0.2s'
                     }} onMouseEnter={(e) => e.target.style.backgroundColor = '#e4e6ea'} onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}>
-                      🔄 Share
+                      🔄 {t('socialMedia.share')}
                     </button>
                   </div>
                   <div style={{ fontSize: '13px', color: '#65676b' }}>
-                    0 comments • 0 shares
+                    0 {t('socialMedia.comments')} • 0 {t('socialMedia.shares')}
                   </div>
                 </div>
               </div>
@@ -282,7 +285,7 @@ const SocialMediaPostResult = ({
                       fontWeight: '600',
                       color: '#262626'
                     }}>
-                      your_username
+                      {t('socialMedia.yourUsername')}
                     </div>
                   </div>
                   <div style={{
@@ -377,7 +380,7 @@ const SocialMediaPostResult = ({
                   wordWrap: 'break-word'
                 }}>
                   <div style={{ marginBottom: '8px' }}>
-                    <span style={{ fontWeight: '600', color: '#262626' }}>your_username</span>
+                    <span style={{ fontWeight: '600', color: '#262626' }}>{t('socialMedia.yourUsername')}</span>
                     <span style={{ marginLeft: '8px' }}>{reviewedContent || enhancedContent}</span>
                   </div>
                   
@@ -396,7 +399,7 @@ const SocialMediaPostResult = ({
                     color: '#8e8e8e',
                     marginTop: '8px'
                   }}>
-                    View all 0 comments
+                    {t('socialMedia.viewAllComments', { count: 0 })}
                   </div>
                 </div>
               </div>
@@ -437,7 +440,7 @@ const SocialMediaPostResult = ({
                       color: '#14171a',
                       marginBottom: '2px'
                     }}>
-                      Your Name
+                      {t('socialMedia.yourName')}
                     </div>
                     <div style={{
                       fontSize: '14px',
@@ -446,9 +449,9 @@ const SocialMediaPostResult = ({
                       alignItems: 'center',
                       gap: '4px'
                     }}>
-                      <span>@yourhandle</span>
+                      <span>@{t('socialMedia.yourHandle')}</span>
                       <span>•</span>
-                      <span>now</span>
+                      <span>{t('socialMedia.now')}</span>
                     </div>
                   </div>
                 </div>
@@ -853,7 +856,7 @@ const SocialMediaPostResult = ({
                   color: '#64748b'
                 }}>
                   <span>📊</span>
-                  <span><strong>{(reviewedContent || enhancedContent).length}</strong> characters</span>
+                  <span><strong>{(reviewedContent || enhancedContent).length}</strong> {t('socialMedia.characters')}</span>
                 </div>
                 <div style={{
                   display: 'flex',
@@ -863,7 +866,7 @@ const SocialMediaPostResult = ({
                   color: '#64748b'
                 }}>
                   <span>📝</span>
-                  <span><strong>{(reviewedContent || enhancedContent).split(' ').length}</strong> words</span>
+                  <span><strong>{(reviewedContent || enhancedContent).split(' ').length}</strong> {t('socialMedia.words')}</span>
                 </div>
                 {isOverLimit && (
                   <div style={{
@@ -900,7 +903,7 @@ const SocialMediaPostResult = ({
               border: '1px solid #e2e8f0'
             }}>
               <h3 style={{ margin: '0 0 16px 0', fontSize: '18px', fontWeight: '700', color: '#1e293b' }}>
-                🎛️ Quick Platform Switch & Edit
+                🎛️ {t('socialMedia.quickPlatformSwitch')}
               </h3>
               
               {/* Platform Switcher */}
@@ -950,7 +953,7 @@ const SocialMediaPostResult = ({
               {/* Quick Content Editor */}
               <div style={{ marginBottom: '16px' }}>
                 <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '600', color: '#374151' }}>
-                  Quick Edit Content:
+                  {t('socialMedia.quickEditContent')}:
                 </label>
                 <textarea
                   value={reviewedContent || enhancedContent}
@@ -966,7 +969,7 @@ const SocialMediaPostResult = ({
                     resize: 'vertical',
                     fontFamily: 'inherit'
                   }}
-                  placeholder="Edit your content here..."
+                                      placeholder={t('socialMedia.editContentPlaceholder')}
                 />
                 <div style={{
                   display: 'flex',
@@ -976,8 +979,8 @@ const SocialMediaPostResult = ({
                   fontSize: '12px',
                   color: '#6b7280'
                 }}>
-                  <span>{(reviewedContent || enhancedContent).length} characters</span>
-                  <span>{(reviewedContent || enhancedContent).split(' ').length} words</span>
+                                      <span>{(reviewedContent || enhancedContent).length} {t('socialMedia.characters')}</span>
+                    <span>{(reviewedContent || enhancedContent).split(' ').length} {t('socialMedia.words')}</span>
                   {isOverLimit && (
                     <span style={{ color: '#ef4444', fontWeight: '600' }}>
                       ⚠️ Over limit
@@ -1013,7 +1016,7 @@ const SocialMediaPostResult = ({
                     e.target.style.boxShadow = 'none';
                   }}
                 >
-                  📋 Copy
+                  📋 {t('socialMedia.copy')}
                 </button>
                 <button
                   onClick={() => openPreviewWindow(
@@ -1046,7 +1049,7 @@ const SocialMediaPostResult = ({
                     e.target.style.boxShadow = 'none';
                   }}
                 >
-                  👁️ Preview
+                  👁️ {t('socialMedia.preview')}
                 </button>
                 <button
                   onClick={() => {
@@ -1079,7 +1082,7 @@ const SocialMediaPostResult = ({
                     e.target.style.boxShadow = 'none';
                   }}
                 >
-                  🔄 Regenerate
+                  🔄 {t('socialMedia.regenerate')}
                 </button>
               </div>
             </div>
@@ -1118,7 +1121,7 @@ const SocialMediaPostResult = ({
                   e.target.style.boxShadow = '0 4px 12px rgba(37, 99, 235, 0.3)';
                 }}
               >
-                📋 Copy Post
+                📋 {t('socialMedia.copyPost')}
               </button>
               <button
                 onClick={() => openPreviewWindow(
@@ -1152,7 +1155,7 @@ const SocialMediaPostResult = ({
                   e.target.style.boxShadow = '0 4px 12px rgba(245, 158, 11, 0.3)';
                 }}
               >
-                👁️ Preview Post
+                👁️ {t('socialMedia.previewPost')}
               </button>
               <button
                 onClick={() => {
@@ -1197,7 +1200,7 @@ const SocialMediaPostResult = ({
                   e.target.style.boxShadow = '0 4px 12px rgba(16, 185, 129, 0.3)';
                 }}
               >
-                💾 Save Post
+                💾 {t('socialMedia.savePost')}
               </button>
             </div>
           </div>
@@ -1248,7 +1251,7 @@ const SocialMediaPostResult = ({
               borderTop: '1px solid #f1f5f9'
             }}>
               <div className="character-count" style={{ fontSize: '14px', color: '#64748b' }}>
-                📊 {enhancedContent.length} characters
+                                  📊 {enhancedContent.length} {t('socialMedia.characters')}
                 {isOverLimit && (
                   <span className="limit-warning" style={{ color: '#ef4444', marginLeft: '8px' }}>
                     ⚠️ Over limit
@@ -1270,7 +1273,7 @@ const SocialMediaPostResult = ({
                     fontWeight: '500'
                   }}
                 >
-                  📋 Copy
+                  📋 {t('socialMedia.copy')}
                 </button>
                 <button
                   onClick={() => openPreviewWindow(
@@ -1292,7 +1295,7 @@ const SocialMediaPostResult = ({
                     fontWeight: '500'
                   }}
                 >
-                  👁️ Preview
+                  👁️ {t('socialMedia.preview')}
                 </button>
               </div>
             </div>
@@ -1308,7 +1311,7 @@ const SocialMediaPostResult = ({
               border: '1px solid #e2e8f0'
             }}>
               <h3 style={{ margin: '0 0 16px 0', fontSize: '20px', fontWeight: '700', color: '#1e293b' }}>
-                📊 Quality Analysis
+                📊 {t('socialMedia.qualityAnalysis')}
               </h3>
               
               <div className="quality-score" style={{
@@ -1329,7 +1332,7 @@ const SocialMediaPostResult = ({
                     {getQualityLabel(qualityAnalysis.overallScore)}
                   </div>
                   <div style={{ fontSize: '14px', color: '#64748b' }}>
-                    Overall Quality Score
+                    {t('socialMedia.overallQualityScore')}
                   </div>
                 </div>
               </div>
@@ -1366,7 +1369,7 @@ const SocialMediaPostResult = ({
           {/* Comparison Section */}
           <div className="comparison-section" style={{ marginBottom: '24px' }}>
             <h3 style={{ margin: '0 0 16px 0', fontSize: '20px', fontWeight: '700', color: '#1e293b' }}>
-              🔍 Content Comparison
+              🔍 {t('socialMedia.contentComparison')}
             </h3>
             
             <div style={{ display: 'flex', gap: '16px', marginBottom: '16px' }}>
@@ -1384,7 +1387,7 @@ const SocialMediaPostResult = ({
                   fontWeight: '500'
                 }}
               >
-                📝 {showOriginalContent ? 'Hide' : 'Show'} Original
+                📝 {showOriginalContent ? t('socialMedia.hide') : t('socialMedia.show')} {t('socialMedia.original')}
               </button>
               <button
                 onClick={() => setShowComparison(!showComparison)}
@@ -1400,7 +1403,7 @@ const SocialMediaPostResult = ({
                   fontWeight: '500'
                 }}
               >
-                ⚖️ {showComparison ? 'Hide' : 'Show'} Comparison
+                ⚖️ {showComparison ? t('socialMedia.hide') : t('socialMedia.show')} {t('socialMedia.comparison')}
               </button>
             </div>
 
@@ -1414,7 +1417,7 @@ const SocialMediaPostResult = ({
                 marginBottom: '16px'
               }}>
                 <h4 style={{ margin: '0 0 12px 0', fontSize: '16px', fontWeight: '600', color: '#92400e' }}>
-                  📝 Original Content
+                  📝 {t('socialMedia.originalContent')}
                 </h4>
                 <div style={{ fontSize: '14px', lineHeight: '1.5', color: '#92400e', whiteSpace: 'pre-wrap' }}>
                   {content}
@@ -1435,7 +1438,7 @@ const SocialMediaPostResult = ({
               }}>
                 <div>
                   <h4 style={{ margin: '0 0 12px 0', fontSize: '16px', fontWeight: '600', color: '#1e293b' }}>
-                    📝 Original ({content.length} chars)
+                    📝 {t('socialMedia.original')} ({content.length} {t('socialMedia.chars')})
                   </h4>
                   <div style={{
                     background: 'white',
@@ -1453,7 +1456,7 @@ const SocialMediaPostResult = ({
                 </div>
                 <div>
                   <h4 style={{ margin: '0 0 12px 0', fontSize: '16px', fontWeight: '600', color: '#1e293b' }}>
-                    ✨ Enhanced ({(reviewedContent || enhancedContent).length} chars)
+                    ✨ {t('socialMedia.enhanced')} ({(reviewedContent || enhancedContent).length} {t('socialMedia.chars')})
                   </h4>
                   <div style={{
                     background: 'white',
@@ -1494,7 +1497,7 @@ const SocialMediaPostResult = ({
                 animation: 'spin 1s linear infinite'
               }}></div>
               <span style={{ color: '#0c4a6e', fontWeight: '500' }}>
-                🔍 Reviewing and optimizing content...
+                                  🔍 {t('socialMedia.reviewingContent')}
               </span>
             </div>
           )}
@@ -1505,7 +1508,7 @@ const SocialMediaPostResult = ({
       <div className="section history-section mobile-history-section">
         <h2>📚 Previous Posts by Platform</h2>
         <p style={{ margin: '0', color: '#666', fontSize: '14px', fontStyle: 'italic' }}>
-          Your recently generated posts, grouped by platform. Click on any post to view the full content and copy it.
+                        {t('socialMedia.recentlyGeneratedPosts')}
         </p>
         {isHistoryLoading ? (
           <div style={{ color: '#64748b', fontSize: '16px', padding: '24px 0' }}>Loading global history...</div>
@@ -2113,13 +2116,13 @@ const SocialMediaPostResult = ({
                             marginTop: '8px'
                           }}>
                             <div className="history-length-item">
-                              <span>📏</span> {item.length || 'N/A'} words
+                              <span>📏</span> {item.length || t('socialMedia.notAvailable')} {t('socialMedia.words')}
                             </div>
                             <div className="history-length-item">
-                              <span>🎭</span> {brandVoiceIntensities.find(bv => bv.value === item.brandVoiceIntensity)?.label || 'N/A'}
+                              <span>🎭</span> {brandVoiceIntensities.find(bv => bv.value === item.brandVoiceIntensity)?.label || t('socialMedia.notAvailable')}
                             </div>
                             <div className="history-length-item">
-                              <span>🔥</span> {engagementUrgencies.find(eu => eu.value === item.engagementUrgency)?.label || 'N/A'}
+                              <span>🔥</span> {engagementUrgencies.find(eu => eu.value === item.engagementUrgency)?.label || t('socialMedia.notAvailable')}
                             </div>
                             <div className="history-length-item">
                               <span>📅</span> {new Date(item.timestamp).toLocaleDateString()}
@@ -2283,7 +2286,7 @@ const SocialMediaPostResult = ({
                             }}
                           >
                             <span style={{ fontSize: '16px' }}>📄</span>
-                            <span>View Full</span>
+                            <span>{t('socialMedia.viewFull')}</span>
                           </button>
                         </div>
                       </div>
@@ -2401,7 +2404,7 @@ const SocialMediaPostResult = ({
                     fontWeight: '500'
                   }}
                 >
-                  📋 Copy Enhanced
+                  📋 {t('socialMedia.copyEnhanced')}
                 </button>
                 <button
                   onClick={() => openPreviewWindow(

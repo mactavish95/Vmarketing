@@ -2,17 +2,26 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import EnhancedModelInfo from '../components/EnhancedModelInfo';
 import { useTranslation } from 'react-i18next';
+import apiConfig from '../config/api';
 
 const BlogIndex = () => {
   const [activeTab, setActiveTab] = useState('published');
   const [blogHistory, setBlogHistory] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('all');
+  const [backendBlogs, setBackendBlogs] = useState([]);
+  const [backendLoading, setBackendLoading] = useState(false);
+  const [backendError, setBackendError] = useState('');
+  const [showBackend, setShowBackend] = useState(false);
   const { t } = useTranslation();
 
   useEffect(() => {
-    loadBlogHistory();
-  }, []);
+    if (showBackend) {
+      fetchBackendBlogs();
+    } else {
+      loadBlogHistory();
+    }
+  }, [showBackend]);
 
   // Set active tab to 'history' if there are blog posts
   useEffect(() => {
@@ -151,6 +160,26 @@ const BlogIndex = () => {
       color: '#a55eea'
     }
   ];
+
+  const fetchBackendBlogs = async () => {
+    setBackendLoading(true);
+    setBackendError('');
+    try {
+      const isNetlify = window.location.hostname.includes('netlify.app') || window.location.hostname.includes('vmarketing.netlify.app');
+      const baseURL = isNetlify ? 'https://vmarketing-backend-server.onrender.com/api' : apiConfig.baseURL;
+      const res = await fetch(`${baseURL}/blog/list`);
+      const data = await res.json();
+      if (data.success) {
+        setBackendBlogs(data.blogs || []);
+      } else {
+        setBackendError(data.error || t('failedToFetchBackendBlogs'));
+      }
+    } catch (err) {
+      setBackendError(t('networkErrorFetchingBackendBlogs'));
+    } finally {
+      setBackendLoading(false);
+    }
+  };
 
   return (
     <div style={{
@@ -504,240 +533,331 @@ const BlogIndex = () => {
                 </button>
               </div>
 
-              {/* Blog Posts */}
-              {filteredBlogs.length === 0 ? (
-                <div style={{
-                  textAlign: 'center',
-                  padding: '60px 20px',
-                  color: '#6c757d'
-                }}>
-                  <div style={{ fontSize: '64px', marginBottom: '16px' }}>📝</div>
-                  <h3 style={{ margin: '0 0 12px 0', fontSize: '24px' }}>
-                    {blogHistory.length === 0 ? t('noBlogPostsYet') : t('noPostsMatchYourSearch')}
-                  </h3>
-                  <p style={{ margin: '0 0 24px 0', fontSize: '16px' }}>
-                    {blogHistory.length === 0 
-                      ? t('createYourFirstBlogPostToGetStarted') 
-                      : t('tryAdjustingYourSearchOrFilterCriteria')
-                    }
-                  </p>
-                  {blogHistory.length === 0 && (
-                    <Link
-                      to="/blog-creator"
-                      style={{
-                        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                        color: '#fff',
-                        padding: '12px 24px',
-                        borderRadius: '8px',
-                        textDecoration: 'none',
-                        fontWeight: '600',
-                        display: 'inline-block'
-                      }}
-                    >
-                      ✍️ {t('createYourFirstBlogPost')}
-                    </Link>
-                  )}
-                </div>
-              ) : (
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
-                  gap: '24px'
-                }}>
-                  {filteredBlogs.map((blog) => (
-                    <div key={blog.id} style={{
-                      background: '#f8f9fa',
-                      borderRadius: '16px',
-                      padding: '24px',
-                      border: '1px solid #e9ecef',
-                      transition: 'transform 0.2s ease, box-shadow 0.2s ease'
-                    }}>
-                      <div style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'flex-start',
-                        marginBottom: '16px'
-                      }}>
-                        <div>
-                          <h3 style={{
-                            margin: '0 0 8px 0',
-                            color: '#2d3748',
-                            fontSize: '18px',
-                            fontWeight: '700',
-                            lineHeight: '1.4'
-                          }}>
-                            {blog.topic}
-                          </h3>
-                          <p style={{
-                            margin: '0',
-                            color: '#4a5568',
-                            fontSize: '14px',
-                            fontWeight: '600'
-                          }}>
-                            {blog.restaurantName}
-                          </p>
-                        </div>
-                        <div style={{
-                          display: 'flex',
-                          gap: '8px'
-                        }}>
-                          <button
-                            onClick={() => copyBlog(blog.blogPost)}
-                            style={{
-                              background: '#28a745',
-                              color: '#fff',
-                              border: 'none',
-                              borderRadius: '6px',
-                              padding: '6px 10px',
-                              fontSize: '12px',
-                              cursor: 'pointer'
-                            }}
-                            title={t('copyBlogPost')}
-                          >
-                            📋
-                          </button>
-                          <button
-                            onClick={() => deleteBlog(blog.id)}
-                            style={{
-                              background: '#dc3545',
-                              color: '#fff',
-                              border: 'none',
-                              borderRadius: '6px',
-                              padding: '6px 10px',
-                              fontSize: '12px',
-                              cursor: 'pointer'
-                            }}
-                            title={t('deleteBlogPost')}
-                          >
-                            🗑️
-                          </button>
-                        </div>
-                      </div>
+              {/* Toggle for Backend Posts */}
+              <div style={{ display: 'flex', gap: '8px', marginBottom: '24px' }}>
+                <button
+                  onClick={() => setShowBackend(false)}
+                  style={{
+                    flex: 1,
+                    padding: '12px 24px',
+                    borderRadius: '8px',
+                    border: 'none',
+                    background: !showBackend ? '#667eea' : 'transparent',
+                    color: !showBackend ? '#fff' : '#4a5568',
+                    fontWeight: '600',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease'
+                  }}
+                >
+                  {t('localPosts')}
+                </button>
+                <button
+                  onClick={() => setShowBackend(true)}
+                  style={{
+                    flex: 1,
+                    padding: '12px 24px',
+                    borderRadius: '8px',
+                    border: 'none',
+                    background: showBackend ? '#667eea' : 'transparent',
+                    color: showBackend ? '#fff' : '#4a5568',
+                    fontWeight: '600',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease'
+                  }}
+                >
+                  {t('backendPosts')}
+                </button>
+              </div>
 
-                      <div style={{
-                        background: '#fff',
-                        borderRadius: '8px',
-                        padding: '16px',
-                        marginBottom: '16px',
+              {/* Blog Posts Section */}
+              {showBackend ? (
+                backendLoading ? (
+                  <div style={{ textAlign: 'center', color: '#667eea', padding: '40px' }}>{t('loadingBackendPosts')}</div>
+                ) : backendError ? (
+                  <div style={{ textAlign: 'center', color: '#c53030', padding: '40px' }}>{backendError}</div>
+                ) : backendBlogs.length === 0 ? (
+                  <div style={{ textAlign: 'center', color: '#6c757d', padding: '40px' }}>{t('noBackendBlogPostsFound')}</div>
+                ) : (
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '24px' }}>
+                    {backendBlogs.map((blog) => (
+                      <div key={blog._id} style={{
+                        background: '#f8f9fa',
+                        borderRadius: '16px',
+                        padding: '24px',
                         border: '1px solid #e9ecef',
-                        maxHeight: '200px',
-                        overflow: 'hidden',
-                        position: 'relative'
+                        transition: 'transform 0.2s ease, box-shadow 0.2s ease'
                       }}>
-                        <div style={{
-                          color: '#2d3748',
-                          fontSize: '14px',
-                          lineHeight: '1.6',
-                          whiteSpace: 'pre-wrap'
-                        }}>
-                          {blog.blogPost.substring(0, 300)}
-                          {blog.blogPost.length > 300 && '...'}
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
+                          <div>
+                            <h3 style={{ margin: '0 0 8px 0', color: '#2d3748', fontSize: '18px', fontWeight: '700', lineHeight: '1.4' }}>{blog.topic}</h3>
+                            <p style={{ margin: '0', color: '#4a5568', fontSize: '14px', fontWeight: '600' }}>{blog.restaurantName}</p>
+                          </div>
                         </div>
-                        {blog.blogPost.length > 300 && (
-                          <div style={{
-                            position: 'absolute',
-                            bottom: 0,
-                            left: 0,
-                            right: 0,
-                            height: '40px',
-                            background: 'linear-gradient(transparent, #fff)',
-                            pointerEvents: 'none'
-                          }}></div>
-                        )}
-                      </div>
-
-                      <div style={{
-                        display: 'flex',
-                        flexWrap: 'wrap',
-                        gap: '8px',
-                        marginBottom: '12px'
-                      }}>
-                        <span style={{
-                          background: '#e9ecef',
-                          color: '#495057',
-                          padding: '4px 8px',
-                          borderRadius: '12px',
-                          fontSize: '12px',
-                          fontWeight: '500'
-                        }}>
-                          {blog.restaurantType}
-                        </span>
-                        <span style={{
-                          background: '#e9ecef',
-                          color: '#495057',
-                          padding: '4px 8px',
-                          borderRadius: '12px',
-                          fontSize: '12px',
-                          fontWeight: '500'
-                        }}>
-                          {blog.tone}
-                        </span>
-                        <span style={{
-                          background: '#e9ecef',
-                          color: '#495057',
-                          padding: '4px 8px',
-                          borderRadius: '12px',
-                          fontSize: '12px',
-                          fontWeight: '500'
-                        }}>
-                          {getWordCount(blog.blogPost)} {t('words')}
-                        </span>
-                        {blog.images && blog.images.length > 0 && (
-                          <span style={{
-                            background: '#e9ecef',
-                            color: '#495057',
-                            padding: '4px 8px',
-                            borderRadius: '12px',
-                            fontSize: '12px',
-                            fontWeight: '500'
-                          }}>
-                            {blog.images.length} {t('image')}
-                          </span>
-                        )}
-                      </div>
-
-                      <div style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        fontSize: '12px',
-                        color: '#6c757d'
-                      }}>
-                        <span>{formatDate(blog.timestamp)}</span>
-                        <div style={{
-                          display: 'flex',
-                          gap: '8px'
-                        }}>
-                          <Link
-                            to={`/blog-post/generated-${blog.id}`}
-                            style={{
-                              color: '#667eea',
-                              textDecoration: 'none',
-                              fontWeight: '600',
-                              fontSize: '12px',
-                              background: '#f8f9fa',
-                              padding: '4px 8px',
-                              borderRadius: '6px',
-                              border: '1px solid #e9ecef'
-                            }}
-                          >
-                            👁️ {t('viewFullPost')}
-                          </Link>
-                          <Link
-                            to="/blog-creator"
-                            style={{
-                              color: '#667eea',
-                              textDecoration: 'none',
-                              fontWeight: '600',
-                              fontSize: '12px'
-                            }}
-                          >
-                            ✍️ {t('createSimilar')}
-                          </Link>
+                        <div style={{ background: '#fff', borderRadius: '8px', padding: '16px', marginBottom: '16px', border: '1px solid #e9ecef', maxHeight: '200px', overflow: 'hidden', position: 'relative' }}>
+                          <div style={{ color: '#2d3748', fontSize: '14px', lineHeight: '1.6', whiteSpace: 'pre-wrap' }}>
+                            {blog.blogPost ? blog.blogPost.substring(0, 300) : ''}
+                            {blog.blogPost && blog.blogPost.length > 300 && '...'}
+                          </div>
+                          {blog.blogPost && blog.blogPost.length > 300 && (
+                            <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '40px', background: 'linear-gradient(transparent, #fff)', pointerEvents: 'none' }}></div>
+                          )}
+                        </div>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '12px' }}>
+                          <span style={{ background: '#e9ecef', color: '#495057', padding: '4px 8px', borderRadius: '12px', fontSize: '12px', fontWeight: '500' }}>{blog.restaurantType}</span>
+                          <span style={{ background: '#e9ecef', color: '#495057', padding: '4px 8px', borderRadius: '12px', fontSize: '12px', fontWeight: '500' }}>{blog.tone}</span>
+                          <span style={{ background: '#e9ecef', color: '#495057', padding: '4px 8px', borderRadius: '12px', fontSize: '12px', fontWeight: '500' }}>{blog.wordCount || (blog.blogPost ? blog.blogPost.split(/\s+/).length : 0)} {t('words')}</span>
+                          {blog.images && blog.images.length > 0 && (
+                                                          <span style={{ background: '#e9ecef', color: '#495057', padding: '4px 8px', borderRadius: '12px', fontSize: '12px', fontWeight: '500' }}>{blog.images.length} {t('image')}</span>
+                          )}
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '12px', color: '#6c757d' }}>
+                                          <span>{t('savedToBackend')}: {blog.createdAt ? new Date(blog.createdAt).toLocaleString() : t('notAvailable')}</span>
+                {blog.updatedAt && blog.updatedAt !== blog.createdAt && (
+                  <span>{t('updated')}: {new Date(blog.updatedAt).toLocaleString()}</span>
+                )}
                         </div>
                       </div>
+                    ))}
+                  </div>
+                )
+              ) : (
+                /* Local Blog Posts */
+                <div>
+                  {filteredBlogs.length === 0 ? (
+                    <div style={{
+                      textAlign: 'center',
+                      padding: '60px 20px',
+                      color: '#6c757d'
+                    }}>
+                      <div style={{ fontSize: '64px', marginBottom: '16px' }}>📝</div>
+                      <h3 style={{ margin: '0 0 12px 0', fontSize: '24px' }}>
+                        {blogHistory.length === 0 ? t('noBlogPostsYet') : t('noPostsMatchYourSearch')}
+                      </h3>
+                      <p style={{ margin: '0 0 24px 0', fontSize: '16px' }}>
+                        {blogHistory.length === 0 
+                          ? t('createYourFirstBlogPostToGetStarted') 
+                          : t('tryAdjustingYourSearchOrFilterCriteria')
+                        }
+                      </p>
+                      {blogHistory.length === 0 && (
+                        <Link
+                          to="/blog-creator"
+                          style={{
+                            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                            color: '#fff',
+                            padding: '12px 24px',
+                            borderRadius: '8px',
+                            textDecoration: 'none',
+                            fontWeight: '600',
+                            display: 'inline-block'
+                          }}
+                        >
+                          ✍️ {t('createYourFirstBlogPost')}
+                        </Link>
+                      )}
                     </div>
-                  ))}
+                  ) : (
+                    <div style={{
+                      display: 'grid',
+                      gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
+                      gap: '24px'
+                    }}>
+                      {filteredBlogs.map((blog) => (
+                        <div key={blog.id} style={{
+                          background: '#f8f9fa',
+                          borderRadius: '16px',
+                          padding: '24px',
+                          border: '1px solid #e9ecef',
+                          transition: 'transform 0.2s ease, box-shadow 0.2s ease'
+                        }}>
+                          <div style={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'flex-start',
+                            marginBottom: '16px'
+                          }}>
+                            <div>
+                              <h3 style={{
+                                margin: '0 0 8px 0',
+                                color: '#2d3748',
+                                fontSize: '18px',
+                                fontWeight: '700',
+                                lineHeight: '1.4'
+                              }}>
+                                {blog.topic}
+                              </h3>
+                              <p style={{
+                                margin: '0',
+                                color: '#4a5568',
+                                fontSize: '14px',
+                                fontWeight: '600'
+                              }}>
+                                {blog.restaurantName}
+                              </p>
+                            </div>
+                            <div style={{
+                              display: 'flex',
+                              gap: '8px'
+                            }}>
+                              <button
+                                onClick={() => copyBlog(blog.blogPost)}
+                                style={{
+                                  background: '#28a745',
+                                  color: '#fff',
+                                  border: 'none',
+                                  borderRadius: '6px',
+                                  padding: '6px 10px',
+                                  fontSize: '12px',
+                                  cursor: 'pointer'
+                                }}
+                                title={t('copyBlogPost')}
+                              >
+                                📋
+                              </button>
+                              <button
+                                onClick={() => deleteBlog(blog.id)}
+                                style={{
+                                  background: '#dc3545',
+                                  color: '#fff',
+                                  border: 'none',
+                                  borderRadius: '6px',
+                                  padding: '6px 10px',
+                                  fontSize: '12px',
+                                  cursor: 'pointer'
+                                }}
+                                title={t('deleteBlogPost')}
+                              >
+                                🗑️
+                              </button>
+                            </div>
+                          </div>
+
+                          <div style={{
+                            background: '#fff',
+                            borderRadius: '8px',
+                            padding: '16px',
+                            marginBottom: '16px',
+                            border: '1px solid #e9ecef',
+                            maxHeight: '200px',
+                            overflow: 'hidden',
+                            position: 'relative'
+                          }}>
+                            <div style={{
+                              color: '#2d3748',
+                              fontSize: '14px',
+                              lineHeight: '1.6',
+                              whiteSpace: 'pre-wrap'
+                            }}>
+                              {blog.blogPost.substring(0, 300)}
+                              {blog.blogPost.length > 300 && '...'}
+                            </div>
+                            {blog.blogPost.length > 300 && (
+                              <div style={{
+                                position: 'absolute',
+                                bottom: 0,
+                                left: 0,
+                                right: 0,
+                                height: '40px',
+                                background: 'linear-gradient(transparent, #fff)',
+                                pointerEvents: 'none'
+                              }}></div>
+                            )}
+                          </div>
+
+                          <div style={{
+                            display: 'flex',
+                            flexWrap: 'wrap',
+                            gap: '8px',
+                            marginBottom: '12px'
+                          }}>
+                            <span style={{
+                              background: '#e9ecef',
+                              color: '#495057',
+                              padding: '4px 8px',
+                              borderRadius: '12px',
+                              fontSize: '12px',
+                              fontWeight: '500'
+                            }}>
+                              {blog.restaurantType}
+                            </span>
+                            <span style={{
+                              background: '#e9ecef',
+                              color: '#495057',
+                              padding: '4px 8px',
+                              borderRadius: '12px',
+                              fontSize: '12px',
+                              fontWeight: '500'
+                            }}>
+                              {blog.tone}
+                            </span>
+                            <span style={{
+                              background: '#e9ecef',
+                              color: '#495057',
+                              padding: '4px 8px',
+                              borderRadius: '12px',
+                              fontSize: '12px',
+                              fontWeight: '500'
+                            }}>
+                              {getWordCount(blog.blogPost)} {t('words')}
+                            </span>
+                            {blog.images && blog.images.length > 0 && (
+                              <span style={{
+                                background: '#e9ecef',
+                                color: '#495057',
+                                padding: '4px 8px',
+                                borderRadius: '12px',
+                                fontSize: '12px',
+                                fontWeight: '500'
+                              }}>
+                                {blog.images.length} {t('image')}
+                              </span>
+                            )}
+                          </div>
+
+                          <div style={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            fontSize: '12px',
+                            color: '#6c757d'
+                          }}>
+                            <span>{formatDate(blog.timestamp)}</span>
+                            <div style={{
+                              display: 'flex',
+                              gap: '8px'
+                            }}>
+                              <Link
+                                to={`/blog-post/generated-${blog.id}`}
+                                style={{
+                                  color: '#667eea',
+                                  textDecoration: 'none',
+                                  fontWeight: '600',
+                                  fontSize: '12px',
+                                  background: '#f8f9fa',
+                                  padding: '4px 8px',
+                                  borderRadius: '6px',
+                                  border: '1px solid #e9ecef'
+                                }}
+                              >
+                                👁️ {t('viewFullPost')}
+                              </Link>
+                              <Link
+                                to="/blog-creator"
+                                style={{
+                                  color: '#667eea',
+                                  textDecoration: 'none',
+                                  fontWeight: '600',
+                                  fontSize: '12px'
+                                }}
+                              >
+                                ✍️ {t('createSimilar')}
+                              </Link>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
             </div>

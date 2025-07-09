@@ -37,12 +37,12 @@ const BlogCreator = () => {
       const isValidSize = file.size <= 5 * 1024 * 1024; // 5MB limit
       
       if (!isValidType) {
-        alert(`Invalid file type: ${file.name}. Please upload JPEG, PNG, GIF, or WebP images.`);
+        alert(t('invalidFileType', { fileName: file.name }));
         return false;
       }
       
       if (!isValidSize) {
-        alert(`File too large: ${file.name}. Please upload images smaller than 5MB.`);
+        alert(t('fileTooLarge', { fileName: file.name }));
         return false;
       }
       
@@ -114,39 +114,39 @@ const BlogCreator = () => {
   };
 
   const restaurantTypes = [
-    { value: 'restaurant', label: 'Restaurant', icon: '🍽️', color: '#ff6b6b' },
-    { value: 'cafe', label: 'Café', icon: '☕', color: '#8b4513' },
-    { value: 'pizzeria', label: 'Pizzeria', icon: '🍕', color: '#ff8c00' },
-    { value: 'bakery', label: 'Bakery', icon: '🥐', color: '#daa520' },
-    { value: 'bar', label: 'Bar/Pub', icon: '🍺', color: '#ffd700' },
-    { value: 'food-truck', label: 'Food Truck', icon: '🚚', color: '#ff6347' },
-    { value: 'fine-dining', label: 'Fine Dining', icon: '🍷', color: '#800020' },
-    { value: 'fast-casual', label: 'Fast Casual', icon: '🥪', color: '#32cd32' }
+    { value: 'restaurant', label: t('restaurantTypeRestaurant'), icon: '🍽️', color: '#ff6b6b' },
+    { value: 'cafe', label: t('restaurantTypeCafe'), icon: '☕', color: '#8b4513' },
+    { value: 'pizzeria', label: t('restaurantTypePizzeria'), icon: '🍕', color: '#ff8c00' },
+    { value: 'bakery', label: t('restaurantTypeBakery'), icon: '🥐', color: '#daa520' },
+    { value: 'bar', label: t('restaurantTypeBarPub'), icon: '🍺', color: '#ffd700' },
+    { value: 'food-truck', label: t('restaurantTypeFoodTruck'), icon: '🚚', color: '#ff6347' },
+    { value: 'fine-dining', label: t('restaurantTypeFineDining'), icon: '🍷', color: '#800020' },
+    { value: 'fast-casual', label: t('restaurantTypeFastCasual'), icon: '🥪', color: '#32cd32' }
   ];
 
   const targetAudiences = [
-    { value: 'customers', label: 'General Customers', icon: '👥', color: '#667eea' },
-    { value: 'foodies', label: 'Food Enthusiasts', icon: '🍴', color: '#ff6b6b' },
-    { value: 'families', label: 'Families', icon: '👨‍👩‍👧‍👦', color: '#20c997' },
-    { value: 'business', label: 'Business Professionals', icon: '💼', color: '#4b7bec' },
-    { value: 'tourists', label: 'Tourists/Visitors', icon: '🗺️', color: '#f7b731' },
-    { value: 'locals', label: 'Local Community', icon: '🏘️', color: '#a55eea' }
+    { value: 'customers', label: t('targetAudienceGeneralCustomers'), icon: '👥', color: '#667eea' },
+    { value: 'foodies', label: t('targetAudienceFoodEnthusiasts'), icon: '🍴', color: '#ff6b6b' },
+    { value: 'families', label: t('targetAudienceFamilies'), icon: '👨‍👩‍👧‍👦', color: '#20c997' },
+    { value: 'business', label: t('targetAudienceBusinessProfessionals'), icon: '💼', color: '#4b7bec' },
+    { value: 'tourists', label: t('targetAudienceTouristsVisitors'), icon: '🗺️', color: '#f7b731' },
+    { value: 'locals', label: t('targetAudienceLocalCommunity'), icon: '🏘️', color: '#a55eea' }
   ];
 
   const tones = [
-    { value: 'professional', label: 'Professional', icon: '👔', color: '#667eea' },
-    { value: 'casual', label: 'Casual & Friendly', icon: '😊', color: '#ffa726' },
-    { value: 'enthusiastic', label: 'Enthusiastic', icon: '🎉', color: '#ff7043' },
-    { value: 'elegant', label: 'Elegant & Sophisticated', icon: '✨', color: '#9c27b0' },
-    { value: 'rustic', label: 'Rustic & Cozy', icon: '🏡', color: '#8d6e63' },
-    { value: 'modern', label: 'Modern & Trendy', icon: '🚀', color: '#00bcd4' }
+    { value: 'professional', label: t('toneProfessional'), icon: '👔', color: '#667eea' },
+    { value: 'casual', label: t('toneCasualFriendly'), icon: '😊', color: '#ffa726' },
+    { value: 'enthusiastic', label: t('toneEnthusiastic'), icon: '🎉', color: '#ff7043' },
+    { value: 'elegant', label: t('toneElegantSophisticated'), icon: '✨', color: '#9c27b0' },
+    { value: 'rustic', label: t('toneRusticCozy'), icon: '🏡', color: '#8d6e63' },
+    { value: 'modern', label: t('toneModernTrendy'), icon: '🚀', color: '#00bcd4' }
   ];
 
   const lengths = [
-    { value: 'short', label: 'Short (300-500 words)', icon: '📝', color: '#4caf50' },
-    { value: 'medium', label: 'Medium (600-800 words)', icon: '📄', color: '#ff9800' },
-    { value: 'long', label: 'Long (900-1200 words)', icon: '📖', color: '#f44336' },
-    { value: 'extra_long', label: 'Extra Long (1500-3000 words)', icon: '📖', color: '#1976d2' }
+    { value: 'short', label: t('short300500WordsLabel'), icon: '📝', color: '#4caf50' },
+    { value: 'medium', label: t('medium600800WordsLabel'), icon: '📄', color: '#ff9800' },
+    { value: 'long', label: t('long9001200WordsLabel'), icon: '📖', color: '#f44336' },
+    { value: 'extra_long', label: t('extraLong15003000WordsLabel'), icon: '📖', color: '#1976d2' }
   ];
 
   const handleInputChange = (field, value) => {
@@ -161,12 +161,12 @@ const BlogCreator = () => {
   const generateBlogPost = async () => {
     // Validate input
     if (!blogData.topic.trim()) {
-      setError('Please enter a blog topic');
+      setError(t('pleaseEnterBlogTopic'));
       return;
     }
 
     if (!blogData.restaurantName.trim()) {
-      setError('Please enter your restaurant name');
+      setError(t('pleaseEnterRestaurantName'));
       return;
     }
 
@@ -211,15 +211,38 @@ const BlogCreator = () => {
           blogPost: data.blogPost,
           images: images,
           imageAnalysis: data.imageAnalysis,
+          model: data.model,
+          wordCount: data.wordCount,
+          metadata: data.metadata,
           timestamp: new Date().toISOString()
         };
         blogHistory.unshift(newBlog);
         localStorage.setItem('blogHistory', JSON.stringify(blogHistory.slice(0, 20))); // Keep last 20
+
+        // Save to backend database
+        try {
+          await fetch(`${baseURL}/blog/save`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              ...blogData,
+              blogPost: data.blogPost,
+              images: images,
+              imageAnalysis: data.imageAnalysis,
+              model: data.model,
+              wordCount: data.wordCount,
+              metadata: data.metadata
+            })
+          });
+        } catch (saveErr) {
+          // Optionally show a warning, but don't block UI
+          console.warn(t('failedToSaveBlogPostToBackend'), saveErr);
+        }
       } else {
-        setError(data.error || 'Failed to generate blog post');
+        setError(data.error || t('failedToGenerateBlogPost'));
       }
     } catch (err) {
-      setError('Network error: ' + err.message);
+      setError(t('networkError', { errorMessage: err.message }));
     } finally {
       setIsGenerating(false);
     }
@@ -230,15 +253,15 @@ const BlogCreator = () => {
     let richContent = generatedBlog;
     
     if (images.length > 0) {
-      richContent += '\n\n--- IMAGES ---\n';
+      richContent += '\n\n' + t('imagesSectionHeader') + '\n';
       images.forEach((image, index) => {
         richContent += `\n[Image ${index + 1}: ${image.name}]\n`;
       });
-      richContent += '\nNote: Images are embedded in the blog post above at strategic locations.';
+      richContent += '\n' + t('imagesEmbeddedNote');
     }
     
     navigator.clipboard.writeText(richContent);
-    alert('Blog post copied to clipboard!');
+    alert(t('blogPostCopiedToClipboard'));
   };
 
   const resetForm = () => {
@@ -1580,7 +1603,7 @@ const BlogCreator = () => {
                   gap: '8px'
                 }}>
                   <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    <span style={{ fontSize: '16px' }}>📊</span> {t('wordCount')}: {getWordCount()} words
+                    <span style={{ fontSize: '16px' }}>📊</span> {t('wordCount')}: {getWordCount()} {t('words')}
                   </span>
                   <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                     <span style={{ fontSize: '16px' }}>📸</span> {t('images')}: {images.length}

@@ -1,0 +1,132 @@
+.blog-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 40px 32px;
+  background: #fff;
+  border-radius: 24px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.blog-header {
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.blog-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #2d3748;
+  margin-bottom: 4px;
+}
+
+.blog-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  font-size: 1rem;
+  color: #718096;
+}
+
+.blog-backend-info {
+  margin-bottom: 20px;
+  padding: 12px;
+  background: #e0f2fe;
+  border-radius: 8px;
+  border: 1px solid #bae6fd;
+  color: #0369a1;
+  font-size: 14px;
+  text-align: center;
+}
+
+.blog-content {
+  font-size: 1.15rem;
+  line-height: 1.7;
+  color: #2d3748;
+  margin-bottom: 32px;
+}
+
+.blog-edit-section {
+  background: #f8f9fa;
+  border: 2px solid #667eea;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.blog-metadata-section {
+  margin-top: 32px;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border: 1px solid #e9ecef;
+}
+
+.blog-metadata-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  font-size: 14px;
+}
+
+.blog-back-btn {
+  margin-top: 40px;
+  text-align: center;
+}
+
+.blog-back-btn a {
+  background: #667eea;
+  color: #fff;
+  padding: 10px 22px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.blog-back-btn a:hover {
+  background: #764ba2;
+}
+
+/* Responsive Styles */
+@media (max-width: 1024px) {
+  .blog-container {
+    padding: 24px 12px;
+    border-radius: 18px;
+  }
+  .blog-title {
+    font-size: 1.7rem;
+  }
+}
+@media (max-width: 768px) {
+  .blog-container {
+    padding: 16px 4px;
+    border-radius: 12px;
+  }
+  .blog-title {
+    font-size: 1.3rem;
+  }
+  .blog-meta {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .blog-metadata-grid {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 480px) {
+  .blog-container {
+    padding: 8px 0;
+    border-radius: 8px;
+  }
+  .blog-title {
+    font-size: 1.1rem;
+  }
+  .blog-content {
+    font-size: 1rem;
+  }
+} 

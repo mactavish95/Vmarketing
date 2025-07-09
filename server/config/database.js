@@ -66,6 +66,30 @@ const socialMediaPostSchema = new mongoose.Schema({
 
 const SocialMediaPost = mongoose.model('SocialMediaPost', socialMediaPostSchema);
 
+// Blog Post Schema and Model
+const blogPostSchema = new mongoose.Schema({
+  topic: { type: String, required: true },
+  restaurantName: { type: String, required: true },
+  restaurantType: { type: String },
+  cuisine: { type: String },
+  location: { type: String },
+  targetAudience: { type: String },
+  tone: { type: String },
+  length: { type: String },
+  keyPoints: { type: String },
+  specialFeatures: { type: String },
+  blogPost: { type: String, required: true },
+  images: { type: Array }, // Array of image objects (name, type, size, dataUrl)
+  imageAnalysis: { type: Object },
+  model: { type: String },
+  wordCount: { type: Number },
+  metadata: { type: Object },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now }
+});
+
+const BlogPost = mongoose.model('BlogPost', blogPostSchema);
+
 // Event listeners
 mongoose.connection.on('connected', () => {
   console.log('✅ MongoDB connection established');
@@ -106,6 +130,7 @@ module.exports = {
   Review,
   mongoose,
   SocialMediaPost,
+  BlogPost,
   isMongoDBAvailable,
   safeSave
 }; 
