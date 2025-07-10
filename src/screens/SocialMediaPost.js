@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import apiConfig from '../config/api';
 import './SocialMediaPost.css';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
 // [EXTRACT] Move all option/selector UI (platform, post type, tone, audience, content structure, engagement goal, length, brand voice, urgency, situation, advanced options) into a new component SocialMediaPostOptions.js
 import SocialMediaPostOptions from '../components/SocialMediaPostOptions';
@@ -1278,140 +1279,35 @@ ${content}`;
   };
 
   return (
-    <div className="social-media-post responsive-mobile">
-      {/* Page Header/Description */}
-      <div className="page-header" style={{
-        background: 'linear-gradient(135deg, #4f8cff 0%, #38e8ff 100%)',
-        padding: '48px 32px',
-        textAlign: 'center',
-        borderRadius: '24px',
-        marginBottom: '32px',
-        position: 'relative',
-        overflow: 'hidden',
-        boxShadow: '0 20px 60px rgba(0, 0, 0, 0.15)',
-        backdropFilter: 'blur(10px)'
-      }}>
-        <div style={{
-          position: 'absolute',
-          top: '-50%',
-          right: '-20%',
-          width: '200px',
-          height: '200px',
-          background: 'rgba(255, 255, 255, 0.1)',
-          borderRadius: '50%',
-          animation: 'float 6s ease-in-out infinite'
-        }}></div>
-        <div style={{
-          position: 'absolute',
-          bottom: '-30%',
-          left: '-10%',
-          width: '150px',
-          height: '150px',
-          background: 'rgba(255, 255, 255, 0.08)',
-          borderRadius: '50%',
-          animation: 'float 8s ease-in-out infinite reverse'
-        }}></div>
-        
-        <div style={{ 
-          fontSize: '64px', 
-          marginBottom: '20px', 
-          filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.1))',
-          animation: 'fadeIn 0.8s ease-out'
-        }}>
-          📱
-        </div>
-        <h1 style={{
-          margin: '0 0 16px 0',
-          fontWeight: '800',
-          fontSize: '42px',
-          letterSpacing: '-0.5px',
-          color: '#fff',
-          textShadow: '0 2px 4px rgba(0,0,0,0.1)',
-          lineHeight: '1.1',
-          animation: 'fadeIn 0.8s ease-out 0.1s both'
-        }}>
-          {t('socialMedia.title')}
-        </h1>
-        <p style={{
-          margin: '0 0 32px 0',
-          fontSize: '20px',
-          opacity: '0.95',
-          color: '#fff',
-          fontWeight: '500',
-          lineHeight: '1.4',
-          maxWidth: '600px',
-          marginLeft: 'auto',
-          marginRight: 'auto',
-          animation: 'fadeIn 0.8s ease-out 0.2s both'
-        }}>
-          {t('socialMedia.subtitle')}
-        </p>
-        <div style={{
-          display: 'flex',
-          justifyContent: 'center',
-          gap: '16px',
-          flexWrap: 'wrap',
-          animation: 'fadeIn 0.8s ease-out 0.3s both'
-        }}>
-          <span style={{
-            background: 'rgba(255, 255, 255, 0.2)',
-            color: '#fff',
-            padding: '12px 20px',
-            borderRadius: '25px',
-            fontSize: '15px',
-            fontWeight: '600',
-            backdropFilter: 'blur(10px)',
-            border: '1px solid rgba(255, 255, 255, 0.3)',
-            transition: 'all 0.3s ease',
-            cursor: 'default'
-          }}>
-            ✨ AI Enhanced
-          </span>
-          <span style={{
-            background: 'rgba(255, 255, 255, 0.2)',
-            color: '#fff',
-            padding: '12px 20px',
-            borderRadius: '25px',
-            fontSize: '15px',
-            fontWeight: '600',
-            backdropFilter: 'blur(10px)',
-            border: '1px solid rgba(255, 255, 255, 0.3)',
-            transition: 'all 0.3s ease',
-            cursor: 'default'
-          }}>
-            📊 Quality Analysis
-          </span>
-          <span style={{
-            background: 'rgba(255, 255, 255, 0.2)',
-            color: '#fff',
-            padding: '12px 20px',
-            borderRadius: '25px',
-            fontSize: '15px',
-            fontWeight: '600',
-            backdropFilter: 'blur(10px)',
-            border: '1px solid rgba(255, 255, 255, 0.3)',
-            transition: 'all 0.3s ease',
-            cursor: 'default'
-          }}>
-            🎯 Platform Optimized
-          </span>
-          <span style={{
-            background: 'rgba(255, 255, 255, 0.2)',
-            color: '#fff',
-            padding: '12px 20px',
-            borderRadius: '25px',
-            fontSize: '15px',
-            fontWeight: '600',
-            backdropFilter: 'blur(10px)',
-            border: '1px solid rgba(255, 255, 255, 0.3)',
-            transition: 'all 0.3s ease',
-            cursor: 'default'
-          }}>
-            💡 Smart Suggestions
-          </span>
-        </div>
+    <div className="social-media-post">
+      <div className="page-header">
+        <h1>Vmarketing</h1>
+        <p>{t('socialMedia.pageSubtitle')}</p>
       </div>
-
+      {/* Add link to Social Media History page */}
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 24 }}>
+        <Link
+          to="/social-media-history"
+          className="action-btn"
+          style={{
+            background: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
+            color: 'white',
+            border: 'none',
+            borderRadius: '8px',
+            padding: '10px 20px',
+            fontSize: '16px',
+            fontWeight: 600,
+            textDecoration: 'none',
+            boxShadow: '0 2px 8px rgba(139, 92, 246, 0.2)',
+            transition: 'all 0.2s',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '8px',
+          }}
+        >
+          <span role="img" aria-label="history">📚</span> {t('menu.socialMediaHistory') || 'Social Media History'}
+        </Link>
+      </div>
       {/* Option/Selector UI */}
       <SocialMediaPostOptions
         platforms={platforms}

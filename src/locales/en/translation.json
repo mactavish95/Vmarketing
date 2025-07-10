@@ -610,7 +610,15 @@
     "previousPosts": "Previous Posts by Platform",
     "previousPostsDescription": "Your recently generated posts, grouped by platform. Click on any post to view the full content and copy it.",
     "loadingHistory": "Loading global history...",
-    "noPostsYet": "No posts yet. Create a post above and it will appear here!",
+    "noPostsYet": "No posts yet!",
+    "platforms": {
+      "facebook": "Facebook",
+      "instagram": "Instagram",
+      "twitter": "Twitter",
+      "linkedin": "LinkedIn",
+      "tiktok": "TikTok",
+      "youtube": "YouTube"
+    },
     "load": "Load",
     "viewFull": "View Full",
     "fullPostDetails": "Full Post Details",

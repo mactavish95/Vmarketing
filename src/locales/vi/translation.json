@@ -606,7 +606,15 @@
     "previousPosts": "Bài đăng trước đó theo nền tảng",
     "previousPostsDescription": "Các bài đăng bạn đã tạo gần đây, được nhóm theo nền tảng. Nhấp vào bất kỳ bài đăng nào để xem nội dung đầy đủ và sao chép.",
     "loadingHistory": "Đang tải lịch sử toàn cầu...",
-    "noPostsYet": "Chưa có bài đăng nào. Tạo bài đăng ở trên và nó sẽ xuất hiện ở đây!",
+    "noPostsYet": "Chưa có bài đăng nào!",
+    "platforms": {
+      "facebook": "Facebook",
+      "instagram": "Instagram",
+      "twitter": "Twitter",
+      "linkedin": "LinkedIn",
+      "tiktok": "TikTok",
+      "youtube": "YouTube"
+    },
     "load": "Tải",
     "viewFull": "Xem đầy đủ",
     "fullPostDetails": "Chi tiết bài đăng đầy đủ",
@@ -614,14 +622,6 @@
     "type": "Loại",
     "created": "Được tạo",
     "copyEnhanced": "Sao chép bản nâng cao",
-    "platforms": {
-      "facebook": "Facebook",
-      "instagram": "Instagram",
-      "tiktok": "TikTok",
-      "twitter": "Twitter/X",
-      "linkedin": "LinkedIn",
-      "youtube": "YouTube"
-    },
     "postTypes": {
       "general": "Bài đăng chung",
       "story": "Câu chuyện/Cá nhân",
