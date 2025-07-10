@@ -23,30 +23,13 @@ const ReviewGenerator = ({ history }) => {
     const [showAnalysis, setShowAnalysis] = useState(false);
     const [locationData, setLocationData] = useState(null);
     const [ratingAutoAdjusted, setRatingAutoAdjusted] = useState(false);
-    const [modelInfo, setModelInfo] = useState(null);
+
     const { t } = useTranslation();
 
     // Load model information on component mount
-    useEffect(() => {
-        fetchModelInfo();
-    }, []);
 
-    const fetchModelInfo = async () => {
-        try {
-            // Force production URL if we're on Netlify
-            const isNetlify = window.location.hostname.includes('netlify.app') || window.location.hostname.includes('vmarketing.netlify.app');
-            const baseURL = isNetlify ? 'https://vmarketing-backend-server.onrender.com/api' : apiConfig.baseURL;
-            
-            const res = await fetch(`${baseURL}/models`);
-            const data = await res.json();
-            if (data.success) {
-                const reviewModel = data.models.find(m => m.useCase === 'review_generation');
-                setModelInfo(reviewModel);
-            }
-        } catch (error) {
-            console.warn('Failed to fetch model info:', error);
-        }
-    };
+
+
 
     const reviewTypes = [
         { value: 'restaurant', label: 'Restaurant', icon: '🍽️', color: '#ff6b6b' },
@@ -728,43 +711,7 @@ const ReviewGenerator = ({ history }) => {
                             <span className="feature-badge">🎯 Smart Analysis</span>
                             <span className="feature-badge">📱 Mobile Optimized</span>
                         </div>
-                        {modelInfo && (
-                            <div style={{
-                                background: 'rgba(255, 255, 255, 0.1)',
-                                borderRadius: '12px',
-                                padding: '16px',
-                                marginTop: '16px',
-                                backdropFilter: 'blur(10px)',
-                                border: '1px solid rgba(255, 255, 255, 0.2)'
-                            }}>
-                                <p style={{
-                                    margin: '0 0 8px 0',
-                                    color: '#fff',
-                                    fontSize: '14px',
-                                    opacity: '0.9'
-                                }}>
-                                    {modelInfo.description}
-                                </p>
-                                <div style={{
-                                    display: 'flex',
-                                    flexWrap: 'wrap',
-                                    gap: '6px'
-                                }}>
-                                    {modelInfo.strengths.map((strength, index) => (
-                                        <span key={index} style={{
-                                            background: 'rgba(255, 255, 255, 0.2)',
-                                            color: '#fff',
-                                            padding: '3px 8px',
-                                            borderRadius: '10px',
-                                            fontSize: '11px',
-                                            fontWeight: '500'
-                                        }}>
-                                            {strength}
-                                        </span>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
+
                     </div>
                 </div>
 

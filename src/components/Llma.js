@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Llma.css';
 import apiConfig from '../config/api';
 import { useTranslation } from 'react-i18next';
+import EnhancedModelInfo from './EnhancedModelInfo';
 
 const Llma = () => {
   const [inputText, setInputText] = useState('');
@@ -9,7 +10,28 @@ const Llma = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [conversationHistory, setConversationHistory] = useState([]);
+  const [modelInfo, setModelInfo] = useState(null);
+  const [availableModels, setAvailableModels] = useState([]);
+  const [selectedModel, setSelectedModel] = useState('auto');
   const { t } = useTranslation();
+
+  // Load available models on component mount
+  useEffect(() => {
+    loadAvailableModels();
+  }, []);
+
+  const loadAvailableModels = async () => {
+    try {
+      const response = await fetch('/api/available-models');
+      const data = await response.json();
+      if (data.success) {
+        setAvailableModels(data.models);
+        setModelInfo(data);
+      }
+    } catch (error) {
+      console.warn('Failed to load available models:', error);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -96,6 +118,42 @@ const Llma = () => {
       </div>
 
       <div className="llma-content">
+        {/* Enhanced Model Information */}
+        <div className="model-info-section">
+          <EnhancedModelInfo style={{ marginBottom: '24px' }} />
+        </div>
+
+        {/* Model Selection */}
+        <div className="model-selection-section">
+          <h3>🤖 {t('llma.modelSelection')}</h3>
+          <div className="model-selection-grid">
+            <div className="model-option active">
+              <div className="model-icon">🔄</div>
+              <div className="model-details">
+                <h4>{t('llma.autoSelect')}</h4>
+                <p>{t('llma.autoSelectDescription')}</p>
+              </div>
+            </div>
+            {availableModels.map(model => (
+              <div key={model.key} className="model-option">
+                <div className="model-icon">🤖</div>
+                <div className="model-details">
+                  <h4>{model.name}</h4>
+                  <p>{model.description}</p>
+                  <div className="model-strengths">
+                    {model.strengths.slice(0, 3).map((strength, index) => (
+                      <span key={index} className="strength-tag">{strength}</span>
+                    ))}
+                    {model.strengths.length > 3 && (
+                      <span className="strength-count">+{model.strengths.length - 3} more</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* Conversation History */}
         {conversationHistory.length > 0 && (
           <div className="conversation-history">
@@ -191,7 +249,7 @@ const Llma = () => {
       <div className="llma-info">
         <h4>ℹ️ {t('llma.aboutThisChat')}</h4>
         <ul>
-          <li><strong>{t('llma.model')}</strong> Meta Llama 3.1 70B Instruct</li>
+          <li><strong>{t('llma.model')}</strong> NVIDIA Llama 3.3 Nemotron Super 49B</li>
           <li><strong>{t('llma.style')}</strong> {t('llma.naturalStyle')}</li>
           <li><strong>{t('llma.capabilities')}</strong> {t('llma.capabilitiesList')}</li>
           <li><strong>{t('llma.tone')}</strong> {t('llma.friendlyTone')}</li>
@@ -201,10 +259,10 @@ const Llma = () => {
           <h5>🔧 {t('llma.chatConfig')}</h5>
           <pre className="api-config">
 {`{
-  "model": "meta/llama-3.1-70b-instruct",
+  "model": "nvidia/llama-3.3-nemotron-super-49b-v1",
   "temperature": 0.7,
   "top_p": 0.9,
-  "max_tokens": 3072,
+  "max_tokens": 4096,
   "style": "conversational"
 }`}
           </pre>

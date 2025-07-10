@@ -293,7 +293,10 @@
     "naturalStyle": "Natural, conversational responses",
     "capabilitiesList": "Casual chat, questions, storytelling",
     "friendlyTone": "Friendly and approachable",
-    "chatConfig": "Chat Configuration:"
+    "chatConfig": "Chat Configuration:",
+    "modelSelection": "Model Selection",
+    "autoSelect": "Auto-select (Recommended)",
+    "autoSelectDescription": "AI automatically chooses the best model for your conversation"
   },
   "enhancedModelInfo": {
     "loading": "Loading AI Model Information...",

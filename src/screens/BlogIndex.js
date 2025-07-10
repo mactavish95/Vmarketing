@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import EnhancedModelInfo from '../components/EnhancedModelInfo';
 import { useTranslation } from 'react-i18next';
 import apiConfig from '../config/api';
 
@@ -230,9 +229,6 @@ const BlogIndex = () => {
 
         {/* Content */}
         <div style={{ padding: '40px 32px' }}>
-          {/* Enhanced Model Information */}
-          <EnhancedModelInfo style={{ marginBottom: '32px' }} />
-          
           {/* Tab Navigation */}
           <div style={{
             display: 'flex',

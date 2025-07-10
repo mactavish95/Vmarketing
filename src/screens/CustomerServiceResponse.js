@@ -7,30 +7,10 @@ export default function CustomerServiceResponse() {
   const [response, setResponse] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [modelInfo, setModelInfo] = useState(null);
+
   const [staffName, setStaffName] = useState('');
 
-  // Load model information on component mount
-  useEffect(() => {
-    fetchModelInfo();
-  }, []);
 
-  const fetchModelInfo = async () => {
-    try {
-      // Force production URL if we're on Netlify
-      const isNetlify = window.location.hostname.includes('netlify.app') || window.location.hostname.includes('vmarketing.netlify.app');
-      const baseURL = isNetlify ? 'https://vmarketing-backend-server.onrender.com/api' : apiConfig.baseURL;
-      
-      const res = await fetch(`${baseURL}/models`);
-      const data = await res.json();
-      if (data.success) {
-        const customerServiceModel = data.models.find(m => m.useCase === 'customer_service');
-        setModelInfo(customerServiceModel);
-      }
-    } catch (error) {
-      console.warn('Failed to fetch model info:', error);
-    }
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -139,59 +119,7 @@ export default function CustomerServiceResponse() {
           padding: '40px 32px',
           background: '#fff'
         }}>
-          {/* Model Information */}
-          {modelInfo && (
-            <div style={{
-              background: 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)',
-              borderRadius: '16px',
-              padding: '20px',
-              marginBottom: '24px',
-              border: '1px solid #bae6fd'
-            }}>
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
-                marginBottom: '12px'
-              }}>
-                <span style={{ fontSize: '24px' }}>🤖</span>
-                <h3 style={{ 
-                  margin: '0', 
-                  color: '#0c4a6e', 
-                  fontSize: '18px',
-                  fontWeight: '700'
-                }}>
-                  AI Model: {modelInfo.name}
-                </h3>
-              </div>
-              <p style={{ 
-                margin: '0 0 12px 0', 
-                color: '#0369a1', 
-                lineHeight: '1.5',
-                fontSize: '14px'
-              }}>
-                {modelInfo.description}
-              </p>
-              <div style={{
-                display: 'flex',
-                flexWrap: 'wrap',
-                gap: '8px'
-              }}>
-                {modelInfo.strengths.map((strength, index) => (
-                  <span key={index} style={{
-                    background: '#0ea5e9',
-                    color: '#fff',
-                    padding: '4px 8px',
-                    borderRadius: '12px',
-                    fontSize: '12px',
-                    fontWeight: '500'
-                  }}>
-                    {strength}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
+
 
           {/* Instructions */}
           <div style={{

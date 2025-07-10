@@ -293,7 +293,10 @@
     "naturalStyle": "Phản hồi tự nhiên, hội thoại",
     "capabilitiesList": "Trò chuyện, hỏi đáp, kể chuyện",
     "friendlyTone": "Thân thiện và dễ gần",
-    "chatConfig": "Cấu hình trò chuyện:"
+    "chatConfig": "Cấu hình trò chuyện:",
+    "modelSelection": "Lựa chọn mô hình",
+    "autoSelect": "Tự động chọn (Khuyến nghị)",
+    "autoSelectDescription": "AI tự động chọn mô hình tốt nhất cho cuộc trò chuyện của bạn"
   },
   "enhancedModelInfo": {
     "loading": "Đang tải thông tin mô hình AI...",
