@@ -811,6 +811,10 @@
     "viewFull": "Xem đầy đủ",
     "copyEnhanced": "Sao chép bản nâng cao"
   },
+  "socialMediaHistory": "Lịch sử bài đăng mạng xã hội",
+  "historyPageTitle": "Lịch sử bài đăng mạng xã hội",
+  "historyPageSubtitle": "Xem tất cả các bài đăng mạng xã hội đã tạo theo nền tảng.",
+  "failedToFetchHistory": "Không thể tải lịch sử bài đăng mạng xã hội. Vui lòng thử lại sau.",
   "stayUpdated": "Cập nhật",
   "getLatestTipsInsights": "Nhận các mẹo và thông tin mới nhất",
   "image": "hình ảnh",

@@ -14,6 +14,7 @@ import BlogPost from './screens/BlogPost';
 import CustomerServiceResponse from './screens/CustomerServiceResponse';
 import VoiceTest from './screens/VoiceTest';
 import SocialMediaPost from './screens/SocialMediaPost';
+import SocialMediaPostHistory from './screens/SocialMediaPostHistory';
 
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
           <Route path="/customer-service" component={CustomerServiceResponse} />
           <Route path="/voice-test" component={VoiceTest} />
           <Route path="/social-media" component={SocialMediaPost} />
+          <Route path="/social-media-history" component={SocialMediaPostHistory} />
         </Switch>
       </div>
     </Router>

@@ -170,6 +170,13 @@ const Header = ({ location }) => {
                         >
                             📱 {t('menu.socialMedia')}
                         </Link>
+                        <Link 
+                            to="/social-media-history" 
+                            className={`nav-link ${location.pathname === '/social-media-history' ? 'active' : ''}`}
+                            onClick={closeMenu}
+                        >
+                            📚 {t('menu.socialMediaHistory') || 'Social Media History'}
+                        </Link>
                     </div>
                     
                     {/* Additional Services */}

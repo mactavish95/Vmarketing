@@ -1412,6 +1412,55 @@ ${content}`;
         </div>
       </div>
 
+      {/* Move history section (SocialMediaPostResult) to the top */}
+      <SocialMediaPostResult
+        enhancedContent={enhancedContent}
+        reviewedContent={reviewedContent}
+        isReviewing={isReviewing}
+        showOriginalContent={showOriginalContent}
+        setShowOriginalContent={setShowOriginalContent}
+        showComparison={showComparison}
+        setShowComparison={setShowComparison}
+        content={content}
+        platform={platform}
+        postType={postType}
+        tone={tone}
+        targetAudience={targetAudience}
+        getPlatformIcon={getPlatformIcon}
+        getToneIcon={getToneIcon}
+        getAudienceIcon={getAudienceIcon}
+        tones={tones}
+        audiences={audiences}
+        platforms={platforms}
+        selectedPlatform={platforms.find(p => p.value === platform)}
+        isOverLimit={enhancedContent.length > (platforms.find(p => p.value === platform)?.maxLength || 1000)}
+        qualityAnalysis={qualityAnalysis}
+        copyToClipboard={copyToClipboard}
+        openPreviewWindow={openPreviewWindow}
+        generationHistory={generationHistory}
+        setContent={setContent}
+        setEnhancedContent={setEnhancedContent}
+        setPlatform={setPlatform}
+        setPostType={setPostType}
+        setTone={setTone}
+        setTargetAudience={setTargetAudience}
+        setContentStructure={setContentStructure}
+        setEngagementGoal={setEngagementGoal}
+        setContentLength={setContentLength}
+        setBrandVoiceIntensity={setBrandVoiceIntensity}
+        setEngagementUrgency={setEngagementUrgency}
+        setSituation={setSituation}
+        postTypes={postTypes}
+        brandVoiceIntensities={brandVoiceIntensities}
+        engagementUrgencies={engagementUrgencies}
+        situations={situations}
+        modalPost={modalPost}
+        setModalPost={setModalPost}
+        globalHistory={globalHistory}
+        isHistoryLoading={isHistoryLoading}
+        historyError={historyError}
+        groupHistoryByPlatform={groupHistoryByPlatform}
+      />
 
       {/* Option/Selector UI */}
       <SocialMediaPostOptions
@@ -1514,55 +1563,6 @@ ${content}`;
           </button>
         </div>
       </div>
-
-      <SocialMediaPostResult
-        enhancedContent={enhancedContent}
-        reviewedContent={reviewedContent}
-        isReviewing={isReviewing}
-        showOriginalContent={showOriginalContent}
-        setShowOriginalContent={setShowOriginalContent}
-        showComparison={showComparison}
-        setShowComparison={setShowComparison}
-        content={content}
-        platform={platform}
-        postType={postType}
-        tone={tone}
-        targetAudience={targetAudience}
-        getPlatformIcon={getPlatformIcon}
-        getToneIcon={getToneIcon}
-        getAudienceIcon={getAudienceIcon}
-        tones={tones}
-        audiences={audiences}
-        platforms={platforms}
-        selectedPlatform={platforms.find(p => p.value === platform)}
-        isOverLimit={enhancedContent.length > (platforms.find(p => p.value === platform)?.maxLength || 1000)}
-        qualityAnalysis={qualityAnalysis}
-        copyToClipboard={copyToClipboard}
-        openPreviewWindow={openPreviewWindow}
-        generationHistory={generationHistory}
-        setContent={setContent}
-        setEnhancedContent={setEnhancedContent}
-        setPlatform={setPlatform}
-        setPostType={setPostType}
-        setTone={setTone}
-        setTargetAudience={setTargetAudience}
-        setContentStructure={setContentStructure}
-        setEngagementGoal={setEngagementGoal}
-        setContentLength={setContentLength}
-        setBrandVoiceIntensity={setBrandVoiceIntensity}
-        setEngagementUrgency={setEngagementUrgency}
-        setSituation={setSituation}
-        postTypes={postTypes}
-        brandVoiceIntensities={brandVoiceIntensities}
-        engagementUrgencies={engagementUrgencies}
-        situations={situations}
-        modalPost={modalPost}
-        setModalPost={setModalPost}
-        globalHistory={globalHistory}
-        isHistoryLoading={isHistoryLoading}
-        historyError={historyError}
-        groupHistoryByPlatform={groupHistoryByPlatform}
-      />
     </div>
   );
 };
