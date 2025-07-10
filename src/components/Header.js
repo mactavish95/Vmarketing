@@ -119,13 +119,6 @@ const Header = ({ location }) => {
                     <div className="nav-group">
                         <div className="nav-group-label">Content Creation</div>
                         <Link 
-                            to="/generate" 
-                            className={`nav-link ${location.pathname === '/generate' ? 'active' : ''}`}
-                            onClick={closeMenu}
-                        >
-                            ✍️ {t('menu.generate')}
-                        </Link>
-                        <Link 
                             to="/voice" 
                             className={`nav-link ${location.pathname === '/voice' ? 'active' : ''}`}
                             onClick={closeMenu}
