@@ -35,7 +35,6 @@ function App() {
           <Route path="/blog" component={BlogIndex} />
           <Route path="/blog-post/:slug" component={BlogPost} />
           <Route path="/customer-service" component={CustomerServiceResponse} />
-          <Route path="/customer-service-response" component={CustomerServiceResponse} />
           <Route path="/voice-test" component={VoiceTest} />
           <Route path="/social-media" component={SocialMediaPost} />
         </Switch>

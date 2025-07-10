@@ -151,14 +151,6 @@ const Header = ({ location }) => {
                         >
                             🤖 {t('menu.llama')}
                         </Link>
-                        <Link 
-                            to="/customer-service-response" 
-                            className={`nav-link ${location.pathname === '/customer-service-response' ? 'active' : ''}`}
-                            onClick={closeMenu}
-                        >
-                            💬 {t('menu.chattyAgent')}
-                        </Link>
-
                     </div>
                     
                     {/* Content Management Group */}

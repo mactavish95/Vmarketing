@@ -137,7 +137,7 @@ const blogPosts = {
           <li>Save time with ready-to-use, human-like replies</li>
         </ul>
         <p>
-          <b>Try the Chatty Agent:</b> <Link to="/customer-service-response">Go to Chatty Agent</Link>
+                                  <b>Try the Customer Service Agent:</b> <Link to="/customer-service">Go to Customer Service</Link>
         </p>
       </>
     )
