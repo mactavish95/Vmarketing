@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next';
 // [EXTRACT] Move all option/selector UI (platform, post type, tone, audience, content structure, engagement goal, length, brand voice, urgency, situation, advanced options) into a new component SocialMediaPostOptions.js
 import SocialMediaPostOptions from '../components/SocialMediaPostOptions';
 import SocialMediaPostResult from '../components/SocialMediaPostResult';
-import ModelInfo from '../components/ModelInfo';
 
 const SocialMediaPost = () => {
   const { t } = useTranslation();
@@ -1393,10 +1392,7 @@ ${content}`;
         </div>
       </div>
 
-      {/* Model Info at the top */}
-      <div style={{ marginBottom: 24 }}>
-        <ModelInfo useCase="social_media" platform={platform} />
-      </div>
+
       {/* Option/Selector UI */}
       <SocialMediaPostOptions
         platforms={platforms}

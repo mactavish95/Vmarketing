@@ -707,7 +707,7 @@ const ReviewGenerator = ({ history }) => {
                         <h1>{t('reviewGenerator.title')}</h1>
                         <p>{t('reviewGenerator.subtitle')}</p>
                         <div className="header-features">
-                            <span className="feature-badge">🤖 {modelInfo?.name || 'Meta Llama 3.1 70B'}</span>
+                            <span className="feature-badge">🤖 Meta Llama 3.1 70B</span>
                             <span className="feature-badge">🎯 Smart Analysis</span>
                             <span className="feature-badge">📱 Mobile Optimized</span>
                         </div>

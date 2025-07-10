@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import ModelInfo from '../components/ModelInfo';
 import apiConfig from '../config/api';
 import { useTranslation } from 'react-i18next';
 
@@ -807,12 +806,6 @@ const BlogCreator = () => {
 
         {/* Content */}
         <div style={{ padding: '16px' }}>
-          {/* Model Information */}
-          <ModelInfo 
-            useCase="blog_generation" 
-            style={{ marginBottom: '16px' }}
-          />
-
           {!generatedBlog ? (
             <div>
               {/* Image Upload Section */}

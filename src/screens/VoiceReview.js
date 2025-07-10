@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import VoiceRecognition from '../components/VoiceRecognition';
 import VoiceAnalysis from '../components/VoiceAnalysis';
 import LocationAttachment from '../components/LocationAttachment';
-import ModelInfo from '../components/ModelInfo';
 import VoiceService from '../services/VoiceService';
 import './VoiceReview.css';
 
@@ -247,12 +246,6 @@ const VoiceReview = () => {
                 </div>
 
                 <div className="voice-review-content">
-                    {/* Model Information */}
-                    <ModelInfo 
-                        useCase="voice_analysis" 
-                        style={{ marginBottom: '24px' }}
-                    />
-
                     {/* API Key is now handled securely on the server */}
 
                     <div className="voice-input-section">
