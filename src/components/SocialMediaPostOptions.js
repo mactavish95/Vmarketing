@@ -98,7 +98,7 @@ const SocialMediaPostOptions = ({
               className={`option-btn ${contentLength === length.value ? 'active' : ''}`}
               onClick={() => setContentLength(length.value)}
             >
-              <span className="option-icon">{length.icon}</span>
+              <span className="option-icon">{length.icon || '📏'}</span>
               <span className="option-label">{length.label}</span>
               <span className="option-description">{length.description}</span>
             </button>
@@ -120,6 +120,47 @@ const SocialMediaPostOptions = ({
             </span>
           </div>
         )}
+        
+        {/* Platform-Specific Optimization Tips */}
+        <div className="platform-optimization-tips">
+          <h4>💡 Platform-Specific Tips</h4>
+          {platform === 'facebook' && (
+            <div className="platform-tips facebook-tips">
+              <h5>📘 Facebook Optimization</h5>
+              <ul>
+                <li><strong>40-60 words:</strong> Perfect for quick updates, announcements, and event promotions</li>
+                <li><strong>80-120 words:</strong> Ideal for personal stories, community engagement, and behind-the-scenes content</li>
+                <li><strong>150-200 words:</strong> Great for detailed updates, educational content, and thought leadership</li>
+                <li><strong>250-350 words:</strong> Perfect for comprehensive stories, detailed experiences, and in-depth insights</li>
+                <li><strong>Best practices:</strong> Use questions to encourage comments, include call-to-actions, post during peak hours (1-4 PM)</li>
+              </ul>
+            </div>
+          )}
+          {platform === 'instagram' && (
+            <div className="platform-tips instagram-tips">
+              <h5>📸 Instagram Optimization</h5>
+              <ul>
+                <li><strong>25-40 words:</strong> Short, punchy captions with emojis and 3-5 relevant hashtags</li>
+                <li><strong>60-90 words:</strong> Story captions with bullet points, emojis, and visual appeal</li>
+                <li><strong>120-180 words:</strong> Carousel captions for multi-image posts with detailed descriptions</li>
+                <li><strong>200-300 words:</strong> IGTV descriptions for longer video content</li>
+                <li><strong>Best practices:</strong> Use emojis strategically, include bullet points (•), add 3-5 hashtags at the end, use line breaks for readability</li>
+              </ul>
+            </div>
+          )}
+          {platform === 'linkedin' && (
+            <div className="platform-tips linkedin-tips">
+              <h5>💼 LinkedIn Optimization</h5>
+              <ul>
+                <li><strong>50-80 words:</strong> Brief professional announcements, updates, and quick insights</li>
+                <li><strong>100-150 words:</strong> Industry insights, thought leadership, and professional tips</li>
+                <li><strong>200-300 words:</strong> Professional stories, case studies, and detailed experiences</li>
+                <li><strong>400-600 words:</strong> Article previews, comprehensive insights, and in-depth professional content</li>
+                <li><strong>Best practices:</strong> Use professional tone, include industry hashtags, post during business hours (9 AM-5 PM), focus on value-driven content</li>
+              </ul>
+            </div>
+          )}
+        </div>
       </div>
       {/* Brand Voice & Engagement */}
       <div className="option-group">

@@ -91,7 +91,7 @@ const Header = ({ location }) => {
             <div className="header-content">
                 <Link to="/" className="logo" onClick={closeMenu}>
                     <span className="logo-icon">⭐</span>
-                    <span className="logo-text">ReviewGen</span>
+                    <span className="logo-text">Vmarketing</span>
                 </Link>
                 
                 {/* Mobile hamburger menu */}

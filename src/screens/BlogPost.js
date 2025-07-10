@@ -13,7 +13,7 @@ const blogPosts = {
     content: (
       <>
         <p>
-          Welcome to the complete guide on AI-powered review generation! Discover how our platform leverages advanced AI models to help you create authentic, engaging, and professional reviews for restaurants, hotels, products, and more. With features like voice input, sentiment analysis, and location integration, ReviewGen makes it easy to share your experiences and insights.
+          Welcome to the complete guide on AI-powered review generation! Discover how our platform leverages advanced AI models to help you create authentic, engaging, and professional reviews for restaurants, hotels, products, and more. With features like voice input, sentiment analysis, and location integration, Vmarketing makes it easy to share your experiences and insights.
         </p>
         <h3>Key Features</h3>
         <ul>
@@ -23,7 +23,7 @@ const blogPosts = {
           <li>💬 <b>Customer Service Agent</b>: Turn negative reviews into positive conversations with chatty, empathetic AI responses</li>
           <li>🤖 <b>Multi-Model Support</b>: Specialized LLMs for reviews, customer service, and analysis</li>
         </ul>
-        <h3>Why Use ReviewGen?</h3>
+        <h3>Why Use Vmarketing?</h3>
         <ul>
           <li>Save time and effort writing reviews</li>
           <li>Get professional, engaging content every time</li>

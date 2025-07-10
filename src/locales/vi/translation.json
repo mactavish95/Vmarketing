@@ -197,7 +197,7 @@
   "lastEdited": "Chỉnh sửa lần cuối",
   "savedToBackend": "Đã lưu vào backend",
   "updated": "Đã cập nhật",
-  "generatedByReviewGenAI": "Được tạo bởi ReviewGen AI",
+  "generatedByReviewGenAI": "Được tạo bởi Vmarketing AI",
   "restaurant": "Nhà hàng",
   "location": "Địa điểm",
   "generalCustomers": "Khách hàng chung",
@@ -220,7 +220,7 @@
   "stayUpdated": "Cập nhật",
   "getLatestTipsInsights": "Nhận các mẹo và thông tin mới nhất",
   "createYourBlogPost": "Tạo bài viết blog",
-  "tryReviewGenNow": "Thử ReviewGen ngay",
+  "tryReviewGenNow": "Thử Vmarketing ngay",
   "exploreAIModels": "Khám phá mô hình AI",
   "localPosts": "Bài viết cục bộ",
   "backendPosts": "Bài viết backend",
@@ -451,7 +451,7 @@
     "reviews": "đánh giá"
   },
   "homeScreen": {
-    "welcome": "Chào mừng đến với ReviewGen!",
+    "welcome": "Chào mừng đến với Vmarketing!",
     "getStarted": "Bắt đầu",
     "aiReviewGenerator": "Tạo đánh giá AI",
     "blogGenerator": "Tạo blog AI",

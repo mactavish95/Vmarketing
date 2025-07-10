@@ -1,5 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import formatInstagramContent from '../utils/formatInstagramContent';
 
 const SocialMediaPostResult = ({
   enhancedContent,
@@ -63,6 +64,181 @@ const SocialMediaPostResult = ({
     if (score >= 0.4) return t('socialMedia.quality.fair');
     return t('socialMedia.quality.poor');
   };
+
+  // Helper: Platform-specific post HTML for popouts
+  function getPlatformPostHTML(item, t) {
+    const { platform, enhanced, postType, tone, targetAudience, timestamp } = item;
+    // Facebook
+    if (platform === 'facebook') {
+      return `
+        <div style="background:#f0f2f5;border-radius:12px;padding:20px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;box-shadow:0 2px 8px rgba(0,0,0,0.1);border:1px solid #e4e6ea;margin-bottom:24px;">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+            <div style="width:48px;height:48px;background:linear-gradient(135deg,#1877f2 0%,#42a5f5 100%);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:20px;font-weight:600;box-shadow:0 2px 8px rgba(24,119,242,0.3);">👤</div>
+            <div style="flex:1;">
+              <div style="font-size:16px;font-weight:600;color:#050505;margin-bottom:2px;">${t('socialMedia.yourPageName')}</div>
+              <div style="font-size:13px;color:#65676b;display:flex;align-items:center;gap:4px;">
+                <span>${t('socialMedia.justNow')}</span><span>•</span><span>${tone}</span><span>•</span><span>🌍</span>
+              </div>
+            </div>
+            <div style="font-size:20px;color:#65676b;">⋯</div>
+          </div>
+          <div style="font-size:15px;line-height:1.4;color:#050505;white-space:pre-wrap;word-wrap:break-word;margin-bottom:16px;padding:12px;background:white;border-radius:8px;border:1px solid #e4e6ea;">${item.enhanced}</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding-top:12px;border-top:1px solid #e4e6ea;font-size:15px;color:#65676b;">
+            <div style="display:flex;align-items:center;gap:16px;">
+              <span>👍 ${t('socialMedia.like')}</span><span>💬 ${t('socialMedia.comment')}</span><span>🔄 ${t('socialMedia.share')}</span>
+            </div>
+            <div style="font-size:13px;color:#65676b;">0 ${t('socialMedia.comments')} • 0 ${t('socialMedia.shares')}</div>
+          </div>
+        </div>
+      `;
+    }
+    // Instagram
+    if (platform === 'instagram') {
+      return `
+        <div style="background:#fff;border-radius:12px;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;border:1px solid #dbdbdb;box-shadow:0 2px 8px rgba(0,0,0,0.1);max-width:400px;margin:0 auto 24px auto;">
+          <div style="display:flex;align-items:center;gap:12px;padding:16px;border-bottom:1px solid #dbdbdb;">
+            <div style="width:32px;height:32px;background:linear-gradient(45deg,#f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:14px;">📸</div>
+            <div style="flex:1;"><div style="font-size:14px;font-weight:600;color:#262626;">${t('socialMedia.yourUsername')}</div></div>
+            <div style="font-size:18px;color:#262626;">⋯</div>
+          </div>
+          <div style="width:100%;height:300px;background:linear-gradient(135deg,#fdf2f8 0%,#fce7f3 100%);display:flex;align-items:center;justify-content:center;font-size:48px;color:#ec4899;border-bottom:1px solid #dbdbdb;">📷</div>
+          <div style="display:flex;align-items:center;gap:16px;padding:12px 16px;border-bottom:1px solid #dbdbdb;">
+            <span style="font-size:24px;">❤️</span><span style="font-size:24px;">💬</span><span style="font-size:24px;">📤</span><span style="font-size:24px;margin-left:auto;">🔖</span>
+          </div>
+          <div style="padding:12px 16px;font-size:14px;line-height:1.5;color:#262626;white-space:pre-wrap;word-wrap:break-word;">
+            <div style="margin-bottom:8px;"><span style="font-weight:600;color:#262626;">${t('socialMedia.yourUsername')}</span><span style="margin-left:8px;">${item.enhanced}</span></div>
+            <div style="color:#00376b;font-size:13px;margin-top:8px;line-height:1.4;">#socialmedia #content #engagement #marketing #digital</div>
+            <div style="font-size:12px;color:#8e8e8e;margin-top:8px;">${t('socialMedia.viewAllComments', { count: 0 })}</div>
+          </div>
+        </div>
+      `;
+    }
+    // LinkedIn
+    if (platform === 'linkedin') {
+      return `
+        <div style="background:#fff;border-radius:12px;padding:20px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;border:1px solid #e0e0e0;margin-bottom:24px;">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+            <div style="width:48px;height:48px;background:#0077b5;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:20px;">💼</div>
+            <div><div style="font-size:16px;font-weight:600;color:#191919;margin-bottom:2px;">Your Name</div><div style="font-size:14px;color:#666;margin-bottom:2px;">Your Title at Company</div><div style="font-size:12px;color:#666;">now • ${tone}</div></div>
+          </div>
+          <div style="font-size:16px;line-height:1.5;color:#191919;white-space:pre-wrap;word-wrap:break-word;margin-bottom:16px;">${item.enhanced}</div>
+          <div style="display:flex;align-items:center;gap:24px;padding-top:16px;border-top:1px solid #e0e0e0;font-size:14px;color:#666;">
+            <span>👍 Like</span><span>💬 Comment</span><span>🔄 Repost</span><span>📤 Send</span>
+          </div>
+        </div>
+      `;
+    }
+    // Twitter
+    if (platform === 'twitter') {
+      return `
+        <div style="background:#fff;border-radius:12px;padding:16px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;border:1px solid #e1e8ed;margin-bottom:24px;">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+            <div style="width:48px;height:48px;background:#1da1f2;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:20px;">🐦</div>
+            <div><div style="font-size:15px;font-weight:700;color:#14171a;margin-bottom:2px;">${t('socialMedia.yourName')}</div><div style="font-size:14px;color:#657786;display:flex;align-items:center;gap:4px;"><span>@${t('socialMedia.yourHandle')}</span><span>•</span><span>${t('socialMedia.now')}</span></div></div>
+          </div>
+          <div style="font-size:15px;line-height:1.4;color:#14171a;white-space:pre-wrap;word-wrap:break-word;margin-bottom:16px;">${item.enhanced}</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding-top:12px;border-top:1px solid #e1e8ed;font-size:16px;color:#657786;">
+            <span>💬 0</span><span>🔄 0</span><span>❤️ 0</span><span>📤</span>
+          </div>
+        </div>
+      `;
+    }
+    // TikTok
+    if (platform === 'tiktok') {
+      return `
+        <div style="background:#000;border-radius:12px;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:white;position:relative;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,0.3);max-width:300px;margin:0 auto 24px auto;">
+          <div style="width:100%;height:400px;background:linear-gradient(45deg,#ff0050,#00f2ea);display:flex;align-items:center;justify-content:center;font-size:64px;position:relative;">
+            <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:80px;height:80px;background:rgba(255,255,255,0.9);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:32px;color:#ff0050;">▶️</div>
+          </div>
+          <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,0.8));padding:20px 16px 80px 16px;">
+            <div style="font-size:16px;line-height:1.4;white-space:pre-wrap;word-wrap:break-word;margin-bottom:12px;max-width:280px;">${item.enhanced}</div>
+            <div style="font-size:14px;color:#00f2ea;margin-bottom:12px;">#fyp #viral #trending #content #tiktok</div>
+          </div>
+          <div style="position:absolute;top:16px;left:16px;right:16px;display:flex;align-items:center;justify-content:space-between;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div style="width:32px;height:32px;background:linear-gradient(45deg,#ff0050,#00f2ea);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;">🎵</div>
+              <div><div style="font-size:14px;font-weight:600;margin-bottom:2px;">@yourusername</div><div style="font-size:12px;color:#ccc;">Original Sound</div></div>
+            </div>
+            <span style="font-size:20px;">⋯</span>
+          </div>
+          <div style="position:absolute;right:16px;bottom:100px;display:flex;flex-direction:column;align-items:center;gap:16px;">
+            <div style="text-align:center;"><span style="font-size:32px;">❤️</span><div style="font-size:12px;margin-top:4px;">0</div></div>
+            <div style="text-align:center;"><span style="font-size:32px;">💬</span><div style="font-size:12px;margin-top:4px;">0</div></div>
+            <div style="text-align:center;"><span style="font-size:32px;">📤</span><div style="font-size:12px;margin-top:4px;">Share</div></div>
+          </div>
+        </div>
+      `;
+    }
+    // YouTube
+    if (platform === 'youtube') {
+      return `
+        <div style="background:#fff;border-radius:12px;padding:16px;font-family:Roboto,Arial,sans-serif;border:1px solid #e5e5e5;margin-bottom:24px;">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+            <div style="width:40px;height:40px;background:#ff0000;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:18px;">📺</div>
+            <div><div style="font-size:16px;font-weight:500;color:#030303;margin-bottom:2px;">Your Channel Name</div><div style="font-size:14px;color:#606060;">${new Date(timestamp).toLocaleDateString()} • ${tone}</div></div>
+          </div>
+          <div style="font-size:14px;line-height:1.4;color:#030303;white-space:pre-wrap;word-wrap:break-word;margin-bottom:16px;">${item.enhanced}</div>
+          <div style="display:flex;align-items:center;gap:16px;padding-top:12px;border-top:1px solid #e5e5e5;font-size:14px;color:#606060;">
+            <span>👍 0</span><span>👎 0</span><span>�� 0 comments</span><span>📤 Share</span>
+          </div>
+        </div>
+      `;
+    }
+    // Default fallback
+    return `<div style='padding:16px;border-radius:8px;background:#f8fafc;border:1px solid #e2e8f0;margin-bottom:24px;'>${item.enhanced}</div>`;
+  }
+
+  function openFullPostWindow(item) {
+    const win = window.open('', '_blank', 'width=700,height=900');
+    if (!win) return;
+    const html = `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Full Post Details</title>
+      <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f8fafc; margin: 0; padding: 0; }
+        .full-post-metadata { background: #fff; border-radius: 12px; padding: 24px; max-width: 600px; margin: 40px auto 0 auto; box-shadow: 0 8px 32px rgba(0,0,0,0.12); border: 1px solid #e2e8f0; }
+        h3 { font-size: 22px; font-weight: 700; color: #1e293b; margin-bottom: 16px; }
+        .meta { margin-bottom: 10px; color: #374151; font-size: 15px; }
+        .section-label { font-weight: 600; color: #64748b; margin-bottom: 4px; }
+        .content-box { background: #f8fafc; padding: 12px; border-radius: 6px; margin-top: 8px; font-size: 15px; line-height: 1.5; white-space: pre-wrap; }
+        .action-btn { background: #2563eb; color: #fff; border: none; border-radius: 6px; padding: 8px 16px; font-size: 14px; cursor: pointer; font-weight: 500; margin-right: 8px; }
+        .action-btn:hover { background: #1d4ed8; }
+        .platform-post-area { margin: 32px auto 0 auto; max-width: 600px; }
+      </style>
+    </head>
+    <body>
+      <div class="full-post-metadata">
+        <h3>📄 Full Post Details</h3>
+        <div class="meta"><span class="section-label">Platform:</span> ${item.platform}</div>
+        <div class="meta"><span class="section-label">Type:</span> ${item.postType}</div>
+        <div class="meta"><span class="section-label">Created:</span> ${new Date(item.timestamp).toLocaleString()}</div>
+        <div class="meta"><span class="section-label">Tone:</span> ${item.tone}</div>
+        <div class="meta"><span class="section-label">Audience:</span> ${item.targetAudience}</div>
+        <div class="meta"><span class="section-label">Length:</span> ${item.length || 'N/A'} words</div>
+        <div class="meta"><span class="section-label">Brand Voice:</span> ${item.brandVoiceIntensity || 'N/A'}</div>
+        <div class="meta"><span class="section-label">Engagement Urgency:</span> ${item.engagementUrgency || 'N/A'}</div>
+        <div class="meta"><span class="section-label">Situation:</span> ${item.situation || 'N/A'}</div>
+        <div style="margin-bottom: 16px;"><span class="section-label">Original Content:</span><div class="content-box"><pre style='margin:0;font-family:inherit;font-size:15px;line-height:1.5;white-space:pre-wrap;'>${item.original.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</pre></div></div>
+      </div>
+      <div class="platform-post-area">
+        ${getPlatformPostHTML(item, (x) => x)}
+      </div>
+      <div class="full-post-metadata" style="margin-top: 0;">
+        <div style="margin-bottom: 16px;"><span class="section-label">Enhanced Content:</span><div class="content-box">${item.enhanced}</div></div>
+        <div style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px;">
+          <button class="action-btn" onclick="navigator.clipboard.writeText(\`${item.enhanced.replace(/`/g, '\`')}\`);alert('Copied!')">📋 Copy Enhanced</button>
+        </div>
+      </div>
+    </body>
+    </html>
+    `;
+    win.document.write(html);
+    win.document.close();
+  }
 
   return (
     <div>
@@ -2257,7 +2433,7 @@ const SocialMediaPostResult = ({
                             <span>Preview</span>
                           </button>
                           <button
-                            onClick={() => setModalPost(item)}
+                            onClick={() => openFullPostWindow(item)}
                             className="history-action-btn view-btn"
                             style={{
                               background: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
@@ -2285,7 +2461,7 @@ const SocialMediaPostResult = ({
                               e.target.style.boxShadow = '0 2px 8px rgba(139, 92, 246, 0.3)';
                             }}
                           >
-                            <span style={{ fontSize: '16px' }}>📄</span>
+                            <span style={{ fontSize: '16px' }}>👁️</span>
                             <span>{t('socialMedia.viewFull')}</span>
                           </button>
                         </div>
