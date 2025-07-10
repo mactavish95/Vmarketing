@@ -645,17 +645,17 @@ const SocialMediaPost = () => {
               <div style="font-size:16px;font-weight:600;color:#050505;margin-bottom:2px;">Your Page Name</div>
               <div style="font-size:13px;color:#65676b;display:flex;align-items:center;gap:4px;">
                 <span>Just now</span><span>•</span><span>${toneInfo?.icon || '🎭'} ${toneInfo?.label || ''}</span><span>•</span><span>🌍</span>
-              </div>
             </div>
+                </div>
             <div style="font-size:20px;color:#65676b;cursor:pointer;padding:4px;border-radius:50%;">⋯</div>
-          </div>
+                </div>
           <div style="font-size:15px;line-height:1.4;color:#050505;white-space:pre-wrap;word-wrap:break-word;margin-bottom:16px;padding:12px;background:white;border-radius:8px;border:1px solid #e4e6ea;">${content.replace(/\n/g, '<br/>')}</div>
           <div style="display:flex;align-items:center;justify-content:space-between;padding-top:12px;border-top:1px solid #e4e6ea;font-size:15px;color:#65676b;">
             <div style="display:flex;align-items:center;gap:16px;">
               <span>👍 Like</span><span>💬 Comment</span><span>🔄 Share</span>
-            </div>
+                </div>
             <div style="font-size:13px;color:#65676b;">0 comments • 0 shares</div>
-          </div>
+            </div>
         </div>
       `;
     } else if (platform === 'instagram') {
@@ -667,14 +667,14 @@ const SocialMediaPost = () => {
             <div style="width:32px;height:32px;background:linear-gradient(45deg,#f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:14px;">📸</div>
             <div style="flex:1;"><div style="font-size:14px;font-weight:600;color:#262626;">your_username</div></div>
             <div style="font-size:18px;color:#262626;cursor:pointer;padding:4px;border-radius:50%;">⋯</div>
-          </div>
+                </div>
           <div style="width:100%;height:300px;background:linear-gradient(135deg,#fdf2f8 0%,#fce7f3 100%);display:flex;align-items:center;justify-content:center;font-size:48px;color:#ec4899;border-bottom:1px solid #dbdbdb;">📷</div>
           <div style="display:flex;align-items:center;gap:16px;padding:12px 16px;border-bottom:1px solid #dbdbdb;">
             <span style="font-size:24px;">❤️</span><span style="font-size:24px;">💬</span><span style="font-size:24px;">📤</span><span style="font-size:24px;margin-left:auto;">🔖</span>
-          </div>
+                </div>
           <div style="padding:12px 16px;font-size:14px;line-height:1.5;color:#262626;white-space:pre-wrap;word-wrap:break-word;">
             <div style="margin-bottom:8px;"><span style="font-weight:600;color:#262626;">your_username</span><span style="margin-left:8px;">${formatted}</span></div>
-          </div>
+            </div>
         </div>
       `;
     } else if (platform === 'linkedin') {
@@ -765,10 +765,10 @@ const SocialMediaPost = () => {
 <body>
     <div>
       ${platformPreview}
-      <div class="preview-actions">
+        <div class="preview-actions">
         <button id="copy-btn" class="action-btn">📋 Copy Post</button>
         <button id="close-btn" class="action-btn secondary">✖ Close Window</button>
-      </div>
+        </div>
     </div>
     <script>
         function copyToClipboard() {
@@ -1281,7 +1281,7 @@ ${content}`;
   return (
     <div className="social-media-post responsive-mobile" style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%)', padding: 0 }}>
       {/* Sticky header */}
-      <div style={{
+        <div style={{
         position: 'sticky',
         top: 0,
         zIndex: 10,
@@ -1290,7 +1290,7 @@ ${content}`;
         borderBottomLeftRadius: 24,
         borderBottomRightRadius: 24,
         boxShadow: '0 4px 24px rgba(79,140,255,0.08)',
-        display: 'flex',
+          display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
       }}>
@@ -1306,81 +1306,121 @@ ${content}`;
 
       {/* Main content */}
       <div style={{ padding: '16px 8px', maxWidth: 900, margin: '0 auto' }}>
-        {/* Option/Selector UI */}
+      {/* Option/Selector UI */}
         <div className="section platform-section-mobile" style={{ marginBottom: 16 }}>
-          <SocialMediaPostOptions
-            platforms={platforms}
-            platform={platform}
-            setPlatform={setPlatform}
-            postTypes={postTypes}
-            postType={postType}
-            setPostType={setPostType}
-            tones={tones}
-            tone={tone}
-            setTone={setTone}
-            audiences={audiences}
-            targetAudience={targetAudience}
-            setTargetAudience={setTargetAudience}
-            contentStructures={contentStructures}
-            contentStructure={contentStructure}
-            setContentStructure={setContentStructure}
-            engagementGoals={engagementGoals}
-            engagementGoal={engagementGoal}
-            setEngagementGoal={setEngagementGoal}
-            contentLengths={contentLengths}
-            contentLength={contentLength}
-            setContentLength={setContentLength}
-            customLength={customLength}
-            setCustomLength={setCustomLength}
-            brandVoiceIntensities={brandVoiceIntensities}
-            brandVoiceIntensity={brandVoiceIntensity}
-            setBrandVoiceIntensity={setBrandVoiceIntensity}
-            engagementUrgencies={engagementUrgencies}
-            engagementUrgency={engagementUrgency}
-            setEngagementUrgency={setEngagementUrgency}
-            situations={situations}
-            situation={situation}
-            setSituation={setSituation}
-            showAdvancedOptions={showAdvancedOptions}
-            setShowAdvancedOptions={setShowAdvancedOptions}
-          />
+      <SocialMediaPostOptions
+        platforms={platforms}
+        platform={platform}
+        setPlatform={setPlatform}
+        postTypes={postTypes}
+        postType={postType}
+        setPostType={setPostType}
+        tones={tones}
+        tone={tone}
+        setTone={setTone}
+        audiences={audiences}
+        targetAudience={targetAudience}
+        setTargetAudience={setTargetAudience}
+        contentStructures={contentStructures}
+        contentStructure={contentStructure}
+        setContentStructure={setContentStructure}
+        engagementGoals={engagementGoals}
+        engagementGoal={engagementGoal}
+        setEngagementGoal={setEngagementGoal}
+        contentLengths={contentLengths}
+        contentLength={contentLength}
+        setContentLength={setContentLength}
+        customLength={customLength}
+        setCustomLength={setCustomLength}
+        brandVoiceIntensities={brandVoiceIntensities}
+        brandVoiceIntensity={brandVoiceIntensity}
+        setBrandVoiceIntensity={setBrandVoiceIntensity}
+        engagementUrgencies={engagementUrgencies}
+        engagementUrgency={engagementUrgency}
+        setEngagementUrgency={setEngagementUrgency}
+        situations={situations}
+        situation={situation}
+        setSituation={setSituation}
+        showAdvancedOptions={showAdvancedOptions}
+        setShowAdvancedOptions={setShowAdvancedOptions}
+      />
         </div>
 
-        {/* Content Input Section */}
+      {/* Content Input Section */}
         <div className="section content-input-section" style={{ marginBottom: 16 }}>
           <div className="content-label" style={{ fontSize: 18, fontWeight: 700, marginBottom: 12 }}>{t('socialMedia.enterContent')}</div>
-          <textarea
+        <textarea
             className="mobile-friendly-input"
-            value={content}
-            onChange={e => setContent(e.target.value)}
-            placeholder={t('socialMedia.contentPlaceholder')}
+          value={content}
+          onChange={e => setContent(e.target.value)}
+          placeholder={t('socialMedia.contentPlaceholder')}
             style={{ width: '100%', minHeight: 120, fontSize: 16, marginBottom: 12 }}
           />
-          <div className="content-actions" style={{ display: 'flex', gap: 12, marginTop: 8 }}>
-            <button
+        <div className="content-actions" style={{ display: 'flex', gap: 12, marginTop: 8 }}>
+          <button
               className="mobile-generate-btn generate-btn"
-              onClick={generateContent}
+            onClick={generateContent}
               disabled={!content.trim() || isGenerating}
               style={{ background: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)', color: 'white', border: 'none', borderRadius: 10, fontWeight: 700, fontSize: 16, padding: '14px 0', flex: 1 }}
-            >
+          >
               {isGenerating ? t('socialMedia.generating') : t('socialMedia.generatePost')}
-            </button>
-            <button
+          </button>
+          <button
               className="mobile-clear-btn clear-btn"
-              onClick={clearAll}
+            onClick={clearAll}
               style={{ background: 'linear-gradient(135deg, #e2e8f0 0%, #cbd5e0 100%)', color: '#4a5568', border: 'none', borderRadius: 10, fontWeight: 600, fontSize: 16, padding: '14px 0', flex: 1 }}
-            >
-              {t('socialMedia.clear')}
-            </button>
-          </div>
+          >
+            {t('socialMedia.clear')}
+          </button>
         </div>
+      </div>
 
         {/* Result Section (Enhanced Post, etc.) */}
-        <div style={{ marginBottom: 16 }}>
-          {/* Render the result section as before (unchanged) */}
-          {/* ... existing result rendering ... */}
-          {/* This will include the enhanced post preview, actions, etc. */}
-        </div>
+        {enhancedContent && (
+          <div className="section result-section mobile-result-section" style={{ position: 'relative' }}>
+            <SocialMediaPostResult
+              enhancedContent={enhancedContent}
+              reviewedContent={reviewedContent}
+              isReviewing={isReviewing}
+              showOriginalContent={showOriginalContent}
+              setShowOriginalContent={setShowOriginalContent}
+              showComparison={showComparison}
+              setShowComparison={setShowComparison}
+              content={content}
+              platform={platform}
+              postType={postType}
+              tone={tone}
+              targetAudience={targetAudience}
+              getPlatformIcon={getPlatformIcon}
+              getToneIcon={getToneIcon}
+              getAudienceIcon={getAudienceIcon}
+              tones={tones}
+              audiences={audiences}
+              platforms={platforms}
+              selectedPlatform={platforms.find(p => p.value === platform)}
+              isOverLimit={isOverLimit}
+              qualityAnalysis={qualityAnalysis}
+              copyToClipboard={copyToClipboard}
+              openPreviewWindow={openPreviewWindow}
+              setContent={setContent}
+              setEnhancedContent={setEnhancedContent}
+              setPlatform={setPlatform}
+              setPostType={setPostType}
+              setTone={setTone}
+              setTargetAudience={setTargetAudience}
+              setContentStructure={setContentStructure}
+              setEngagementGoal={setEngagementGoal}
+              setContentLength={setContentLength}
+              setBrandVoiceIntensity={setBrandVoiceIntensity}
+              setEngagementUrgency={setEngagementUrgency}
+              setSituation={setSituation}
+              postTypes={postTypes}
+              brandVoiceIntensities={brandVoiceIntensities}
+              engagementUrgencies={engagementUrgencies}
+              situations={situations}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
