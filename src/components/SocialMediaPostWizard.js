@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import FacebookIcon from './FacebookIcon';
 import SocialMediaIntegration from './SocialMediaIntegration';
+import './SocialMediaPostWizard.css';
 
 const SocialMediaPostWizard = ({
   platform, setPlatform,
