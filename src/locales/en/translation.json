@@ -865,9 +865,9 @@
     "platformTips": {
       "facebook": {
         "title": "Facebook Optimization",
-        "bestPostingTimes": "Best posting times: 1-4 PM on weekdays",
-        "askQuestions": "Ask questions to encourage comments",
-        "includeImages": "Include images for 2.3x more engagement",
+        "bestPostingTimes": "Best posting times: 1-4 PM weekdays",
+        "askQuestions": "Ask questions to encourage engagement",
+        "includeImages": "Include images to increase engagement by 2.3x",
         "useFacebookLive": "Use Facebook Live for real-time engagement",
         "postConsistently": "Post consistently 1-2 times per day",
         "wordCounts": {

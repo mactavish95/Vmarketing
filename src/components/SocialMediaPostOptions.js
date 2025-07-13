@@ -134,6 +134,10 @@ const SocialMediaPostOptions = ({
                 <li><strong>{t('socialMedia.platformTips.facebook.wordCounts.comprehensive')}:</strong> {t('socialMedia.platformTips.facebook.descriptions.comprehensive')}</li>
                 <li><strong>{t('socialMedia.platformTips.facebook.bestPractices')}:</strong> {t('socialMedia.platformTips.facebook.bestPracticesDescription')}</li>
               </ul>
+              {/* Debug info */}
+              <div style={{fontSize: '12px', color: '#666', marginTop: '10px', padding: '10px', background: '#f5f5f5', borderRadius: '5px'}}>
+                Debug: {t('socialMedia.platformTips.facebook.wordCounts.short')}
+              </div>
             </div>
           )}
           {platform === 'instagram' && (
