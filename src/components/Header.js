@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 const Header = ({ location }) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
+    const [openDropdown, setOpenDropdown] = useState(null);
     const { t, i18n } = useTranslation();
 
     // Language configuration with flags
@@ -77,10 +78,30 @@ const Header = ({ location }) => {
 
     const closeMenu = () => {
         setIsMenuOpen(false);
+        setOpenDropdown(null);
     };
 
     const changeLanguage = (lng) => {
         i18n.changeLanguage(lng);
+    };
+
+    // Dropdown handlers
+    const handleDropdownToggle = (dropdownName) => {
+        if (isMobile) {
+            setOpenDropdown(openDropdown === dropdownName ? null : dropdownName);
+        }
+    };
+
+    const handleDropdownHover = (dropdownName) => {
+        if (!isMobile) {
+            setOpenDropdown(dropdownName);
+        }
+    };
+
+    const handleDropdownLeave = () => {
+        if (!isMobile) {
+            setOpenDropdown(null);
+        }
     };
 
     // Get current language info
@@ -116,67 +137,110 @@ const Header = ({ location }) => {
                     </Link>
                     
                     {/* Content Generation Group */}
-                    <div className="nav-group">
-                        <div className="nav-group-label">Content Creation</div>
-                        <Link 
-                            to="/voice" 
-                            className={`nav-link ${location.pathname === '/voice' ? 'active' : ''}`}
-                            onClick={closeMenu}
+                    <div 
+                        className={`nav-group dropdown ${openDropdown === 'content' ? 'open' : ''}`}
+                        onMouseEnter={() => handleDropdownHover('content')}
+                        onMouseLeave={handleDropdownLeave}
+                    >
+                        <div 
+                            className="nav-group-header"
+                            onClick={() => handleDropdownToggle('content')}
                         >
-                            🎤 {t('menu.voice')}
-                        </Link>
-                        <Link 
-                            to="/history" 
-                            className={`nav-link ${location.pathname === '/history' ? 'active' : ''}`}
-                            onClick={closeMenu}
-                        >
-                            📚 {t('menu.history')}
-                        </Link>
+                            <div className="nav-group-label">Content Creation</div>
+                            <span className="dropdown-arrow">▼</span>
+                        </div>
+                        <div className="dropdown-menu">
+                            <Link 
+                                to="/voice" 
+                                className={`nav-link ${location.pathname === '/voice' ? 'active' : ''}`}
+                                onClick={closeMenu}
+                            >
+                                🎤 {t('menu.voice')}
+                            </Link>
+                            <Link 
+                                to="/history" 
+                                className={`nav-link ${location.pathname === '/history' ? 'active' : ''}`}
+                                onClick={closeMenu}
+                            >
+                                📚 {t('menu.history')}
+                            </Link>
+                        </div>
                     </div>
                     
                     {/* AI & Tools Group */}
-                    <div className="nav-group">
-                        <div className="nav-group-label">AI & Tools</div>
-                        <Link 
-                            to="/llama" 
-                            className={`nav-link ${location.pathname === '/llama' ? 'active' : ''}`}
-                            onClick={closeMenu}
+                    <div 
+                        className={`nav-group dropdown ${openDropdown === 'ai' ? 'open' : ''}`}
+                        onMouseEnter={() => handleDropdownHover('ai')}
+                        onMouseLeave={handleDropdownLeave}
+                    >
+                        <div 
+                            className="nav-group-header"
+                            onClick={() => handleDropdownToggle('ai')}
                         >
-                            🤖 {t('menu.llama')}
-                        </Link>
+                            <div className="nav-group-label">AI & Tools</div>
+                            <span className="dropdown-arrow">▼</span>
+                        </div>
+                        <div className="dropdown-menu">
+                            <Link 
+                                to="/llama" 
+                                className={`nav-link ${location.pathname === '/llama' ? 'active' : ''}`}
+                                onClick={closeMenu}
+                            >
+                                🤖 {t('menu.llama')}
+                            </Link>
+                        </div>
                     </div>
                     
                     {/* Content Management Group */}
-                    <div className="nav-group">
-                        <div className="nav-group-label">Content Management</div>
-                        <Link 
-                            to="/blog" 
-                            className={`nav-link ${location.pathname.startsWith('/blog') && !location.pathname.includes('/blog-creator') ? 'active' : ''}`}
-                            onClick={closeMenu}
+                    <div 
+                        className={`nav-group dropdown ${openDropdown === 'management' ? 'open' : ''}`}
+                        onMouseEnter={() => handleDropdownHover('management')}
+                        onMouseLeave={handleDropdownLeave}
+                    >
+                        <div 
+                            className="nav-group-header"
+                            onClick={() => handleDropdownToggle('management')}
                         >
-                            📝 {t('menu.blog')}
-                        </Link>
-                        <Link 
-                            to="/blog-creator" 
-                            className={`nav-link ${location.pathname === '/blog-creator' ? 'active' : ''}`}
-                            onClick={closeMenu}
-                        >
-                            ✍️ {t('menu.blogCreator')}
-                        </Link>
-                        <Link 
-                            to="/social-media" 
-                            className={`nav-link ${location.pathname === '/social-media' ? 'active' : ''}`}
-                            onClick={closeMenu}
-                        >
-                            📱 {t('menu.socialMedia')}
-                        </Link>
-                        <Link 
-                            to="/social-media-history" 
-                            className={`nav-link ${location.pathname === '/social-media-history' ? 'active' : ''}`}
-                            onClick={closeMenu}
-                        >
-                            📚 {t('menu.socialMediaHistory') || 'Social Media History'}
-                        </Link>
+                            <div className="nav-group-label">Content Management</div>
+                            <span className="dropdown-arrow">▼</span>
+                        </div>
+                        <div className="dropdown-menu">
+                            <Link 
+                                to="/blog" 
+                                className={`nav-link ${location.pathname.startsWith('/blog') && !location.pathname.includes('/blog-creator') ? 'active' : ''}`}
+                                onClick={closeMenu}
+                            >
+                                📝 {t('menu.blog')}
+                            </Link>
+                            <Link 
+                                to="/blog-creator" 
+                                className={`nav-link ${location.pathname === '/blog-creator' ? 'active' : ''}`}
+                                onClick={closeMenu}
+                            >
+                                ✍️ {t('menu.blogCreator')}
+                            </Link>
+                            <Link 
+                                to="/social-media" 
+                                className={`nav-link ${location.pathname === '/social-media' ? 'active' : ''}`}
+                                onClick={closeMenu}
+                            >
+                                📱 {t('menu.socialMedia')}
+                            </Link>
+                            <Link 
+                                to="/social-media-history" 
+                                className={`nav-link ${location.pathname === '/social-media-history' ? 'active' : ''}`}
+                                onClick={closeMenu}
+                            >
+                                📚 {t('menu.socialMediaHistory') || 'Social Media History'}
+                            </Link>
+                            <Link 
+                                to="/social-media-integration" 
+                                className={`nav-link ${location.pathname === '/social-media-integration' ? 'active' : ''}`}
+                                onClick={closeMenu}
+                            >
+                                🔗 {t('socialMedia.integration.title')}
+                            </Link>
+                        </div>
                     </div>
                     
                     {/* Additional Services */}
@@ -195,21 +259,9 @@ const Header = ({ location }) => {
                 <div className="mobile-overlay" onClick={closeMenu}></div>
             )}
 
-            <div className="language-selector" style={{ 
-                position: 'absolute', 
-                right: isMobile ? 60 : 20, 
-                top: isMobile ? 15 : 20, 
-                zIndex: 100
-            }}>
+            <div className="language-selector">
                 <label 
-                    htmlFor="lang-switch" 
-                    style={{ 
-                        marginRight: isMobile ? 4 : 8,
-                        fontSize: isMobile ? '12px' : '14px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '4px'
-                    }}
+                    htmlFor="lang-switch"
                 >
                     {isMobile ? '🌐' : `${getFlagEmoji(currentLanguage.code)} ${t('language')}`}:
                 </label>
@@ -217,14 +269,9 @@ const Header = ({ location }) => {
                     id="lang-switch"
                     value={i18n.language}
                     onChange={e => changeLanguage(e.target.value)}
-                    style={{ 
-                        padding: isMobile ? '2px 4px' : '4px 8px', 
-                        fontSize: isMobile ? '12px' : '14px',
-                        minWidth: isMobile ? '60px' : '100px'
-                    }}
                 >
                     {supportedLanguages.map(lang => (
-                        <option key={lang.code} value={lang.code} style={{ fontSize: '14px' }}>
+                        <option key={lang.code} value={lang.code}>
                             {getFlagEmoji(lang.code)} {isMobile ? lang.shortName : lang.name}
                         </option>
                     ))}

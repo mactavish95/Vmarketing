@@ -3092,3 +3092,35 @@ html {
     border-color: #374151;
   }
 }
+
+.expandable-card {
+  transition: box-shadow 0.25s, padding 0.25s, max-height 0.35s cubic-bezier(0.4,0,0.2,1);
+  max-height: 220px;
+  will-change: max-height, box-shadow;
+  cursor: pointer;
+}
+.expandable-card.expanded {
+  max-height: 1200px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.13);
+  z-index: 20;
+}
+@media (max-width: 800px) {
+  .expandable-card {
+    max-height: 220px;
+    min-width: 0;
+    touch-action: manipulation;
+  }
+  .expandable-card.expanded {
+    max-height: 1200px;
+  }
+}
+
+/* Make action buttons larger on mobile */
+@media (max-width: 600px) {
+  .action-btn {
+    font-size: 16px !important;
+    padding: 12px 0 !important;
+    min-width: 44px;
+    min-height: 44px;
+  }
+}

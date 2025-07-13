@@ -7,7 +7,10 @@ import { Link } from 'react-router-dom';
 // [EXTRACT] Move all option/selector UI (platform, post type, tone, audience, content structure, engagement goal, length, brand voice, urgency, situation, advanced options) into a new component SocialMediaPostOptions.js
 import SocialMediaPostOptions from '../components/SocialMediaPostOptions';
 import SocialMediaPostResult from '../components/SocialMediaPostResult';
+import SocialMediaIntegration from '../components/SocialMediaIntegration';
 import formatInstagramContent from '../utils/formatInstagramContent';
+import SocialMediaPostWizard from '../components/SocialMediaPostWizard';
+import FacebookIcon from '../components/FacebookIcon';
 
 const SocialMediaPost = () => {
   const { t } = useTranslation();
@@ -41,6 +44,8 @@ const SocialMediaPost = () => {
   // Add state for reviewed content
   const [reviewedContent, setReviewedContent] = useState('');
   const [isReviewing, setIsReviewing] = useState(false);
+
+  const [useWizard, setUseWizard] = useState(true);
 
   // Platform-specific content length options
   const getContentLengths = (platform) => {
@@ -90,7 +95,7 @@ const SocialMediaPost = () => {
     { value: 'dominant', label: t('socialMedia.brandVoiceIntensities.dominant'), description: t('socialMedia.descriptions.dominant') }
   ];
 
-  // Engagement urgency options
+  // Engagement urgency options (use correct translation keys)
   const engagementUrgencies = [
     { value: 'low', label: t('socialMedia.engagementUrgencies.low'), description: t('socialMedia.descriptions.low') },
     { value: 'normal', label: t('socialMedia.engagementUrgencies.normal'), description: t('socialMedia.descriptions.normal') },
@@ -98,7 +103,7 @@ const SocialMediaPost = () => {
     { value: 'urgent', label: t('socialMedia.engagementUrgencies.urgent'), description: t('socialMedia.descriptions.urgent') }
   ];
 
-  // Situation options
+  // Situation options (use correct translation keys)
   const situations = [
     { value: 'general', label: t('socialMedia.situations.general'), description: t('socialMedia.descriptions.general') },
     { value: 'promotional', label: t('socialMedia.situations.promotional'), description: t('socialMedia.descriptions.promotional') },
@@ -123,20 +128,20 @@ const SocialMediaPost = () => {
   const [showComparison, setShowComparison] = useState(false);
 
   const platforms = [
-    { value: 'facebook', label: t('socialMedia.platforms.facebook'), icon: '📘', maxLength: 63206, priority: true, 
-      features: ['Stories', 'Groups', 'Live Video', 'Events', 'Marketplace'],
-      bestPractices: ['Engage with comments', 'Use native video', 'Post at peak times', 'Include call-to-action'],
-      audienceTypes: ['Friends & Family', 'Local Community', 'Interest Groups', 'Business Pages']
+    { value: 'facebook', label: t('socialMedia.platforms.facebook'), icon: <FacebookIcon size={36} />, maxLength: 63206, priority: true, 
+      features: t('socialMedia.platformSpecific.features.facebook', { returnObjects: true }),
+      bestPractices: t('socialMedia.platformSpecific.bestPractices.facebook', { returnObjects: true }),
+      audienceTypes: t('socialMedia.platformSpecific.audienceTypes.facebook', { returnObjects: true })
     },
     { value: 'instagram', label: t('socialMedia.platforms.instagram'), icon: '📸', maxLength: 2200, priority: true,
-      features: ['Stories', 'Reels', 'IGTV', 'Shopping', 'Live Streams'],
-      bestPractices: ['Use high-quality visuals', 'Include relevant hashtags', 'Post consistently', 'Engage with stories'],
-      audienceTypes: ['Visual Creators', 'Lifestyle Enthusiasts', 'Young Professionals', 'Brand Followers']
+      features: t('socialMedia.platformSpecific.features.instagram', { returnObjects: true }),
+      bestPractices: t('socialMedia.platformSpecific.bestPractices.instagram', { returnObjects: true }),
+      audienceTypes: t('socialMedia.platformSpecific.audienceTypes.instagram', { returnObjects: true })
     },
     { value: 'linkedin', label: t('socialMedia.platforms.linkedin'), icon: '💼', maxLength: 3000, priority: true,
-      features: ['Articles', 'Company Pages', 'Professional Groups', 'Networking', 'Job Posts'],
-      bestPractices: ['Share professional insights', 'Use industry hashtags', 'Engage with connections', 'Post during business hours'],
-      audienceTypes: ['Professionals', 'Industry Leaders', 'Job Seekers', 'Business Decision Makers']
+      features: t('socialMedia.platformSpecific.features.linkedin', { returnObjects: true }),
+      bestPractices: t('socialMedia.platformSpecific.bestPractices.linkedin', { returnObjects: true }),
+      audienceTypes: t('socialMedia.platformSpecific.audienceTypes.linkedin', { returnObjects: true })
     },
     { value: 'tiktok', label: t('socialMedia.platforms.tiktok'), icon: '🎵', maxLength: 150 },
     { value: 'twitter', label: t('socialMedia.platforms.twitter'), icon: '🐦', maxLength: 280 },
@@ -158,22 +163,22 @@ const SocialMediaPost = () => {
 
     const platformSpecific = {
       facebook: [
-        { value: 'event', label: 'Event Promotion', icon: '📅', description: 'Promote upcoming events, workshops, or meetups' },
-        { value: 'live', label: 'Live Video', icon: '📺', description: 'Announce or promote live streaming content' },
-        { value: 'group', label: 'Group Discussion', icon: '👥', description: 'Content specifically for Facebook groups' },
-        { value: 'marketplace', label: 'Marketplace Listing', icon: '🛍️', description: 'Promote products or services for sale' }
+        { value: 'event', label: t('socialMedia.platformSpecific.postTypes.facebook.event'), icon: '📅', description: t('socialMedia.platformSpecific.descriptions.postTypes.event') },
+        { value: 'live', label: t('socialMedia.platformSpecific.postTypes.facebook.live'), icon: '📺', description: t('socialMedia.platformSpecific.descriptions.postTypes.live') },
+        { value: 'group', label: t('socialMedia.platformSpecific.postTypes.facebook.group'), icon: '👥', description: t('socialMedia.platformSpecific.descriptions.postTypes.group') },
+        { value: 'marketplace', label: t('socialMedia.platformSpecific.postTypes.facebook.marketplace'), icon: '🛍️', description: t('socialMedia.platformSpecific.descriptions.postTypes.marketplace') }
       ],
       instagram: [
-        { value: 'reel', label: 'Reel Promotion', icon: '🎬', description: 'Promote or introduce Instagram Reels content' },
-        { value: 'story', label: 'Story Content', icon: '📱', description: 'Content designed for Instagram Stories' },
-        { value: 'igtv', label: 'IGTV Episode', icon: '📺', description: 'Promote longer video content on IGTV' },
-        { value: 'shopping', label: 'Shopping Post', icon: '🛒', description: 'Product-focused content with shopping features' }
+        { value: 'reel', label: t('socialMedia.platformSpecific.postTypes.instagram.reel'), icon: '🎬', description: t('socialMedia.platformSpecific.descriptions.postTypes.reel') },
+        { value: 'story', label: t('socialMedia.platformSpecific.postTypes.instagram.story'), icon: '📱', description: t('socialMedia.platformSpecific.descriptions.postTypes.story') },
+        { value: 'igtv', label: t('socialMedia.platformSpecific.postTypes.instagram.igtv'), icon: '📺', description: t('socialMedia.platformSpecific.descriptions.postTypes.igtv') },
+        { value: 'shopping', label: t('socialMedia.platformSpecific.postTypes.instagram.shopping'), icon: '🛒', description: t('socialMedia.platformSpecific.descriptions.postTypes.shopping') }
       ],
       linkedin: [
-        { value: 'article', label: 'Article Preview', icon: '📄', description: 'Introduce or promote LinkedIn articles' },
-        { value: 'career', label: 'Career Update', icon: '💼', description: 'Professional achievements and career milestones' },
-        { value: 'industry', label: 'Industry Insight', icon: '🏭', description: 'Share industry trends and professional insights' },
-        { value: 'networking', label: 'Networking', icon: '🤝', description: 'Connect with other professionals' }
+        { value: 'article', label: t('socialMedia.platformSpecific.postTypes.linkedin.article'), icon: '📄', description: t('socialMedia.platformSpecific.descriptions.postTypes.article') },
+        { value: 'career', label: t('socialMedia.platformSpecific.postTypes.linkedin.career'), icon: '💼', description: t('socialMedia.platformSpecific.descriptions.postTypes.career') },
+        { value: 'industry', label: t('socialMedia.platformSpecific.postTypes.linkedin.industry'), icon: '🏭', description: t('socialMedia.platformSpecific.descriptions.postTypes.industry') },
+        { value: 'networking', label: t('socialMedia.platformSpecific.postTypes.linkedin.networking'), icon: '🤝', description: t('socialMedia.platformSpecific.descriptions.postTypes.networking') }
       ]
     };
 
@@ -195,19 +200,19 @@ const SocialMediaPost = () => {
 
     const platformSpecific = {
       facebook: [
-        { value: 'poll', label: 'Poll/Question', icon: '📊', description: 'Create engagement with polls and questions' },
-        { value: 'milestone', label: 'Milestone Celebration', icon: '🎉', description: 'Celebrate achievements and milestones' },
-        { value: 'behind-scenes', label: 'Behind the Scenes', icon: '🎬', description: 'Show the human side of your brand' }
+        { value: 'poll', label: t('socialMedia.platformSpecific.contentStructures.facebook.poll'), icon: '📊', description: t('socialMedia.platformSpecific.descriptions.contentStructures.poll') },
+        { value: 'milestone', label: t('socialMedia.platformSpecific.contentStructures.facebook.milestone'), icon: '🎉', description: t('socialMedia.platformSpecific.descriptions.contentStructures.milestone') },
+        { value: 'behind-scenes', label: t('socialMedia.platformSpecific.contentStructures.facebook.behindScenes'), icon: '🎬', description: t('socialMedia.platformSpecific.descriptions.contentStructures.behindScenes') }
       ],
       instagram: [
-        { value: 'carousel', label: 'Carousel Post', icon: '🖼️', description: 'Multi-image post with swipeable content' },
-        { value: 'user-generated', label: 'User Generated Content', icon: '👤', description: 'Repost and celebrate customer content' },
-        { value: 'product-showcase', label: 'Product Showcase', icon: '📦', description: 'Highlight products with lifestyle context' }
+        { value: 'carousel', label: t('socialMedia.platformSpecific.contentStructures.instagram.carousel'), icon: '🖼️', description: t('socialMedia.platformSpecific.descriptions.contentStructures.carousel') },
+        { value: 'user-generated', label: t('socialMedia.platformSpecific.contentStructures.instagram.userGenerated'), icon: '👤', description: t('socialMedia.platformSpecific.descriptions.contentStructures.userGenerated') },
+        { value: 'product-showcase', label: t('socialMedia.platformSpecific.contentStructures.instagram.productShowcase'), icon: '📦', description: t('socialMedia.platformSpecific.descriptions.contentStructures.productShowcase') }
       ],
       linkedin: [
-        { value: 'case-study', label: 'Case Study', icon: '📊', description: 'Share success stories and results' },
-        { value: 'thought-leadership', label: 'Thought Leadership', icon: '🧠', description: 'Share expert opinions and insights' },
-        { value: 'company-culture', label: 'Company Culture', icon: '🏢', description: 'Showcase workplace culture and values' }
+        { value: 'case-study', label: t('socialMedia.platformSpecific.contentStructures.linkedin.caseStudy'), icon: '📊', description: t('socialMedia.platformSpecific.descriptions.contentStructures.caseStudy') },
+        { value: 'thought-leadership', label: t('socialMedia.platformSpecific.contentStructures.linkedin.thoughtLeadership'), icon: '🧠', description: t('socialMedia.platformSpecific.descriptions.contentStructures.thoughtLeadership') },
+        { value: 'company-culture', label: t('socialMedia.platformSpecific.contentStructures.linkedin.companyCulture'), icon: '🏢', description: t('socialMedia.platformSpecific.descriptions.contentStructures.companyCulture') }
       ]
     };
 
@@ -227,19 +232,19 @@ const SocialMediaPost = () => {
 
     const platformSpecific = {
       facebook: [
-        { value: 'group-engagement', label: 'Group Engagement', icon: '👥', description: 'Encourage participation in Facebook groups' },
-        { value: 'event-registration', label: 'Event Registration', icon: '📅', description: 'Drive event attendance and registrations' },
-        { value: 'page-likes', label: 'Page Likes', icon: '👍', description: 'Increase page followers and likes' }
+        { value: 'group-engagement', label: t('socialMedia.platformSpecific.engagementGoals.facebook.groupEngagement'), icon: '👥', description: t('socialMedia.platformSpecific.descriptions.engagementGoals.groupEngagement') },
+        { value: 'event-registration', label: t('socialMedia.platformSpecific.engagementGoals.facebook.eventRegistration'), icon: '📅', description: t('socialMedia.platformSpecific.descriptions.engagementGoals.eventRegistration') },
+        { value: 'page-likes', label: t('socialMedia.platformSpecific.engagementGoals.facebook.pageLikes'), icon: '👍', description: t('socialMedia.platformSpecific.descriptions.engagementGoals.pageLikes') }
       ],
       instagram: [
-        { value: 'story-views', label: 'Story Views', icon: '👁️', description: 'Increase story views and engagement' },
-        { value: 'reel-engagement', label: 'Reel Engagement', icon: '🎬', description: 'Boost reel views, likes, and shares' },
-        { value: 'profile-visits', label: 'Profile Visits', icon: '👤', description: 'Drive traffic to your Instagram profile' }
+        { value: 'story-views', label: t('socialMedia.platformSpecific.engagementGoals.instagram.storyViews'), icon: '👁️', description: t('socialMedia.platformSpecific.descriptions.engagementGoals.storyViews') },
+        { value: 'reel-engagement', label: t('socialMedia.platformSpecific.engagementGoals.instagram.reelEngagement'), icon: '🎬', description: t('socialMedia.platformSpecific.descriptions.engagementGoals.reelEngagement') },
+        { value: 'profile-visits', label: t('socialMedia.platformSpecific.engagementGoals.instagram.profileVisits'), icon: '👤', description: t('socialMedia.platformSpecific.descriptions.engagementGoals.profileVisits') }
       ],
       linkedin: [
-        { value: 'connection-requests', label: 'Connection Requests', icon: '🔗', description: 'Grow your professional network' },
-        { value: 'article-reads', label: 'Article Reads', icon: '📖', description: 'Increase article views and engagement' },
-        { value: 'job-applications', label: 'Job Applications', icon: '💼', description: 'Attract talent and job applications' }
+        { value: 'connection-requests', label: t('socialMedia.platformSpecific.engagementGoals.linkedin.connectionRequests'), icon: '🔗', description: t('socialMedia.platformSpecific.descriptions.engagementGoals.connectionRequests') },
+        { value: 'article-reads', label: t('socialMedia.platformSpecific.engagementGoals.linkedin.articleReads'), icon: '📖', description: t('socialMedia.platformSpecific.descriptions.engagementGoals.articleReads') },
+        { value: 'job-applications', label: t('socialMedia.platformSpecific.engagementGoals.linkedin.jobApplications'), icon: '💼', description: t('socialMedia.platformSpecific.descriptions.engagementGoals.jobApplications') }
       ]
     };
 
@@ -261,16 +266,16 @@ const SocialMediaPost = () => {
 
     const platformSpecific = {
       facebook: [
-        { value: 'friendly', label: 'Friendly & Approachable', icon: '😊', description: 'Warm, welcoming tone for friends and family' },
-        { value: 'community-focused', label: 'Community-Focused', icon: '🏘️', description: 'Emphasize local community and connections' }
+        { value: 'friendly', label: t('socialMedia.platformSpecific.tones.facebook.friendly'), icon: '😊', description: t('socialMedia.platformSpecific.descriptions.tones.friendly') },
+        { value: 'community-focused', label: t('socialMedia.platformSpecific.tones.facebook.communityFocused'), icon: '🏘️', description: t('socialMedia.platformSpecific.descriptions.tones.communityFocused') }
       ],
       instagram: [
-        { value: 'aesthetic', label: 'Aesthetic & Visual', icon: '🎨', description: 'Focus on visual appeal and aesthetics' },
-        { value: 'trendy', label: 'Trendy & Current', icon: '🔥', description: 'Stay current with latest trends and styles' }
+        { value: 'aesthetic', label: t('socialMedia.platformSpecific.tones.instagram.aesthetic'), icon: '🎨', description: t('socialMedia.platformSpecific.descriptions.tones.aesthetic') },
+        { value: 'trendy', label: t('socialMedia.platformSpecific.tones.instagram.trendy'), icon: '🔥', description: t('socialMedia.platformSpecific.descriptions.tones.trendy') }
       ],
       linkedin: [
-        { value: 'executive', label: 'Executive & Strategic', icon: '🎯', description: 'High-level strategic thinking and leadership' },
-        { value: 'mentoring', label: 'Mentoring & Supportive', icon: '🤝', description: 'Supportive tone for professional development' }
+        { value: 'executive', label: t('socialMedia.platformSpecific.tones.linkedin.executive'), icon: '🎯', description: t('socialMedia.platformSpecific.descriptions.tones.executive') },
+        { value: 'mentoring', label: t('socialMedia.platformSpecific.tones.linkedin.mentoring'), icon: '🤝', description: t('socialMedia.platformSpecific.descriptions.tones.mentoring') }
       ]
     };
 
@@ -292,19 +297,19 @@ const SocialMediaPost = () => {
 
     const platformSpecific = {
       facebook: [
-        { value: 'friends-family', label: 'Friends & Family', icon: '👨‍👩‍👧‍👦', description: 'Close personal connections and family members' },
-        { value: 'local-community', label: 'Local Community', icon: '🏘️', description: 'People in your local area and community' },
-        { value: 'interest-groups', label: 'Interest Groups', icon: '🎯', description: 'People with shared interests and hobbies' }
+        { value: 'friends-family', label: t('socialMedia.platformSpecific.audiences.facebook.friendsFamily'), icon: '👨‍👩‍👧‍👦', description: t('socialMedia.platformSpecific.descriptions.audiences.friendsFamily') },
+        { value: 'local-community', label: t('socialMedia.platformSpecific.audiences.facebook.localCommunity'), icon: '🏘️', description: t('socialMedia.platformSpecific.descriptions.audiences.localCommunity') },
+        { value: 'interest-groups', label: t('socialMedia.platformSpecific.audiences.facebook.interestGroups'), icon: '🎯', description: t('socialMedia.platformSpecific.descriptions.audiences.interestGroups') }
       ],
       instagram: [
-        { value: 'visual-creators', label: 'Visual Creators', icon: '📸', description: 'Photographers, artists, and visual content creators' },
-        { value: 'lifestyle-enthusiasts', label: 'Lifestyle Enthusiasts', icon: '✨', description: 'People interested in lifestyle and aesthetics' },
-        { value: 'young-professionals', label: 'Young Professionals', icon: '💼', description: 'Early to mid-career professionals' }
+        { value: 'visual-creators', label: t('socialMedia.platformSpecific.audiences.instagram.visualCreators'), icon: '📸', description: t('socialMedia.platformSpecific.descriptions.audiences.visualCreators') },
+        { value: 'lifestyle-enthusiasts', label: t('socialMedia.platformSpecific.audiences.instagram.lifestyleEnthusiasts'), icon: '✨', description: t('socialMedia.platformSpecific.descriptions.audiences.lifestyleEnthusiasts') },
+        { value: 'young-professionals', label: t('socialMedia.platformSpecific.audiences.instagram.youngProfessionals'), icon: '💼', description: t('socialMedia.platformSpecific.descriptions.audiences.youngProfessionals') }
       ],
       linkedin: [
-        { value: 'industry-leaders', label: 'Industry Leaders', icon: '👑', description: 'Senior professionals and industry experts' },
-        { value: 'job-seekers', label: 'Job Seekers', icon: '🔍', description: 'People looking for career opportunities' },
-        { value: 'decision-makers', label: 'Decision Makers', icon: '🎯', description: 'Business leaders and decision makers' }
+        { value: 'industry-leaders', label: t('socialMedia.platformSpecific.audiences.linkedin.industryLeaders'), icon: '👑', description: t('socialMedia.platformSpecific.descriptions.audiences.industryLeaders') },
+        { value: 'job-seekers', label: t('socialMedia.platformSpecific.audiences.linkedin.jobSeekers'), icon: '🔍', description: t('socialMedia.platformSpecific.descriptions.audiences.jobSeekers') },
+        { value: 'decision-makers', label: t('socialMedia.platformSpecific.audiences.linkedin.decisionMakers'), icon: '🎯', description: t('socialMedia.platformSpecific.descriptions.audiences.decisionMakers') }
       ]
     };
 
@@ -642,9 +647,9 @@ const SocialMediaPost = () => {
           <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
             <div style="width:48px;height:48px;background:linear-gradient(135deg,#1877f2 0%,#42a5f5 100%);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:20px;font-weight:600;box-shadow:0 2px 8px rgba(24,119,242,0.3);">👤</div>
             <div style="flex:1;">
-              <div style="font-size:16px;font-weight:600;color:#050505;margin-bottom:2px;">Your Page Name</div>
-              <div style="font-size:13px;color:#65676b;display:flex;align-items:center;gap:4px;">
-                <span>Just now</span><span>•</span><span>${toneInfo?.icon || '🎭'} ${toneInfo?.label || ''}</span><span>•</span><span>🌍</span>
+              <div style="font-size:16px;font-weight:600;color:#050505;margin-bottom:2px;">${t('socialMedia.yourPageName')}</div>
+              <div style="font-size:13px;color:#65676b;display:flex:align-items:center;gap:4px;">
+                <span>${t('socialMedia.justNow')}</span><span>•</span><span>${toneInfo?.icon || '🎭'} ${toneInfo?.label || ''}</span><span>•</span><span>🌍</span>
             </div>
                 </div>
             <div style="font-size:20px;color:#65676b;cursor:pointer;padding:4px;border-radius:50%;">⋯</div>
@@ -652,9 +657,9 @@ const SocialMediaPost = () => {
           <div style="font-size:15px;line-height:1.4;color:#050505;white-space:pre-wrap;word-wrap:break-word;margin-bottom:16px;padding:12px;background:white;border-radius:8px;border:1px solid #e4e6ea;">${content.replace(/\n/g, '<br/>')}</div>
           <div style="display:flex;align-items:center;justify-content:space-between;padding-top:12px;border-top:1px solid #e4e6ea;font-size:15px;color:#65676b;">
             <div style="display:flex;align-items:center;gap:16px;">
-              <span>👍 Like</span><span>💬 Comment</span><span>🔄 Share</span>
+              <span>👍 ${t('socialMedia.like')}</span><span>💬 ${t('socialMedia.comment')}</span><span>🔄 ${t('socialMedia.share')}</span>
                 </div>
-            <div style="font-size:13px;color:#65676b;">0 comments • 0 shares</div>
+            <div style="font-size:13px;color:#65676b;">0 ${t('socialMedia.comments')} • 0 ${t('socialMedia.shares')}</div>
             </div>
         </div>
       `;
@@ -665,7 +670,7 @@ const SocialMediaPost = () => {
         <div style="background:#fff;border-radius:12px;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;border:1px solid #dbdbdb;box-shadow:0 2px 8px rgba(0,0,0,0.1);max-width:400px;margin:0 auto;">
           <div style="display:flex;align-items:center;gap:12px;padding:16px;border-bottom:1px solid #dbdbdb;">
             <div style="width:32px;height:32px;background:linear-gradient(45deg,#f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:14px;">📸</div>
-            <div style="flex:1;"><div style="font-size:14px;font-weight:600;color:#262626;">your_username</div></div>
+            <div style="flex:1;"><div style="font-size:14px;font-weight:600;color:#262626;">${t('socialMedia.yourUsername')}</div></div>
             <div style="font-size:18px;color:#262626;cursor:pointer;padding:4px;border-radius:50%;">⋯</div>
                 </div>
           <div style="width:100%;height:300px;background:linear-gradient(135deg,#fdf2f8 0%,#fce7f3 100%);display:flex;align-items:center;justify-content:center;font-size:48px;color:#ec4899;border-bottom:1px solid #dbdbdb;">📷</div>
@@ -673,7 +678,7 @@ const SocialMediaPost = () => {
             <span style="font-size:24px;">❤️</span><span style="font-size:24px;">💬</span><span style="font-size:24px;">📤</span><span style="font-size:24px;margin-left:auto;">🔖</span>
                 </div>
           <div style="padding:12px 16px;font-size:14px;line-height:1.5;color:#262626;white-space:pre-wrap;word-wrap:break-word;">
-            <div style="margin-bottom:8px;"><span style="font-weight:600;color:#262626;">your_username</span><span style="margin-left:8px;">${formatted}</span></div>
+            <div style="margin-bottom:8px;"><span style="font-weight:600;color:#262626;">${t('socialMedia.yourUsername')}</span><span style="margin-left:8px;">${formatted}</span></div>
             </div>
         </div>
       `;
@@ -682,11 +687,11 @@ const SocialMediaPost = () => {
         <div style="background:#fff;border-radius:12px;padding:20px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;border:1px solid #e0e0e0;max-width:420px;margin:0 auto;">
           <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
             <div style="width:48px;height:48px;background:#0077b5;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:20px;">💼</div>
-            <div><div style="font-size:16px;font-weight:600;color:#191919;margin-bottom:2px;">Your Name</div><div style="font-size:14px;color:#666;margin-bottom:2px;">Your Title at Company</div><div style="font-size:12px;color:#666;">now • ${toneInfo?.icon || '🎭'} ${toneInfo?.label || ''}</div></div>
+            <div><div style="font-size:16px;font-weight:600;color:#191919;margin-bottom:2px;">${t('socialMedia.yourName')}</div><div style="font-size:14px;color:#666;margin-bottom:2px;">${t('socialMedia.yourTitleAtCompany')}</div><div style="font-size:12px;color:#666;">${t('socialMedia.now')} • ${toneInfo?.icon || '🎭'} ${toneInfo?.label || ''}</div></div>
           </div>
           <div style="font-size:16px;line-height:1.5;color:#191919;white-space:pre-wrap;word-wrap:break-word;margin-bottom:16px;">${content.replace(/\n/g, '<br/>')}</div>
           <div style="display:flex;align-items:center;gap:24px;padding-top:16px;border-top:1px solid #e0e0e0;font-size:14px;color:#666;">
-            <span>👍 Like</span><span>💬 Comment</span><span>🔄 Repost</span><span>📤 Send</span>
+            <span>👍 ${t('socialMedia.like')}</span><span>💬 ${t('socialMedia.comment')}</span><span>🔄 ${t('socialMedia.repost')}</span><span>📤 ${t('socialMedia.send')}</span>
           </div>
         </div>
       `;
@@ -695,7 +700,7 @@ const SocialMediaPost = () => {
         <div style="background:#fff;border-radius:12px;padding:16px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;border:1px solid #e1e8ed;max-width:420px;margin:0 auto;">
           <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
             <div style="width:48px;height:48px;background:#1da1f2;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:20px;">🐦</div>
-            <div><div style="font-size:15px;font-weight:700;color:#14171a;margin-bottom:2px;">Your Name</div><div style="font-size:14px;color:#657786;display:flex;align-items:center;gap:4px;"><span>@yourhandle</span><span>•</span><span>now</span></div></div>
+            <div><div style="font-size:15px;font-weight:700;color:#14171a;margin-bottom:2px;">${t('socialMedia.yourName')}</div><div style="font-size:14px;color:#657786;display:flex:align-items:center;gap:4px;"><span>@${t('socialMedia.yourHandle')}</span><span>•</span><span>${t('socialMedia.now')}</span></div></div>
           </div>
           <div style="font-size:15px;line-height:1.4;color:#14171a;white-space:pre-wrap;word-wrap:break-word;margin-bottom:16px;">${content.replace(/\n/g, '<br/>')}</div>
           <div style="display:flex;align-items:center;justify-content:space-between;padding-top:12px;border-top:1px solid #e1e8ed;font-size:16px;color:#657786;">
@@ -711,19 +716,19 @@ const SocialMediaPost = () => {
           </div>
           <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,0.8));padding:20px 16px 80px 16px;">
             <div style="font-size:16px;line-height:1.4;white-space:pre-wrap;word-wrap:break-word;margin-bottom:12px;max-width:280px;">${content.replace(/\n/g, '<br/>')}</div>
-            <div style="font-size:14px;color:#00f2ea;margin-bottom:12px;">#fyp #viral #trending #content #tiktok</div>
+            <div style="font-size:14px;color:#00f2ea;margin-bottom:12px;">${t('socialMedia.tiktokHashtags')}</div>
           </div>
           <div style="position:absolute;top:16px;left:16px;right:16px;display:flex;align-items:center;justify-content:space-between;">
             <div style="display:flex;align-items:center;gap:8px;">
               <div style="width:32px;height:32px;background:linear-gradient(45deg,#ff0050,#00f2ea);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;">🎵</div>
-              <div><div style="font-size:14px;font-weight:600;margin-bottom:2px;">@yourusername</div><div style="font-size:12px;color:#ccc;">Original Sound</div></div>
+              <div><div style="font-size:14px;font-weight:600;margin-bottom:2px;">@${t('socialMedia.yourUsername')}</div><div style="font-size:12px;color:#ccc;">${t('socialMedia.originalSound')}</div></div>
             </div>
             <span style="font-size:20px;">⋯</span>
           </div>
           <div style="position:absolute;right:16px;bottom:100px;display:flex;flex-direction:column;align-items:center;gap:16px;">
             <div style="text-align:center;"><span style="font-size:32px;">❤️</span><div style="font-size:12px;margin-top:4px;">0</div></div>
             <div style="text-align:center;"><span style="font-size:32px;">💬</span><div style="font-size:12px;margin-top:4px;">0</div></div>
-            <div style="text-align:center;"><span style="font-size:32px;">📤</span><div style="font-size:12px;margin-top:4px;">Share</div></div>
+            <div style="text-align:center;"><span style="font-size:32px;">📤</span><div style="font-size:12px;margin-top:4px;">${t('socialMedia.share')}</div></div>
           </div>
         </div>
       `;
@@ -732,11 +737,11 @@ const SocialMediaPost = () => {
         <div style="background:#fff;border-radius:12px;padding:16px;font-family:Roboto,Arial,sans-serif;border:1px solid #e5e5e5;max-width:420px;margin:0 auto;">
           <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
             <div style="width:40px;height:40px;background:#ff0000;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:18px;">📺</div>
-            <div><div style="font-size:16px;font-weight:500;color:#030303;margin-bottom:2px;">Your Channel Name</div><div style="font-size:14px;color:#606060;">${new Date().toLocaleDateString()} • ${toneInfo?.icon || '🎭'} ${toneInfo?.label || ''}</div></div>
+            <div><div style="font-size:16px;font-weight:500;color:#030303;margin-bottom:2px;">${t('socialMedia.yourChannelName')}</div><div style="font-size:14px;color:#606060;">${new Date().toLocaleDateString()} • ${toneInfo?.icon || '🎭'} ${toneInfo?.label || ''}</div></div>
           </div>
           <div style="font-size:14px;line-height:1.4;color:#030303;white-space:pre-wrap;word-wrap:break-word;margin-bottom:16px;">${content.replace(/\n/g, '<br/>')}</div>
           <div style="display:flex;align-items:center;gap:16px;padding-top:12px;border-top:1px solid #e5e5e5;font-size:14px;color:#606060;">
-            <span>👍 0</span><span>👎 0</span><span>💬 0 comments</span><span>📤 Share</span>
+            <span>👍 0</span><span>👎 0</span><span>💬 0 ${t('socialMedia.comments')}</span><span>📤 ${t('socialMedia.share')}</span>
           </div>
         </div>
       `;
@@ -766,8 +771,8 @@ const SocialMediaPost = () => {
     <div>
       ${platformPreview}
         <div class="preview-actions">
-        <button id="copy-btn" class="action-btn">📋 Copy Post</button>
-        <button id="close-btn" class="action-btn secondary">✖ Close Window</button>
+        <button id="copy-btn" class="action-btn">📋 ${t('socialMedia.copyPost')}</button>
+        <button id="close-btn" class="action-btn secondary">✖ ${t('socialMedia.closeWindow')}</button>
         </div>
     </div>
     <script>
@@ -842,10 +847,10 @@ const SocialMediaPost = () => {
   };
 
   const getQualityLabel = (score) => {
-    if (score >= 0.8) return 'Excellent';
-    if (score >= 0.6) return 'Good';
-    if (score >= 0.4) return 'Fair';
-    return 'Poor';
+    if (score >= 0.8) return t('socialMedia.quality.excellent');
+    if (score >= 0.6) return t('socialMedia.quality.good');
+    if (score >= 0.4) return t('socialMedia.quality.fair');
+    return t('socialMedia.quality.poor');
   };
 
   // Calculate derived values for display
@@ -856,62 +861,14 @@ const SocialMediaPost = () => {
   // Follow-up question suggestions based on user selections
   const getFollowUpSuggestions = () => {
     const suggestions = {
-      general: [
-        "What's the most interesting thing that happened to you today?",
-        "Share a personal story that your audience can relate to",
-        "What's something you're grateful for right now?",
-        "Tell us about a challenge you recently overcame",
-        "What's a lesson you learned this week?"
-      ],
-      promotional: [
-        "What problem does your product/service solve?",
-        "Share a customer success story",
-        "What makes your offering unique?",
-        "What's a common misconception about your industry?",
-        "How has your product/service evolved?"
-      ],
-      educational: [
-        "What's a common mistake people make in your field?",
-        "Share a surprising fact or statistic",
-        "What's something everyone should know about your topic?",
-        "What's a tip that changed your perspective?",
-        "What's the most important lesson you've learned?"
-      ],
-      community: [
-        "What's happening in your local community?",
-        "How can people get involved with your cause?",
-        "What community event are you excited about?",
-        "Share a story about community support",
-        "What's a local business you want to highlight?"
-      ],
-      celebration: [
-        "What achievement are you most proud of?",
-        "Who deserves recognition in your network?",
-        "What milestone are you celebrating?",
-        "Share a team success story",
-        "What's something worth celebrating today?"
-      ],
-      trending: [
-        "What's your take on the current trend?",
-        "How does this trend relate to your audience?",
-        "What's the story behind this trend?",
-        "How can people participate in this trend?",
-        "What's the next big thing you're seeing?"
-      ],
-      seasonal: [
-        "What does this season mean to you?",
-        "How are you preparing for this time of year?",
-        "What traditions are important to you?",
-        "What's your favorite thing about this season?",
-        "How can people make the most of this season?"
-      ],
-      crisis: [
-        "How are you supporting your community during this time?",
-        "What resources can you share?",
-        "How are you adapting to the current situation?",
-        "What positive actions can people take?",
-        "How can we help each other?"
-      ]
+      general: t('socialMedia.suggestions.postTypes.general', { returnObjects: true }),
+      promotional: t('socialMedia.suggestions.postTypes.promotional', { returnObjects: true }),
+      educational: t('socialMedia.suggestions.postTypes.educational', { returnObjects: true }),
+      community: t('socialMedia.suggestions.postTypes.community', { returnObjects: true }),
+      celebration: t('socialMedia.suggestions.postTypes.celebration', { returnObjects: true }),
+      trending: t('socialMedia.suggestions.postTypes.trending', { returnObjects: true }),
+      seasonal: t('socialMedia.suggestions.postTypes.seasonal', { returnObjects: true }),
+      crisis: t('socialMedia.suggestions.postTypes.crisis', { returnObjects: true })
     };
 
     // Get suggestions based on post type and situation
@@ -920,108 +877,28 @@ const SocialMediaPost = () => {
     
     // Add content structure specific suggestions
     const structureSuggestions = {
-      story: [
-        "What's the beginning of your story?",
-        "What was the turning point?",
-        "How did it end?",
-        "What did you learn from this experience?"
-      ],
-      'problem-solution': [
-        "What problem are you addressing?",
-        "What's your solution?",
-        "How does this help others?",
-        "What results can people expect?"
-      ],
-      list: [
-        "What are the key points you want to share?",
-        "What's the most important item on your list?",
-        "How can people apply these points?",
-        "What's your top recommendation?"
-      ],
-      'question-answer': [
-        "What question are you answering?",
-        "What's the most common question you get?",
-        "What's something people often misunderstand?",
-        "What's your expert advice on this topic?"
-      ],
-      'before-after': [
-        "What was the situation before?",
-        "What changed?",
-        "What's the result now?",
-        "What made the difference?"
-      ],
-      tips: [
-        "What's your best tip?",
-        "What mistake should people avoid?",
-        "What's your secret to success?",
-        "What's the easiest way to get started?"
-      ],
-      quote: [
-        "What quote inspires you?",
-        "Who said something meaningful about this?",
-        "What's your favorite quote on this topic?",
-        "How does this quote apply to your audience?"
-      ],
-      announcement: [
-        "What are you announcing?",
-        "Why is this important?",
-        "What should people know?",
-        "What's the next step?"
-      ]
+      story: t('socialMedia.suggestions.contentStructures.story', { returnObjects: true }),
+      'problem-solution': t('socialMedia.suggestions.contentStructures.problemSolution', { returnObjects: true }),
+      list: t('socialMedia.suggestions.contentStructures.list', { returnObjects: true }),
+      'question-answer': t('socialMedia.suggestions.contentStructures.questionAnswer', { returnObjects: true }),
+      'before-after': t('socialMedia.suggestions.contentStructures.beforeAfter', { returnObjects: true }),
+      tips: t('socialMedia.suggestions.contentStructures.tips', { returnObjects: true }),
+      quote: t('socialMedia.suggestions.contentStructures.quote', { returnObjects: true }),
+      announcement: t('socialMedia.suggestions.contentStructures.announcement', { returnObjects: true })
     };
 
     const structureSpecific = structureSuggestions[contentStructure] || [];
     
     // Add tone-specific suggestions
     const toneSuggestions = {
-      engaging: [
-        "What would make your audience want to comment?",
-        "What question would start a conversation?",
-        "What's something controversial you can address?",
-        "What's a hot topic in your industry?"
-      ],
-      professional: [
-        "What industry insight can you share?",
-        "What professional development tip do you have?",
-        "What's a business lesson you've learned?",
-        "What trend should professionals watch?"
-      ],
-      casual: [
-        "What's something fun you want to share?",
-        "What made you smile today?",
-        "What's a lighthearted observation?",
-        "What's something relatable to your audience?"
-      ],
-      humorous: [
-        "What's something funny that happened?",
-        "What's a humorous take on your topic?",
-        "What's a joke or pun related to your content?",
-        "What's something that made you laugh?"
-      ],
-      inspirational: [
-        "What motivates you?",
-        "What's an inspiring story you can share?",
-        "What's your message of hope?",
-        "What would encourage your audience?"
-      ],
-      educational: [
-        "What fact would surprise your audience?",
-        "What's a common misconception?",
-        "What's something everyone should know?",
-        "What's a practical tip you can share?"
-      ],
-      empathetic: [
-        "What struggle can you relate to?",
-        "How can you show understanding?",
-        "What support can you offer?",
-        "What would make someone feel heard?"
-      ],
-      authoritative: [
-        "What's your expert opinion?",
-        "What's the data showing?",
-        "What's your proven approach?",
-        "What's your professional recommendation?"
-      ]
+      engaging: t('socialMedia.suggestions.tones.engaging', { returnObjects: true }),
+      professional: t('socialMedia.suggestions.tones.professional', { returnObjects: true }),
+      casual: t('socialMedia.suggestions.tones.casual', { returnObjects: true }),
+      humorous: t('socialMedia.suggestions.tones.humorous', { returnObjects: true }),
+      inspirational: t('socialMedia.suggestions.tones.inspirational', { returnObjects: true }),
+      educational: t('socialMedia.suggestions.tones.educational', { returnObjects: true }),
+      empathetic: t('socialMedia.suggestions.tones.empathetic', { returnObjects: true }),
+      authoritative: t('socialMedia.suggestions.tones.authoritative', { returnObjects: true })
     };
 
     const toneSpecific = toneSuggestions[tone] || [];
@@ -1036,84 +913,24 @@ const SocialMediaPost = () => {
     
     // Add platform-specific suggestions
     const platformSpecific = {
-      facebook: [
-        "What would you like to discuss with your Facebook community?",
-        "Share something that would start a meaningful conversation",
-        "What's on your mind that others might relate to?",
-        "What's happening in your world that's worth sharing?"
-      ],
-      instagram: [
-        "What visual story would you like to tell?",
-        "Share a behind-the-scenes moment",
-        "What's inspiring you today?",
-        "What's a beautiful moment you want to capture?"
-      ],
-      twitter: [
-        "What's your hot take on a current topic?",
-        "Share a quick tip or insight",
-        "What's worth sharing in 280 characters?",
-        "What's trending that you have thoughts on?"
-      ],
-      linkedin: [
-        "What professional insight can you share?",
-        "What industry trend are you following?",
-        "What career advice would you give?",
-        "What business lesson have you learned?"
-      ],
-      tiktok: [
-        "What's a fun trend you can participate in?",
-        "What's something entertaining you can show?",
-        "What's a quick tip you can demonstrate?",
-        "What's something viral-worthy you can share?"
-      ],
-      youtube: [
-        "What tutorial or guide can you create?",
-        "What's a story you can tell in detail?",
-        "What's a topic you can explain thoroughly?",
-        "What's something you can show step-by-step?"
-      ]
+      facebook: t('socialMedia.suggestions.platforms.facebook', { returnObjects: true }),
+      instagram: t('socialMedia.suggestions.platforms.instagram', { returnObjects: true }),
+      twitter: t('socialMedia.suggestions.platforms.twitter', { returnObjects: true }),
+      linkedin: t('socialMedia.suggestions.platforms.linkedin', { returnObjects: true }),
+      tiktok: t('socialMedia.suggestions.platforms.tiktok', { returnObjects: true }),
+      youtube: t('socialMedia.suggestions.platforms.youtube', { returnObjects: true })
     };
 
     const platformSuggestions = platformSpecific[platform] || platformSpecific.facebook;
     
     // Add engagement goal specific suggestions
     const goalSuggestions = {
-      awareness: [
-        "What should people know about your brand?",
-        "What's unique about what you do?",
-        "What's your story that people should hear?",
-        "What makes you different from others?"
-      ],
-      engagement: [
-        "What question would get people talking?",
-        "What's something people would want to share?",
-        "What's a topic that would get comments?",
-        "What's something that would make people react?"
-      ],
-      conversation: [
-        "What's a topic people have strong opinions about?",
-        "What's something that would start a debate?",
-        "What's a question that has no right answer?",
-        "What's something that would get people thinking?"
-      ],
-      education: [
-        "What's something people often get wrong?",
-        "What's a tip that would help your audience?",
-        "What's something you wish everyone knew?",
-        "What's a lesson that would benefit others?"
-      ],
-      conversion: [
-        "What problem can you solve for people?",
-        "What's the benefit of working with you?",
-        "What's a success story you can share?",
-        "What's the next step people should take?"
-      ],
-      community: [
-        "How can people connect with each other?",
-        "What's a shared experience you can highlight?",
-        "What's something that would bring people together?",
-        "What's a community event or initiative?"
-      ]
+      awareness: t('socialMedia.goalSuggestions.awareness', { returnObjects: true }),
+      engagement: t('socialMedia.goalSuggestions.engagement', { returnObjects: true }),
+      conversation: t('socialMedia.goalSuggestions.conversation', { returnObjects: true }),
+      education: t('socialMedia.goalSuggestions.education', { returnObjects: true }),
+      conversion: t('socialMedia.goalSuggestions.conversion', { returnObjects: true }),
+      community: t('socialMedia.goalSuggestions.community', { returnObjects: true })
     };
 
     const goalSpecific = goalSuggestions[engagementGoal] || [];
@@ -1278,150 +1095,207 @@ ${content}`;
     return grouped;
   };
 
+  // Handler for wizard submit (save post or trigger generation)
+  const handleWizardSubmit = () => {
+    // For now, just show an alert or call generateContent
+    generateContent();
+  };
+
   return (
     <div className="social-media-post responsive-mobile" style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%)', padding: 0 }}>
-      {/* Sticky header */}
-        <div style={{
-        position: 'sticky',
-        top: 0,
-        zIndex: 10,
-        background: 'linear-gradient(135deg, #4f8cff 0%, #38e8ff 100%)',
-        padding: '24px 16px 16px 16px',
-        borderBottomLeftRadius: 24,
-        borderBottomRightRadius: 24,
-        boxShadow: '0 4px 24px rgba(79,140,255,0.08)',
-          display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-      }}>
-        <div style={{ width: 40 }}></div>
-        <div style={{ flex: 1, textAlign: 'center' }}>
-          <h2 style={{ color: '#fff', fontWeight: 800, fontSize: 24, margin: 0 }}>Vmarketing</h2>
-          <div style={{ color: '#e0e7ff', fontSize: 14, marginTop: 4 }}>{t('socialMedia.subtitle')}</div>
-        </div>
-        <Link to="/social-media-history" style={{ color: '#fff', fontSize: 18, textDecoration: 'none', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 8 }}>
-          📚
-        </Link>
+      {/* Toggle Wizard/Advanced Mode */}
+      <div style={{ display: 'flex', justifyContent: 'center', margin: '24px 0 0 0' }}>
+        <button
+          onClick={() => setUseWizard(true)}
+          style={{ background: useWizard ? '#2563eb' : '#e5e7eb', color: useWizard ? 'white' : '#374151', border: 'none', borderRadius: 8, padding: '10px 18px', fontWeight: 700, fontSize: 15, marginRight: 8 }}
+        >
+          🧑‍🎓 {t('socialMedia.guidedMode')}
+        </button>
+        <button
+          onClick={() => setUseWizard(false)}
+          style={{ background: !useWizard ? '#2563eb' : '#e5e7eb', color: !useWizard ? 'white' : '#374151', border: 'none', borderRadius: 8, padding: '10px 18px', fontWeight: 700, fontSize: 15 }}
+        >
+          ⚡ {t('socialMedia.advancedMode')}
+        </button>
       </div>
-
-      {/* Main content */}
-      <div style={{ padding: '16px 8px', maxWidth: 900, margin: '0 auto' }}>
-      {/* Option/Selector UI */}
-        <div className="section platform-section-mobile" style={{ marginBottom: 16 }}>
-      <SocialMediaPostOptions
-        platforms={platforms}
-        platform={platform}
-        setPlatform={setPlatform}
-        postTypes={postTypes}
-        postType={postType}
-        setPostType={setPostType}
-        tones={tones}
-        tone={tone}
-        setTone={setTone}
-        audiences={audiences}
-        targetAudience={targetAudience}
-        setTargetAudience={setTargetAudience}
-        contentStructures={contentStructures}
-        contentStructure={contentStructure}
-        setContentStructure={setContentStructure}
-        engagementGoals={engagementGoals}
-        engagementGoal={engagementGoal}
-        setEngagementGoal={setEngagementGoal}
-        contentLengths={contentLengths}
-        contentLength={contentLength}
-        setContentLength={setContentLength}
-        customLength={customLength}
-        setCustomLength={setCustomLength}
-        brandVoiceIntensities={brandVoiceIntensities}
-        brandVoiceIntensity={brandVoiceIntensity}
-        setBrandVoiceIntensity={setBrandVoiceIntensity}
-        engagementUrgencies={engagementUrgencies}
-        engagementUrgency={engagementUrgency}
-        setEngagementUrgency={setEngagementUrgency}
-        situations={situations}
-        situation={situation}
-        setSituation={setSituation}
-        showAdvancedOptions={showAdvancedOptions}
-        setShowAdvancedOptions={setShowAdvancedOptions}
-      />
-        </div>
-
-      {/* Content Input Section */}
-        <div className="section content-input-section" style={{ marginBottom: 16 }}>
-          <div className="content-label" style={{ fontSize: 18, fontWeight: 700, marginBottom: 12 }}>{t('socialMedia.enterContent')}</div>
-        <textarea
-            className="mobile-friendly-input"
-          value={content}
-          onChange={e => setContent(e.target.value)}
-          placeholder={t('socialMedia.contentPlaceholder')}
-            style={{ width: '100%', minHeight: 120, fontSize: 16, marginBottom: 12 }}
+      {/* Wizard UI */}
+      {useWizard && (
+        <div style={{ margin: '32px 0' }}>
+          <SocialMediaPostWizard
+            platform={platform}
+            setPlatform={setPlatform}
+            postType={postType}
+            setPostType={setPostType}
+            tone={tone}
+            setTone={setTone}
+            targetAudience={targetAudience}
+            setTargetAudience={setTargetAudience}
+            contentStructure={contentStructure}
+            setContentStructure={setContentStructure}
+            content={content}
+            setContent={setContent}
+            enhancedContent={enhancedContent}
+            setEnhancedContent={setEnhancedContent}
+            onSubmit={handleWizardSubmit}
+            // Add new props for enhancement functionality
+            isGenerating={isGenerating}
+            isReviewing={isReviewing}
+            reviewedContent={reviewedContent}
+            setReviewedContent={setReviewedContent}
+            generateContent={generateContent}
+            copyToClipboard={copyToClipboard}
+            openPreviewWindow={openPreviewWindow}
           />
-        <div className="content-actions" style={{ display: 'flex', gap: 12, marginTop: 8 }}>
-          <button
-              className="mobile-generate-btn generate-btn"
-            onClick={generateContent}
-              disabled={!content.trim() || isGenerating}
-              style={{ background: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)', color: 'white', border: 'none', borderRadius: 10, fontWeight: 700, fontSize: 16, padding: '14px 0', flex: 1 }}
-          >
-              {isGenerating ? t('socialMedia.generating') : t('socialMedia.generatePost')}
-          </button>
-          <button
-              className="mobile-clear-btn clear-btn"
-            onClick={clearAll}
-              style={{ background: 'linear-gradient(135deg, #e2e8f0 0%, #cbd5e0 100%)', color: '#4a5568', border: 'none', borderRadius: 10, fontWeight: 600, fontSize: 16, padding: '14px 0', flex: 1 }}
-          >
-            {t('socialMedia.clear')}
-          </button>
         </div>
-      </div>
-
-        {/* Result Section (Enhanced Post, etc.) */}
-        {enhancedContent && (
-          <div className="section result-section mobile-result-section" style={{ position: 'relative' }}>
-            <SocialMediaPostResult
-              enhancedContent={enhancedContent}
-              reviewedContent={reviewedContent}
-              isReviewing={isReviewing}
-              showOriginalContent={showOriginalContent}
-              setShowOriginalContent={setShowOriginalContent}
-              showComparison={showComparison}
-              setShowComparison={setShowComparison}
-              content={content}
-              platform={platform}
-              postType={postType}
-              tone={tone}
-              targetAudience={targetAudience}
-              getPlatformIcon={getPlatformIcon}
-              getToneIcon={getToneIcon}
-              getAudienceIcon={getAudienceIcon}
-              tones={tones}
-              audiences={audiences}
+      )}
+      {/* Old UI (Advanced) */}
+      {!useWizard && (
+        <div style={{ padding: '16px 8px', maxWidth: 900, margin: '0 auto' }}>
+          {/* Option/Selector UI */}
+          <div className="section platform-section-mobile" style={{ marginBottom: 16 }}>
+            <SocialMediaPostOptions
               platforms={platforms}
-              selectedPlatform={platforms.find(p => p.value === platform)}
-              isOverLimit={isOverLimit}
-              qualityAnalysis={qualityAnalysis}
-              copyToClipboard={copyToClipboard}
-              openPreviewWindow={openPreviewWindow}
-              setContent={setContent}
-              setEnhancedContent={setEnhancedContent}
+              platform={platform}
               setPlatform={setPlatform}
-              setPostType={setPostType}
-              setTone={setTone}
-              setTargetAudience={setTargetAudience}
-              setContentStructure={setContentStructure}
-              setEngagementGoal={setEngagementGoal}
-              setContentLength={setContentLength}
-              setBrandVoiceIntensity={setBrandVoiceIntensity}
-              setEngagementUrgency={setEngagementUrgency}
-              setSituation={setSituation}
               postTypes={postTypes}
+              postType={postType}
+              setPostType={setPostType}
+              tones={tones}
+              tone={tone}
+              setTone={setTone}
+              audiences={audiences}
+              targetAudience={targetAudience}
+              setTargetAudience={setTargetAudience}
+              contentStructures={contentStructures}
+              contentStructure={contentStructure}
+              setContentStructure={setContentStructure}
+              engagementGoals={engagementGoals}
+              engagementGoal={engagementGoal}
+              setEngagementGoal={setEngagementGoal}
+              contentLengths={contentLengths}
+              contentLength={contentLength}
+              setContentLength={setContentLength}
+              customLength={customLength}
+              setCustomLength={setCustomLength}
               brandVoiceIntensities={brandVoiceIntensities}
+              brandVoiceIntensity={brandVoiceIntensity}
+              setBrandVoiceIntensity={setBrandVoiceIntensity}
               engagementUrgencies={engagementUrgencies}
+              engagementUrgency={engagementUrgency}
+              setEngagementUrgency={setEngagementUrgency}
               situations={situations}
+              situation={situation}
+              setSituation={setSituation}
+              showAdvancedOptions={showAdvancedOptions}
+              setShowAdvancedOptions={setShowAdvancedOptions}
             />
           </div>
-        )}
-      </div>
+          {/* Content Input Section */}
+          <div className="section content-input-section" style={{ marginBottom: 16 }}>
+            <div className="content-label" style={{ fontSize: 18, fontWeight: 700, marginBottom: 12 }}>{t('socialMedia.enterContent')}</div>
+            <textarea
+              className="mobile-friendly-input"
+              value={content}
+              onChange={e => setContent(e.target.value)}
+              placeholder={t('socialMedia.contentPlaceholder')}
+              style={{
+                width: '100%',
+                minHeight: 220,
+                fontSize: 20,
+                padding: '28px 20px',
+                marginBottom: 18,
+                border: '2.5px solid #a5b4fc',
+                borderRadius: 18,
+                background: 'linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%)',
+                boxShadow: '0 6px 32px rgba(79,140,255,0.10)',
+                fontWeight: 500,
+                color: '#1e293b',
+                outline: 'none',
+                transition: 'border 0.2s, box-shadow 0.2s',
+              }}
+              onFocus={e => e.target.style.border = '2.5px solid #6366f1'}
+              onBlur={e => e.target.style.border = '2.5px solid #a5b4fc'}
+            />
+            <div className="content-actions" style={{ display: 'flex', gap: 12, marginTop: 8 }}>
+              <button
+                className="mobile-generate-btn generate-btn"
+                onClick={generateContent}
+                disabled={!content.trim() || isGenerating}
+                style={{ background: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)', color: 'white', border: 'none', borderRadius: 10, fontWeight: 700, fontSize: 16, padding: '14px 0', flex: 1 }}
+              >
+                {isGenerating ? t('socialMedia.generating') : t('socialMedia.generatePost')}
+              </button>
+              <button
+                className="mobile-clear-btn clear-btn"
+                onClick={clearAll}
+                style={{ background: 'linear-gradient(135deg, #e2e8f0 0%, #cbd5e0 100%)', color: '#4a5568', border: 'none', borderRadius: 10, fontWeight: 600, fontSize: 16, padding: '14px 0', flex: 1 }}
+              >
+                {t('socialMedia.clear')}
+              </button>
+            </div>
+          </div>
+          {/* Result Section (Enhanced Post, etc.) */}
+          {enhancedContent && (
+            <div className="section result-section mobile-result-section" style={{ position: 'relative' }}>
+              <SocialMediaPostResult
+                enhancedContent={enhancedContent}
+                reviewedContent={reviewedContent}
+                isReviewing={isReviewing}
+                showOriginalContent={showOriginalContent}
+                setShowOriginalContent={setShowOriginalContent}
+                showComparison={showComparison}
+                setShowComparison={setShowComparison}
+                content={content}
+                platform={platform}
+                postType={postType}
+                tone={tone}
+                targetAudience={targetAudience}
+                getPlatformIcon={getPlatformIcon}
+                getToneIcon={getToneIcon}
+                getAudienceIcon={getAudienceIcon}
+                tones={tones}
+                audiences={audiences}
+                platforms={platforms}
+                selectedPlatform={platforms.find(p => p.value === platform)}
+                isOverLimit={isOverLimit}
+                qualityAnalysis={qualityAnalysis}
+                copyToClipboard={copyToClipboard}
+                openPreviewWindow={openPreviewWindow}
+                setContent={setContent}
+                setEnhancedContent={setEnhancedContent}
+                setPlatform={setPlatform}
+                setPostType={setPostType}
+                setTone={setTone}
+                setTargetAudience={setTargetAudience}
+                setContentStructure={setContentStructure}
+                setEngagementGoal={setEngagementGoal}
+                setContentLength={setContentLength}
+                setBrandVoiceIntensity={setBrandVoiceIntensity}
+                setEngagementUrgency={setEngagementUrgency}
+                setSituation={setSituation}
+                postTypes={postTypes}
+                brandVoiceIntensities={brandVoiceIntensities}
+                engagementUrgencies={engagementUrgencies}
+                situations={situations}
+              />
+              
+              {/* Social Media Integration */}
+              <SocialMediaIntegration
+                content={reviewedContent || enhancedContent}
+                platform={platform}
+                onPublishSuccess={(platform, result) => {
+                  console.log(`Successfully published to ${platform}:`, result);
+                  // You can add success notification here
+                }}
+                onPublishError={(platform, error) => {
+                  console.error(`Failed to publish to ${platform}:`, error);
+                  // You can add error notification here
+                }}
+              />
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };

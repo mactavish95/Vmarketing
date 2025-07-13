@@ -560,6 +560,10 @@
   "socialMedia": {
     "title": "Tạo bài đăng mạng xã hội",
     "subtitle": "Tạo nội dung mạng xã hội hấp dẫn, tối ưu cho từng nền tảng với sự hỗ trợ của AI",
+    "wizard": {
+      "title": "Thuật sĩ bài đăng mạng xã hội",
+      "subtitle": "Tạo bài đăng hấp dẫn trong 5 bước đơn giản"
+    },
     "platformSelection": "Chọn nền tảng",
     "postType": "Loại bài đăng",
     "contentStructure": "Cấu trúc nội dung",
@@ -590,6 +594,12 @@
     "networkError": "Lỗi mạng. Vui lòng thử lại.",
     "generatedContentEmpty": "Nội dung được tạo trống sau khi làm sạch. Sử dụng phản hồi gốc.",
     "qualityAnalysis": "Phân tích chất lượng",
+    "quality": {
+      "excellent": "Xuất sắc",
+      "good": "Tốt",
+      "fair": "Khá",
+      "poor": "Kém"
+    },
     "excellent": "Xuất sắc",
     "good": "Tốt",
     "fair": "Khá",
@@ -697,7 +707,7 @@
       "educational": "Giáo dục",
       "community": "Cộng đồng",
       "trending": "Xu hướng",
-      "seasonal": "Theo mùa"
+      "seasonal": "Nội dung theo mùa"
     },
     "descriptions": {
       "generalPost": "Bài đăng Facebook tiêu chuẩn",
@@ -796,6 +806,17 @@
     "viewAllComments": "Xem tất cả {{count}} bình luận",
     "yourName": "Tên của bạn",
     "yourHandle": "tên_handle",
+    "yourTitleAtCompany": "Chức danh tại công ty",
+    "yourChannelName": "Tên kênh của bạn",
+    "repost": "Đăng lại",
+    "send": "Gửi",
+    "copyPost": "Sao chép bài đăng",
+    "closeWindow": "Đóng cửa sổ",
+    "guidedMode": "Chế độ hướng dẫn",
+    "advancedMode": "Chế độ nâng cao",
+    "tiktokHashtags": "#fyp #viral #trending #content #tiktok",
+    "originalSound": "Âm thanh gốc",
+    "fullPostDetails": "Chi tiết bài đăng đầy đủ",
     "now": "bây giờ",
     "copy": "Sao chép",
     "preview": "Xem trước",
@@ -809,7 +830,618 @@
     "recentlyGeneratedPosts": "Các bài đăng bạn đã tạo gần đây, được nhóm theo nền tảng. Nhấp vào bất kỳ bài đăng nào để xem nội dung đầy đủ và sao chép.",
     "notAvailable": "N/A",
     "viewFull": "Xem đầy đủ",
-    "copyEnhanced": "Sao chép bản nâng cao"
+    "copyEnhanced": "Sao chép bản nâng cao",
+    "helpfulTips": "Mẹo hữu ích",
+    "platformSpecificTips": "Mẹo Theo Nền Tảng",
+    "platformTips": {
+      "facebook": {
+        "title": "Tối ưu hóa Facebook",
+        "bestPostingTimes": "Thời gian đăng bài tốt nhất: 13h-16h các ngày trong tuần",
+        "askQuestions": "Đặt câu hỏi để khuyến khích bình luận",
+        "includeImages": "Bao gồm hình ảnh để tăng tương tác 2.3 lần",
+        "useFacebookLive": "Sử dụng Facebook Live để tương tác thời gian thực",
+        "postConsistently": "Đăng bài đều đặn 1-2 lần mỗi ngày",
+        "wordCounts": {
+          "short": "40-60 từ",
+          "optimal": "80-120 từ",
+          "detailed": "150-200 từ",
+          "comprehensive": "250-350 từ"
+        },
+        "descriptions": {
+          "short": "Hoàn hảo cho cập nhật nhanh, thông báo và quảng bá sự kiện",
+          "optimal": "Lý tưởng cho câu chuyện cá nhân, tương tác cộng đồng và nội dung hậu trường",
+          "detailed": "Tuyệt vời cho cập nhật chi tiết, nội dung giáo dục và lãnh đạo tư duy",
+          "comprehensive": "Hoàn hảo cho câu chuyện toàn diện, trải nghiệm chi tiết và thông tin chi tiết sâu sắc"
+        },
+        "bestPractices": "Thực hành tốt nhất",
+        "bestPracticesDescription": "Sử dụng câu hỏi để khuyến khích bình luận, bao gồm lời kêu gọi hành động, đăng bài trong giờ cao điểm (13h-16h)"
+      },
+      "instagram": {
+        "title": "Tối ưu hóa Instagram",
+        "useHighQuality": "Sử dụng hình ảnh và video chất lượng cao",
+        "addHashtags": "Thêm 3-5 hashtag liên quan",
+        "useEmojis": "Sử dụng emoji và gạch đầu dòng để tăng sức hấp dẫn",
+        "peakHours": "Đăng bài trong giờ cao điểm: 11h-15h",
+        "tryReels": "Thử Instagram Reels để có tiềm năng viral",
+        "wordCounts": {
+          "short": "25-40 từ",
+          "optimal": "60-90 từ",
+          "detailed": "120-180 từ",
+          "comprehensive": "200-300 từ"
+        },
+        "descriptions": {
+          "short": "Chú thích ngắn gọn, súc tích với emoji và 3-5 hashtag liên quan",
+          "optimal": "Chú thích câu chuyện với gạch đầu dòng, emoji và sức hấp dẫn hình ảnh",
+          "detailed": "Chú thích carousel cho bài đăng nhiều hình ảnh với mô tả chi tiết",
+          "comprehensive": "Mô tả IGTV cho nội dung video dài hơn"
+        },
+        "bestPractices": "Thực hành tốt nhất",
+        "bestPracticesDescription": "Sử dụng emoji một cách chiến lược, bao gồm gạch đầu dòng (•), thêm 3-5 hashtag ở cuối, sử dụng ngắt dòng để dễ đọc"
+      },
+      "tiktok": {
+        "title": "Mẹo TikTok",
+        "useTrendingSounds": "Sử dụng âm thanh và nhạc xu hướng",
+        "keepVideosShort": "Giữ video ngắn gọn và hấp dẫn (15-60 giây)",
+        "jumpOnTrends": "Tham gia các thử thách và hashtag xu hướng",
+        "postConsistently": "Đăng bài đều đặn (1-3 lần mỗi ngày)",
+        "engageWithComments": "Tương tác với bình luận để tăng khả năng hiển thị"
+      },
+      "linkedin": {
+        "title": "Tối ưu hóa LinkedIn",
+        "keepProfessional": "Giữ tính chuyên nghiệp và giá trị",
+        "shareInsights": "Chia sẻ thông tin chi tiết và dữ liệu ngành",
+        "network": "Kết nối mạng lưới với các chuyên gia",
+        "businessHours": "Đăng bài trong giờ làm việc (9h-17h)",
+        "thoughtLeadership": "Tập trung vào nội dung lãnh đạo tư duy",
+        "wordCounts": {
+          "short": "50-80 từ",
+          "optimal": "100-150 từ",
+          "detailed": "200-300 từ",
+          "comprehensive": "400-600 từ"
+        },
+        "descriptions": {
+          "short": "Thông báo chuyên nghiệp ngắn gọn, cập nhật và thông tin chi tiết nhanh",
+          "optimal": "Thông tin chi tiết ngành, lãnh đạo tư duy và mẹo chuyên nghiệp",
+          "detailed": "Câu chuyện chuyên nghiệp, nghiên cứu tình huống và trải nghiệm chi tiết",
+          "comprehensive": "Xem trước bài viết, thông tin chi tiết toàn diện và nội dung chuyên nghiệp sâu sắc"
+        },
+        "bestPractices": "Thực hành tốt nhất",
+        "bestPracticesDescription": "Sử dụng giọng điệu chuyên nghiệp, bao gồm hashtag ngành, đăng bài trong giờ làm việc (9h-17h), tập trung vào nội dung có giá trị"
+      },
+      "twitter": {
+        "title": "Mẹo Twitter",
+        "keepConcise": "Giữ ngắn gọn và có tác động",
+        "jumpOnTrends": "Tham gia các chủ đề xu hướng khi phù hợp",
+        "useHashtags": "Sử dụng hashtag một cách chiến lược (1-2 hashtag mỗi tweet)",
+        "postFrequently": "Đăng bài thường xuyên (3-5 lần mỗi ngày)",
+        "engageWithAudience": "Tương tác với khán giả qua trả lời"
+      },
+      "youtube": {
+        "title": "Mẹo YouTube",
+        "createDetailed": "Tạo nội dung chi tiết, có giá trị",
+        "useEngagingThumbnails": "Sử dụng thumbnail và tiêu đề hấp dẫn",
+        "writeDescriptions": "Viết mô tả chi tiết với từ khóa",
+        "postConsistently": "Đăng bài đều đặn theo lịch trình",
+        "respondToComments": "Trả lời bình luận để xây dựng cộng đồng"
+      }
+    },
+    "wizard": {
+      "steps": {
+        "step1": {
+          "title": "Chọn nền tảng & Loại bài đăng",
+          "guidance": "Hãy bắt đầu! Chọn nền tảng mạng xã hội và loại bài đăng bạn muốn tạo. Điều này giúp chúng tôi điều chỉnh nội dung để có tác động tối đa. 🎯",
+          "tips": [
+            "💡 Facebook: Tuyệt vời cho tương tác cộng đồng và câu chuyện dài",
+            "📸 Instagram: Hoàn hảo cho nội dung hình ảnh và bài đăng thẩm mỹ",
+            "💼 LinkedIn: Tốt nhất cho thông tin chi tiết chuyên nghiệp và kết nối mạng lưới",
+            "🐦 Twitter: Lý tưởng cho cập nhật nhanh và chủ đề xu hướng",
+            "🎵 TikTok: Tuyệt vời cho nội dung vui nhộn, sáng tạo và viral",
+            "📺 YouTube: Hoàn hảo cho giải thích chi tiết và hướng dẫn"
+          ]
+        },
+        "step2": {
+          "title": "Thiết lập giọng điệu, đối tượng & Cấu trúc",
+          "guidance": "Tiếp theo, chọn giọng điệu, đối tượng và cấu trúc. Muốn vui vẻ, chuyên nghiệp hay truyền cảm hứng? Chọn những gì phù hợp với phong cách của bạn! ✨",
+          "tips": [
+            "😊 Hấp dẫn: Hoàn hảo để bắt đầu cuộc trò chuyện và nhận bình luận",
+            "💼 Chuyên nghiệp: Tuyệt vời cho cập nhật kinh doanh và thông tin chi tiết ngành",
+            "😄 Thân thiện: Lý tưởng cho hậu trường và câu chuyện cá nhân",
+            "😂 Hài hước: Tốt nhất cho giải trí và tiềm năng viral",
+            "✨ Truyền cảm hứng: Hoàn hảo cho động lực và năng lượng tích cực",
+            "📚 Giáo dục: Tuyệt vời để chia sẻ kiến thức và mẹo"
+          ]
+        },
+        "step3": {
+          "title": "Nhập nội dung của bạn",
+          "guidance": "Bây giờ, viết tin nhắn chính của bạn. Đừng căng thẳng—chỉ cần ghi lại suy nghĩ của bạn. Chúng tôi sẽ giúp làm cho nó hoàn hảo! 💡",
+          "tips": [
+            "💭 Bắt đầu với những gì bạn muốn nói - đừng lo lắng về sự hoàn hảo",
+            "🎯 Bao gồm một điểm chính hoặc tin nhắn rõ ràng",
+            "💬 Nghĩ về điều gì sẽ khiến ai đó muốn bình luận",
+            "📝 Sử dụng ngôn ngữ tự nhiên, trò chuyện",
+            "🔥 Thêm câu chuyện cá nhân hoặc ví dụ nếu có liên quan",
+            "❓ Đặt câu hỏi để khuyến khích tương tác"
+          ]
+        },
+        "step4": {
+          "title": "Xem xét & Nâng cao",
+          "guidance": "Gần xong rồi! Xem xét bài đăng của bạn và để chúng tôi nâng cao nó để rõ ràng, tương tác và phong cách. 🚀",
+          "tips": [
+            "✨ Chúng tôi sẽ thêm emoji và định dạng để tăng sức hấp dẫn",
+            "📏 Tối ưu độ dài cho nền tảng bạn chọn",
+            "🎯 Cải thiện tính rõ ràng và khả năng đọc",
+            "💬 Thêm các yếu tố hấp dẫn như câu hỏi hoặc lời kêu gọi hành động",
+            "🔤 Sửa ngữ pháp và cải thiện luồng",
+            "📱 Làm cho nó thân thiện với di động và dễ quét"
+          ]
+        },
+        "step5": {
+          "title": "Xem trước & Lưu",
+          "guidance": "Xem bài đăng của bạn sẽ trông như thế nào, sau đó lưu hoặc chia sẻ! Bạn đã làm được! 🎉",
+          "tips": [
+            "👀 Xem trước cách nó trông trên nền tảng bạn chọn",
+            "📋 Sao chép văn bản để dán trực tiếp vào mạng xã hội",
+            "💾 Lưu để sử dụng sau hoặc tham khảo",
+            "🔄 Thực hiện bất kỳ chỉnh sửa cuối cùng nào nếu cần",
+            "📤 Sẵn sàng đăng và tương tác với khán giả của bạn!",
+            "🎊 Chúc mừng bạn đã tạo ra nội dung tuyệt vời!"
+          ]
+        }
+      },
+      "labels": {
+        "choosePlatform": "📱 Chọn nền tảng của bạn:",
+        "choosePostType": "🎯 Chọn loại bài đăng:",
+        "chooseTone": "🎭 Chọn giọng điệu của bạn:",
+        "targetAudience": "👥 Đối tượng mục tiêu:",
+        "contentStructure": "📋 Cấu trúc nội dung:",
+        "writePost": "✍️ Viết bài đăng của bạn:",
+        "reviewEnhance": "🔍 Xem xét & Nâng cao bài đăng của bạn:",
+        "previewPost": "👁️ Xem trước bài đăng của bạn:"
+      },
+      "placeholders": {
+        "writePost": "Bắt đầu nhập tin nhắn của bạn tại đây... Đừng lo lắng về sự hoàn hảo - chỉ cần viết những gì bạn muốn nói! 💭",
+        "enhancing": "Đang nâng cao bài đăng của bạn...",
+        "enhancedPost": "Bài đăng đã nâng cao của bạn sẽ xuất hiện tại đây sau khi xử lý... ✨",
+        "postPreview": "Xem trước bài đăng của bạn sẽ xuất hiện tại đây..."
+      },
+      "messages": {
+        "enhancing": "✨ Đang nâng cao bài đăng của bạn...",
+        "enhancingForPlatform": "Thêm emoji, cải thiện tính rõ ràng và tối ưu cho {platform}",
+        "enhancementError": "Không thể nâng cao nội dung. Vui lòng thử lại.",
+        "postEnhanced": "✅ Bài đăng đã được nâng cao thành công! Nhấp \"Tiếp theo\" để xem trước bài đăng của bạn.",
+        "greatJob": "🎉 Làm tốt lắm! Bài đăng của bạn đã sẵn sàng. Sử dụng các nút ở trên để sao chép hoặc xem trước bài đăng của bạn.",
+        "pleaseEnterContent": "Vui lòng nhập một số nội dung trước"
+      },
+      "buttons": {
+        "copyPost": "📋 Sao chép bài đăng",
+        "preview": "👁️ Xem trước",
+        "saveFinish": "🎉 Lưu & Hoàn thành",
+        "back": "← Quay lại",
+        "next": "Tiếp theo →",
+        "enhancing": "Đang nâng cao..."
+      },
+      "platformOptions": {
+        "facebook": "Facebook - Cộng đồng & Câu chuyện",
+        "instagram": "📸 Instagram - Hình ảnh & Thẩm mỹ",
+        "linkedin": "💼 LinkedIn - Chuyên nghiệp & Kết nối mạng lưới",
+        "twitter": "🐦 Twitter - Cập nhật nhanh & Xu hướng",
+        "tiktok": "🎵 TikTok - Vui nhộn & Sáng tạo",
+        "youtube": "📺 YouTube - Chi tiết & Giáo dục"
+      },
+      "postTypeOptions": {
+        "general": "📝 Chung - Cập nhật hàng ngày",
+        "story": "📖 Câu chuyện - Trải nghiệm cá nhân",
+        "promotional": "🎯 Quảng cáo - Sản phẩm/dịch vụ",
+        "educational": "📚 Giáo dục - Mẹo & kiến thức",
+        "community": "🤝 Cộng đồng - Tương tác & kết nối",
+        "inspirational": "✨ Truyền cảm hứng - Động lực & trích dẫn",
+        "question": "❓ Câu hỏi - Thăm dò & thảo luận",
+        "announcement": "📢 Thông báo - Tin tức quan trọng"
+      },
+      "toneOptions": {
+        "engaging": "😊 Hấp dẫn - Bắt đầu cuộc trò chuyện",
+        "professional": "💼 Chuyên nghiệp - Tập trung kinh doanh",
+        "casual": "😄 Thân thiện - Thoải mái & thân thiện",
+        "humorous": "😂 Hài hước - Vui nhộn & giải trí",
+        "inspirational": "✨ Truyền cảm hứng - Động lực",
+        "educational": "📚 Giáo dục - Thông tin",
+        "empathetic": "🤗 Đồng cảm - Thấu hiểu",
+        "authoritative": "👑 Có thẩm quyền - Giọng nói chuyên gia"
+      },
+      "audienceOptions": {
+        "general": "👥 Chung - Mọi người",
+        "business": "🏢 Kinh doanh - Chuyên gia",
+        "youth": "👨‍🎓 Giới trẻ - Thanh niên",
+        "parents": "👨‍👩‍👧‍👦 Cha mẹ - Gia đình",
+        "professionals": "👔 Chuyên gia - Tập trung sự nghiệp",
+        "creatives": "🎨 Sáng tạo - Nghệ sĩ & nhà thiết kế",
+        "seniors": "👴 Người cao tuổi - Người lớn tuổi",
+        "local": "🏘️ Địa phương - Thành viên cộng đồng"
+      },
+      "structureOptions": {
+        "story": "📖 Câu chuyện - Định dạng tường thuật",
+        "list": "📋 Danh sách - Gạch đầu dòng",
+        "tips": "💡 Mẹo - Định dạng lời khuyên",
+        "announcement": "📢 Thông báo - Tin nhắn rõ ràng",
+        "question": "❓ Câu hỏi - Khởi đầu thảo luận",
+        "beforeAfter": "🔄 Trước/Sau - Chuyển đổi",
+        "quote": "💬 Trích dẫn - Truyền cảm hứng",
+        "problemSolution": "🔧 Vấn đề/Giải pháp - Hữu ích"
+      }
+    }
+  },
+  "platformSpecific": {
+    "postTypes": {
+      "facebook": {
+        "event": "Event Promotion",
+        "live": "Live Video",
+        "group": "Group Discussion",
+        "marketplace": "Marketplace Listing"
+      },
+      "instagram": {
+        "reel": "Reel Promotion",
+        "story": "Story Content",
+        "igtv": "IGTV Episode",
+        "shopping": "Shopping Post"
+      },
+      "linkedin": {
+        "article": "Article Preview",
+        "career": "Career Update",
+        "industry": "Industry Insight",
+        "networking": "Networking"
+      }
+    },
+    "contentStructures": {
+      "facebook": {
+        "poll": "Poll/Question",
+        "milestone": "Milestone Celebration",
+        "behindScenes": "Behind the Scenes"
+      },
+      "instagram": {
+        "carousel": "Carousel Post",
+        "userGenerated": "User Generated Content",
+        "productShowcase": "Product Showcase"
+      },
+      "linkedin": {
+        "caseStudy": "Case Study",
+        "thoughtLeadership": "Thought Leadership",
+        "companyCulture": "Company Culture"
+      }
+    },
+    "engagementGoals": {
+      "facebook": {
+        "groupEngagement": "Group Engagement",
+        "eventRegistration": "Event Registration",
+        "pageLikes": "Page Likes"
+      },
+      "instagram": {
+        "storyViews": "Story Views",
+        "reelEngagement": "Reel Engagement",
+        "profileVisits": "Profile Visits"
+      },
+      "linkedin": {
+        "connectionRequests": "Connection Requests",
+        "articleReads": "Article Reads",
+        "jobApplications": "Job Applications"
+      }
+    },
+    "tones": {
+      "facebook": {
+        "friendly": "Friendly & Approachable",
+        "communityFocused": "Community-Focused"
+      },
+      "instagram": {
+        "aesthetic": "Aesthetic & Visual",
+        "trendy": "Trendy & Current"
+      },
+      "linkedin": {
+        "executive": "Executive & Strategic",
+        "mentoring": "Mentoring & Supportive"
+      }
+    },
+    "audiences": {
+      "facebook": {
+        "friendsFamily": "Friends & Family",
+        "localCommunity": "Local Community",
+        "interestGroups": "Interest Groups"
+      },
+      "instagram": {
+        "visualCreators": "Visual Creators",
+        "lifestyleEnthusiasts": "Lifestyle Enthusiasts",
+        "youngProfessionals": "Young Professionals"
+      },
+      "linkedin": {
+        "industryLeaders": "Industry Leaders",
+        "jobSeekers": "Job Seekers",
+        "decisionMakers": "Decision Makers"
+      }
+    },
+    "descriptions": {
+      "postTypes": {
+        "event": "Promote upcoming events, workshops, or meetups",
+        "live": "Announce or promote live streaming content",
+        "group": "Content specifically for Facebook groups",
+        "marketplace": "Promote products or services for sale",
+        "reel": "Promote or introduce Instagram Reels content",
+        "story": "Content designed for Instagram Stories",
+        "igtv": "Promote longer video content on IGTV",
+        "shopping": "Product-focused content with shopping features",
+        "article": "Introduce or promote LinkedIn articles",
+        "career": "Professional achievements and career milestones",
+        "industry": "Share industry trends and professional insights",
+        "networking": "Connect with other professionals"
+      },
+      "contentStructures": {
+        "poll": "Create engagement with polls and questions",
+        "milestone": "Celebrate achievements and milestones",
+        "behindScenes": "Show the human side of your brand",
+        "carousel": "Multi-image post with swipeable content",
+        "userGenerated": "Repost and celebrate customer content",
+        "productShowcase": "Highlight products with lifestyle context",
+        "caseStudy": "Share success stories and results",
+        "thoughtLeadership": "Share expert opinions and insights",
+        "companyCulture": "Showcase workplace culture and values"
+      },
+      "engagementGoals": {
+        "groupEngagement": "Encourage participation in Facebook groups",
+        "eventRegistration": "Drive event attendance and registrations",
+        "pageLikes": "Increase page followers and likes",
+        "storyViews": "Increase story views and engagement",
+        "reelEngagement": "Boost reel views, likes, and shares",
+        "profileVisits": "Drive traffic to your Instagram profile",
+        "connectionRequests": "Grow your professional network",
+        "articleReads": "Increase article views and engagement",
+        "jobApplications": "Attract talent and job applications"
+      },
+      "tones": {
+        "friendly": "Warm, welcoming tone for friends and family",
+        "communityFocused": "Emphasize local community and connections",
+        "aesthetic": "Focus on visual appeal and aesthetics",
+        "trendy": "Stay current with latest trends and styles",
+        "executive": "High-level strategic thinking and leadership",
+        "mentoring": "Supportive tone for professional development"
+      },
+      "audiences": {
+        "friendsFamily": "Close personal connections and family members",
+        "localCommunity": "People in your local area and community",
+        "interestGroups": "People with shared interests and hobbies",
+        "visualCreators": "Photographers, artists, and visual content creators",
+        "lifestyleEnthusiasts": "People interested in lifestyle and aesthetics",
+        "youngProfessionals": "Early to mid-career professionals",
+        "industryLeaders": "Senior professionals and industry experts",
+        "jobSeekers": "People looking for career opportunities",
+        "decisionMakers": "Business leaders and decision makers"
+      }
+    },
+    "features": {
+      "facebook": ["Stories", "Groups", "Live Video", "Events", "Marketplace"],
+      "instagram": ["Stories", "Reels", "IGTV", "Shopping", "Live Streams"],
+      "linkedin": ["Articles", "Company Pages", "Professional Groups", "Networking", "Job Posts"]
+    },
+    "bestPractices": {
+      "facebook": ["Engage with comments", "Use native video", "Post at peak times", "Include call-to-action"],
+      "instagram": ["Use high-quality visuals", "Include relevant hashtags", "Post consistently", "Engage with stories"],
+      "linkedin": ["Share professional insights", "Use industry hashtags", "Engage with connections", "Post during business hours"]
+    },
+    "audienceTypes": {
+      "facebook": ["Friends & Family", "Local Community", "Interest Groups", "Business Pages"],
+      "instagram": ["Visual Creators", "Lifestyle Enthusiasts", "Young Professionals", "Brand Followers"],
+      "linkedin": ["Professionals", "Industry Leaders", "Job Seekers", "Business Decision Makers"]
+    }
+  },
+  "result": {
+    "platform": "Platform",
+    "type": "Type",
+    "created": "Created",
+    "tone": "Tone",
+    "audience": "Audience",
+    "length": "Length",
+    "brandVoice": "Brand Voice",
+    "engagementUrgency": "Engagement Urgency",
+    "situation": "Situation",
+    "originalContent": "Original Content",
+    "enhancedContent": "Enhanced Content",
+    "copyEnhanced": "Copy Enhanced",
+    "notAvailable": "N/A",
+    "copied": "Copied!"
+  },
+  "suggestions": {
+    "postTypes": {
+      "general": [
+        "What's the most interesting thing that happened to you today?",
+        "Share a personal story that your audience can relate to",
+        "What's something you're grateful for right now?",
+        "Tell us about a challenge you recently overcame",
+        "What's a lesson you learned this week?"
+      ],
+      "promotional": [
+        "What problem does your product/service solve?",
+        "Share a customer success story",
+        "What makes your offering unique?",
+        "What's a common misconception about your industry?",
+        "How has your product/service evolved?"
+      ],
+      "educational": [
+        "What's a common mistake people make in your field?",
+        "Share a surprising fact or statistic",
+        "What's something everyone should know about your topic?",
+        "What's a tip that changed your perspective?",
+        "What's the most important lesson you've learned?"
+      ],
+      "community": [
+        "What's happening in your local community?",
+        "How can people get involved with your cause?",
+        "What community event are you excited about?",
+        "Share a story about community support",
+        "What's a local business you want to highlight?"
+      ],
+      "celebration": [
+        "What achievement are you most proud of?",
+        "Who deserves recognition in your network?",
+        "What milestone are you celebrating?",
+        "Share a team success story",
+        "What's something worth celebrating today?"
+      ],
+      "trending": [
+        "What's your take on the current trend?",
+        "How does this trend relate to your audience?",
+        "What's the story behind this trend?",
+        "How can people participate in this trend?",
+        "What's the next big thing you're seeing?"
+      ],
+      "seasonal": [
+        "What does this season mean to you?",
+        "How are you preparing for this time of year?",
+        "What traditions are important to you?",
+        "What's your favorite thing about this season?",
+        "How can people make the most of this season?"
+      ],
+      "crisis": [
+        "How are you supporting your community during this time?",
+        "What resources can you share?",
+        "How are you adapting to the current situation?",
+        "What positive actions can people take?",
+        "How can we help each other?"
+      ]
+    },
+    "contentStructures": {
+      "story": [
+        "What's the beginning of your story?",
+        "What was the turning point?",
+        "How did it end?",
+        "What did you learn from this experience?"
+      ],
+      "problemSolution": [
+        "What problem are you addressing?",
+        "What's your solution?",
+        "How does this help others?",
+        "What results can people expect?"
+      ],
+      "list": [
+        "What are the key points you want to share?",
+        "What's the most important item on your list?",
+        "How can people apply these points?",
+        "What's your top recommendation?"
+      ],
+      "questionAnswer": [
+        "What question are you answering?",
+        "What's the most common question you get?",
+        "What's something people often misunderstand?",
+        "What's your expert advice on this topic?"
+      ],
+      "beforeAfter": [
+        "What was the situation before?",
+        "What changed?",
+        "What's the result now?",
+        "What made the difference?"
+      ],
+      "tips": [
+        "What's your best tip?",
+        "What mistake should people avoid?",
+        "What's your secret to success?",
+        "What's the easiest way to get started?"
+      ],
+      "quote": [
+        "What quote inspires you?",
+        "Who said something meaningful about this?",
+        "What's your favorite quote on this topic?",
+        "How does this quote apply to your audience?"
+      ],
+      "announcement": [
+        "What are you announcing?",
+        "Why is this important?",
+        "What should people know?",
+        "What's the next step?"
+      ]
+    },
+    "tones": {
+      "engaging": [
+        "What would make your audience want to comment?",
+        "What question would start a conversation?",
+        "What's something controversial you can address?",
+        "What's a hot topic in your industry?"
+      ],
+      "professional": [
+        "What industry insight can you share?",
+        "What professional development tip do you have?",
+        "What's a business lesson you've learned?",
+        "What trend should professionals watch?"
+      ],
+      "casual": [
+        "What's something fun you want to share?",
+        "What made you smile today?",
+        "What's a lighthearted observation?",
+        "What's something relatable to your audience?"
+      ],
+      "humorous": [
+        "What's something funny that happened?",
+        "What's a humorous take on your topic?",
+        "What's a joke or pun related to your content?",
+        "What's something that made you laugh?"
+      ],
+      "inspirational": [
+        "What motivates you?",
+        "What's an inspiring story you can share?",
+        "What's your message of hope?",
+        "What would encourage your audience?"
+      ],
+      "educational": [
+        "What fact would surprise your audience?",
+        "What's a common misconception?",
+        "What's something everyone should know?",
+        "What's a practical tip you can share?"
+      ],
+      "empathetic": [
+        "What struggle can you relate to?",
+        "How can you show understanding?",
+        "What support can you offer?",
+        "What would make someone feel heard?"
+      ],
+      "authoritative": [
+        "What's your expert opinion?",
+        "What's the data showing?",
+        "What's your proven approach?",
+        "What's your professional recommendation?"
+      ]
+    },
+    "platforms": {
+      "facebook": [
+        "What would you like to discuss with your Facebook community?",
+        "Share something that would start a meaningful conversation",
+        "What's on your mind that others might relate to?",
+        "What's happening in your world that's worth sharing?"
+      ],
+      "instagram": [
+        "What visual story would you like to tell?",
+        "Share a behind-the-scenes moment",
+        "What's inspiring you today?",
+        "What's a beautiful moment you want to capture?"
+      ],
+      "twitter": [
+        "What's your hot take on a current topic?",
+        "Share a quick tip or insight",
+        "What's worth sharing in 280 characters?",
+        "What's trending that you have thoughts on?"
+      ],
+      "linkedin": [
+        "What professional insight can you share?",
+        "What industry trend are you following?",
+        "What career advice would you give?",
+        "What business lesson have you learned?"
+      ],
+      "tiktok": [
+        "What's a fun trend you can participate in?",
+        "What's something entertaining you can show?",
+        "What's a quick tip you can demonstrate?",
+        "What's something viral-worthy you can share?"
+      ],
+      "youtube": [
+        "What tutorial or guide can you create?",
+        "What's a story you can tell in detail?",
+        "What's a topic you can explain thoroughly?",
+        "What's something you can show step-by-step?"
+      ]
+    }
   },
   "socialMediaHistory": "Lịch sử bài đăng mạng xã hội",
   "historyPageTitle": "Lịch sử bài đăng mạng xã hội",
@@ -818,5 +1450,23 @@
   "stayUpdated": "Cập nhật",
   "getLatestTipsInsights": "Nhận các mẹo và thông tin mới nhất",
   "image": "hình ảnh",
-  "words": "từ"
+  "words": "từ",
+  "integration": {
+    "title": "Tích hợp mạng xã hội",
+    "subtitle": "Kết nối tài khoản mạng xã hội và đăng nội dung trực tiếp",
+    "connect": "Kết nối tài khoản",
+    "reconnect": "Kết nối lại",
+    "disconnect": "Ngắt kết nối",
+    "publish": "Đăng ngay",
+    "publishing": "Đang đăng...",
+    "quickPublish": "Đăng nhanh",
+    "tips": {
+      "title": "Mẹo tích hợp",
+      "oauth": "Xác thực OAuth đảm bảo truy cập an toàn vào tài khoản của bạn",
+      "permissions": "Chúng tôi chỉ yêu cầu quyền cần thiết để đăng nội dung",
+      "security": "Thông tin đăng nhập của bạn được mã hóa và không bao giờ lưu trữ dưới dạng văn bản thuần",
+      "refresh": "Token được tự động làm mới để duy trì quyền truy cập"
+    }
+  },
+  "targetWords": "Số từ mục tiêu"
 } 

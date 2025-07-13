@@ -1,0 +1,301 @@
+const express = require('express');
+const router = express.Router();
+const passport = require('passport');
+const SocialAccount = require('../models/SocialAccount');
+
+// OAuth Configuration
+const oauthConfig = {
+  facebook: {
+    clientID: process.env.FACEBOOK_APP_ID,
+    clientSecret: process.env.FACEBOOK_APP_SECRET,
+    callbackURL: `${process.env.BASE_URL}/api/auth/facebook/callback`,
+    scope: ['pages_manage_posts', 'pages_read_engagement']
+  },
+  instagram: {
+    clientID: process.env.INSTAGRAM_APP_ID,
+    clientSecret: process.env.INSTAGRAM_APP_SECRET,
+    callbackURL: `${process.env.BASE_URL}/api/auth/instagram/callback`,
+    scope: ['instagram_basic', 'instagram_content_publish']
+  },
+  twitter: {
+    consumerKey: process.env.TWITTER_API_KEY,
+    consumerSecret: process.env.TWITTER_API_SECRET,
+    callbackURL: `${process.env.BASE_URL}/api/auth/twitter/callback`
+  },
+  linkedin: {
+    clientID: process.env.LINKEDIN_CLIENT_ID,
+    clientSecret: process.env.LINKEDIN_CLIENT_SECRET,
+    callbackURL: `${process.env.BASE_URL}/api/auth/linkedin/callback`,
+    scope: ['w_member_social']
+  }
+};
+
+// Facebook OAuth
+router.get('/facebook', passport.authenticate('facebook', {
+  scope: oauthConfig.facebook.scope
+}));
+
+router.get('/facebook/callback', 
+  passport.authenticate('facebook', { failureRedirect: '/auth/failed' }),
+  async (req, res) => {
+    try {
+      const { user } = req;
+      const accessToken = user.accessToken;
+      
+      // Get Facebook pages
+      const pagesResponse = await fetch(`https://graph.facebook.com/v18.0/me/accounts?access_token=${accessToken}`);
+      const pagesData = await pagesResponse.json();
+      
+      // Save account info
+      await SocialAccount.findOneAndUpdate(
+        { userId: user.id, platform: 'facebook' },
+        {
+          userId: user.id,
+          platform: 'facebook',
+          accessToken: accessToken,
+          refreshToken: user.refreshToken,
+          expiresAt: new Date(Date.now() + user.expiresIn * 1000),
+          accountInfo: {
+            id: user.id,
+            name: user.displayName,
+            email: user.emails?.[0]?.value,
+            profileImage: user.photos?.[0]?.value
+          },
+          pages: pagesData.data || []
+        },
+        { upsert: true, new: true }
+      );
+
+      res.redirect('/social-media?connected=facebook');
+    } catch (error) {
+      console.error('Facebook OAuth error:', error);
+      res.redirect('/social-media?error=facebook_auth_failed');
+    }
+  }
+);
+
+// Instagram OAuth
+router.get('/instagram', passport.authenticate('instagram', {
+  scope: oauthConfig.instagram.scope
+}));
+
+router.get('/instagram/callback',
+  passport.authenticate('instagram', { failureRedirect: '/auth/failed' }),
+  async (req, res) => {
+    try {
+      const { user } = req;
+      const accessToken = user.accessToken;
+      
+      // Get Instagram account info
+      const accountResponse = await fetch(`https://graph.instagram.com/v18.0/me?fields=id,username,account_type&access_token=${accessToken}`);
+      const accountData = await accountResponse.json();
+      
+      await SocialAccount.findOneAndUpdate(
+        { userId: user.id, platform: 'instagram' },
+        {
+          userId: user.id,
+          platform: 'instagram',
+          accessToken: accessToken,
+          refreshToken: user.refreshToken,
+          expiresAt: new Date(Date.now() + user.expiresIn * 1000),
+          accountInfo: {
+            id: accountData.id,
+            username: accountData.username,
+            accountType: accountData.account_type
+          }
+        },
+        { upsert: true, new: true }
+      );
+
+      res.redirect('/social-media?connected=instagram');
+    } catch (error) {
+      console.error('Instagram OAuth error:', error);
+      res.redirect('/social-media?error=instagram_auth_failed');
+    }
+  }
+);
+
+// Twitter OAuth
+router.get('/twitter', passport.authenticate('twitter'));
+
+router.get('/twitter/callback',
+  passport.authenticate('twitter', { failureRedirect: '/auth/failed' }),
+  async (req, res) => {
+    try {
+      const { user } = req;
+      
+      await SocialAccount.findOneAndUpdate(
+        { userId: user.id, platform: 'twitter' },
+        {
+          userId: user.id,
+          platform: 'twitter',
+          accessToken: user.accessToken,
+          accessTokenSecret: user.accessTokenSecret,
+          accountInfo: {
+            id: user.id,
+            username: user.username,
+            name: user.displayName,
+            profileImage: user.photos?.[0]?.value
+          }
+        },
+        { upsert: true, new: true }
+      );
+
+      res.redirect('/social-media?connected=twitter');
+    } catch (error) {
+      console.error('Twitter OAuth error:', error);
+      res.redirect('/social-media?error=twitter_auth_failed');
+    }
+  }
+);
+
+// LinkedIn OAuth
+router.get('/linkedin', passport.authenticate('linkedin', {
+  scope: oauthConfig.linkedin.scope
+}));
+
+router.get('/linkedin/callback',
+  passport.authenticate('linkedin', { failureRedirect: '/auth/failed' }),
+  async (req, res) => {
+    try {
+      const { user } = req;
+      const accessToken = user.accessToken;
+      
+      // Get LinkedIn profile
+      const profileResponse = await fetch('https://api.linkedin.com/v2/me', {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      const profileData = await profileResponse.json();
+      
+      await SocialAccount.findOneAndUpdate(
+        { userId: user.id, platform: 'linkedin' },
+        {
+          userId: user.id,
+          platform: 'linkedin',
+          accessToken: accessToken,
+          refreshToken: user.refreshToken,
+          expiresAt: new Date(Date.now() + user.expiresIn * 1000),
+          accountInfo: {
+            id: profileData.id,
+            name: `${profileData.localizedFirstName} ${profileData.localizedLastName}`,
+            email: user.emails?.[0]?.value
+          }
+        },
+        { upsert: true, new: true }
+      );
+
+      res.redirect('/social-media?connected=linkedin');
+    } catch (error) {
+      console.error('LinkedIn OAuth error:', error);
+      res.redirect('/social-media?error=linkedin_auth_failed');
+    }
+  }
+);
+
+// Get connected accounts
+router.get('/accounts', async (req, res) => {
+  try {
+    // In a real app, you'd get userId from session/auth
+    const userId = req.user?.id || 'demo-user';
+    
+    const accounts = await SocialAccount.find({ userId });
+    const accountsMap = {};
+    
+    accounts.forEach(account => {
+      accountsMap[account.platform] = {
+        id: account.accountInfo.id,
+        name: account.accountInfo.name,
+        username: account.accountInfo.username,
+        profileImage: account.accountInfo.profileImage,
+        expiresAt: account.expiresAt,
+        isExpired: account.expiresAt && new Date(account.expiresAt) < new Date()
+      };
+    });
+    
+    res.json(accountsMap);
+  } catch (error) {
+    console.error('Error fetching accounts:', error);
+    res.status(500).json({ error: 'Failed to fetch accounts' });
+  }
+});
+
+// Disconnect account
+router.delete('/disconnect/:platform', async (req, res) => {
+  try {
+    const { platform } = req.params;
+    const userId = req.user?.id || 'demo-user';
+    
+    await SocialAccount.findOneAndDelete({ userId, platform });
+    
+    res.json({ success: true, message: `${platform} account disconnected` });
+  } catch (error) {
+    console.error('Error disconnecting account:', error);
+    res.status(500).json({ error: 'Failed to disconnect account' });
+  }
+});
+
+// Refresh token endpoint
+router.post('/refresh/:platform', async (req, res) => {
+  try {
+    const { platform } = req.params;
+    const userId = req.user?.id || 'demo-user';
+    
+    const account = await SocialAccount.findOne({ userId, platform });
+    if (!account || !account.refreshToken) {
+      return res.status(404).json({ error: 'Account not found or no refresh token' });
+    }
+    
+    // Implement token refresh logic based on platform
+    let newAccessToken;
+    
+    switch (platform) {
+      case 'facebook':
+        const fbResponse = await fetch('https://graph.facebook.com/v18.0/oauth/access_token', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({
+            grant_type: 'fb_exchange_token',
+            client_id: oauthConfig.facebook.clientID,
+            client_secret: oauthConfig.facebook.clientSecret,
+            fb_exchange_token: account.accessToken
+          })
+        });
+        const fbData = await fbResponse.json();
+        newAccessToken = fbData.access_token;
+        break;
+        
+      case 'linkedin':
+        const liResponse = await fetch('https://www.linkedin.com/oauth/v2/accessToken', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({
+            grant_type: 'refresh_token',
+            client_id: oauthConfig.linkedin.clientID,
+            client_secret: oauthConfig.linkedin.clientSecret,
+            refresh_token: account.refreshToken
+          })
+        });
+        const liData = await liResponse.json();
+        newAccessToken = liData.access_token;
+        break;
+        
+      default:
+        return res.status(400).json({ error: 'Token refresh not supported for this platform' });
+    }
+    
+    // Update account with new token
+    account.accessToken = newAccessToken;
+    account.expiresAt = new Date(Date.now() + 60 * 24 * 60 * 60 * 1000); // 60 days
+    await account.save();
+    
+    res.json({ success: true, message: 'Token refreshed successfully' });
+  } catch (error) {
+    console.error('Error refreshing token:', error);
+    res.status(500).json({ error: 'Failed to refresh token' });
+  }
+});
+
+module.exports = router; 

@@ -1,5 +1,7 @@
 const express = require('express');
 const cors = require('cors');
+const session = require('express-session');
+const passport = require('./config/passport');
 require('dotenv').config();
 console.log('DEBUG NVIDIA_API_KEY:', process.env.NVIDIA_API_KEY, typeof process.env.NVIDIA_API_KEY);
 
@@ -22,6 +24,8 @@ const enhancedLLMRoutes = require('./routes/enhancedLLM');
 const modelsRoutes = require('./routes/models');
 const blogRoutes = require('./routes/blog');
 const socialMediaPostsRoutes = require('./routes/socialMediaPosts');
+const socialAuthRoutes = require('./routes/socialAuth');
+const socialPublishRoutes = require('./routes/socialPublish');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -78,6 +82,21 @@ app.use(loggingMiddleware);
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
+// Session middleware for OAuth
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'your-secret-key',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+  }
+}));
+
+// Initialize Passport
+app.use(passport.initialize());
+app.use(passport.session());
+
 // Mount routes
 app.use('/api', llamaRoutes);
 app.use('/api', voiceRoutes);
@@ -87,6 +106,8 @@ app.use('/api', enhancedLLMRoutes);
 app.use('/api', modelsRoutes);
 app.use('/api', blogRoutes);
 app.use('/api', socialMediaPostsRoutes);
+app.use('/api/auth', socialAuthRoutes);
+app.use('/api/social', socialPublishRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
@@ -112,6 +133,8 @@ app.listen(PORT, () => {
   console.log(`🚀 ReviewGen Backend Server running on port ${PORT}`);
   console.log(`📊 Health check: http://localhost:${PORT}/api/health`);
   console.log(`🤖 Llama API: http://localhost:${PORT}/api/llama`);
+  console.log(`🔗 Social Auth: http://localhost:${PORT}/api/auth`);
+  console.log(`📱 Social Publish: http://localhost:${PORT}/api/social`);
   console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
   if (!process.env.NVIDIA_API_KEY) {
     console.warn('⚠️  NVIDIA_API_KEY not found in environment variables');

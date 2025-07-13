@@ -119,7 +119,7 @@ const SocialMediaPostResult = ({
         <div style="background:#fff;border-radius:12px;padding:20px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;border:1px solid #e0e0e0;margin-bottom:24px;">
           <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
             <div style="width:48px;height:48px;background:#0077b5;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:20px;">💼</div>
-            <div><div style="font-size:16px;font-weight:600;color:#191919;margin-bottom:2px;">Your Name</div><div style="font-size:14px;color:#666;margin-bottom:2px;">Your Title at Company</div><div style="font-size:12px;color:#666;">now • ${tone}</div></div>
+            <div><div style="font-size:16px;font-weight:600;color:#191919;margin-bottom:2px;">${t('socialMedia.yourName')}</div><div style="font-size:14px;color:#666;margin-bottom:2px;">${t('socialMedia.yourTitleAtCompany')}</div><div style="font-size:12px;color:#666;">${t('socialMedia.now')} • ${tone}</div></div>
           </div>
           <div style="font-size:16px;line-height:1.5;color:#191919;white-space:pre-wrap;word-wrap:break-word;margin-bottom:16px;">${item.enhanced}</div>
           <div style="display:flex;align-items:center;gap:24px;padding-top:16px;border-top:1px solid #e0e0e0;font-size:14px;color:#666;">
@@ -175,11 +175,11 @@ const SocialMediaPostResult = ({
         <div style="background:#fff;border-radius:12px;padding:16px;font-family:Roboto,Arial,sans-serif;border:1px solid #e5e5e5;margin-bottom:24px;">
           <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
             <div style="width:40px;height:40px;background:#ff0000;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:18px;">📺</div>
-            <div><div style="font-size:16px;font-weight:500;color:#030303;margin-bottom:2px;">Your Channel Name</div><div style="font-size:14px;color:#606060;">${new Date(timestamp).toLocaleDateString()} • ${tone}</div></div>
+            <div><div style="font-size:16px;font-weight:500;color:#030303;margin-bottom:2px;">${t('socialMedia.yourChannelName')}</div><div style="font-size:14px;color:#606060;">${new Date(timestamp).toLocaleDateString()} • ${tone}</div></div>
           </div>
           <div style="font-size:14px;line-height:1.4;color:#030303;white-space:pre-wrap;word-wrap:break-word;margin-bottom:16px;">${item.enhanced}</div>
           <div style="display:flex;align-items:center;gap:16px;padding-top:12px;border-top:1px solid #e5e5e5;font-size:14px;color:#606060;">
-            <span>👍 0</span><span>👎 0</span><span>�� 0 comments</span><span>📤 Share</span>
+            <span>👍 0</span><span>👎 0</span><span>💬 0 comments</span><span>📤 Share</span>
           </div>
         </div>
       `;
@@ -197,7 +197,7 @@ const SocialMediaPostResult = ({
     <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Full Post Details</title>
+      <title>${t('socialMedia.fullPostDetails')}</title>
       <style>
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f8fafc; margin: 0; padding: 0; }
         .full-post-metadata { background: #fff; border-radius: 12px; padding: 24px; max-width: 600px; margin: 40px auto 0 auto; box-shadow: 0 8px 32px rgba(0,0,0,0.12); border: 1px solid #e2e8f0; }
@@ -212,25 +212,25 @@ const SocialMediaPostResult = ({
     </head>
     <body>
       <div class="full-post-metadata">
-        <h3>📄 Full Post Details</h3>
-        <div class="meta"><span class="section-label">Platform:</span> ${item.platform}</div>
-        <div class="meta"><span class="section-label">Type:</span> ${item.postType}</div>
-        <div class="meta"><span class="section-label">Created:</span> ${new Date(item.timestamp).toLocaleString()}</div>
-        <div class="meta"><span class="section-label">Tone:</span> ${item.tone}</div>
-        <div class="meta"><span class="section-label">Audience:</span> ${item.targetAudience}</div>
-        <div class="meta"><span class="section-label">Length:</span> ${item.length || 'N/A'} words</div>
-        <div class="meta"><span class="section-label">Brand Voice:</span> ${item.brandVoiceIntensity || 'N/A'}</div>
-        <div class="meta"><span class="section-label">Engagement Urgency:</span> ${item.engagementUrgency || 'N/A'}</div>
-        <div class="meta"><span class="section-label">Situation:</span> ${item.situation || 'N/A'}</div>
-        <div style="margin-bottom: 16px;"><span class="section-label">Original Content:</span><div class="content-box"><pre style='margin:0;font-family:inherit;font-size:15px;line-height:1.5;white-space:pre-wrap;'>${item.original.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</pre></div></div>
+        <h3>📄 ${t('socialMedia.fullPostDetails')}</h3>
+        <div class="meta"><span class="section-label">${t('socialMedia.result.platform')}:</span> ${item.platform}</div>
+        <div class="meta"><span class="section-label">${t('socialMedia.result.type')}:</span> ${item.postType}</div>
+        <div class="meta"><span class="section-label">${t('socialMedia.result.created')}:</span> ${new Date(item.timestamp).toLocaleString()}</div>
+        <div class="meta"><span class="section-label">${t('socialMedia.result.tone')}:</span> ${item.tone}</div>
+        <div class="meta"><span class="section-label">${t('socialMedia.result.audience')}:</span> ${item.targetAudience}</div>
+        <div class="meta"><span class="section-label">${t('socialMedia.result.length')}:</span> ${item.length || t('socialMedia.result.notAvailable')} ${t('socialMedia.words')}</div>
+        <div class="meta"><span class="section-label">${t('socialMedia.result.brandVoice')}:</span> ${item.brandVoiceIntensity || t('socialMedia.result.notAvailable')}</div>
+        <div class="meta"><span class="section-label">${t('socialMedia.result.engagementUrgency')}:</span> ${item.engagementUrgency || t('socialMedia.result.notAvailable')}</div>
+        <div class="meta"><span class="section-label">${t('socialMedia.result.situation')}:</span> ${item.situation || t('socialMedia.result.notAvailable')}</div>
+        <div style="margin-bottom: 16px;"><span class="section-label">${t('socialMedia.result.originalContent')}:</span><div class="content-box"><pre style='margin:0;font-family:inherit;font-size:15px;line-height:1.5;white-space:pre-wrap;'>${item.original.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</pre></div></div>
       </div>
       <div class="platform-post-area">
         ${getPlatformPostHTML(item, (x) => x)}
       </div>
       <div class="full-post-metadata" style="margin-top: 0;">
-        <div style="margin-bottom: 16px;"><span class="section-label">Enhanced Content:</span><div class="content-box">${item.enhanced}</div></div>
+        <div style="margin-bottom: 16px;"><span class="section-label">${t('socialMedia.result.enhancedContent')}:</span><div class="content-box">${item.enhanced}</div></div>
         <div style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px;">
-          <button class="action-btn" onclick="navigator.clipboard.writeText(\`${item.enhanced.replace(/`/g, '\`')}\`);alert('Copied!')">📋 Copy Enhanced</button>
+          <button class="action-btn" onclick="navigator.clipboard.writeText(\`${item.enhanced.replace(/`/g, '\`')}\`);alert('${t('socialMedia.result.copied')}')">📋 ${t('socialMedia.result.copyEnhanced')}</button>
         </div>
       </div>
     </body>
@@ -244,36 +244,60 @@ const SocialMediaPostResult = ({
     <div>
       {/* Enhanced Content/Result Section */}
       {enhancedContent && (
-        <div className="section result-section mobile-result-section" style={{ position: 'relative' }}>
-          <h2>✨ {t('socialMedia.enhancedPost')}</h2>
+        <div
+          className="section result-section mobile-result-section"
+          style={{
+            position: 'relative',
+            maxWidth: 600,
+            margin: '0 auto',
+            background: '#fff',
+            borderRadius: 16,
+            boxShadow: '0 4px 24px rgba(0,0,0,0.08)',
+            border: '1px solid #e2e8f0',
+            padding: '20px 12px',
+            marginBottom: 32,
+            transition: 'all 0.2s',
+            width: '100%',
+          }}
+        >
+          <h2 style={{ fontSize: 20, fontWeight: 700, color: '#2563eb', marginBottom: 12, textAlign: 'center', letterSpacing: 0.5 }}>
+            ✨ {t('socialMedia.enhancedPost')}
+          </h2>
           
           {/* Platform-Specific Post Preview */}
-          <div className="platform-preview-container" style={{
-            background: 'white',
-            borderRadius: '16px',
-            padding: '24px',
-            marginBottom: '32px',
-            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+          <div
+            className="platform-preview-container"
+            style={{
+              background: '#f8fafc',
+              borderRadius: 12,
+              padding: '16px 8px',
+              marginBottom: 20,
+              boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
             border: '1px solid #e2e8f0',
             position: 'relative',
-            overflow: 'hidden'
-          }}>
+              overflow: 'hidden',
+              width: '100%',
+            }}
+          >
             {/* Platform Badge */}
-            <div style={{
+            <div
+              style={{
               position: 'absolute',
-              top: '16px',
-              right: '16px',
+                top: 10,
+                right: 10,
               background: 'linear-gradient(135deg, #4f8cff 0%, #38e8ff 100%)',
               color: 'white',
-              padding: '6px 12px',
-              borderRadius: '16px',
-              fontSize: '12px',
-              fontWeight: '600',
+                padding: '4px 10px',
+                borderRadius: 14,
+                fontSize: 11,
+                fontWeight: 600,
               display: 'flex',
               alignItems: 'center',
-              gap: '4px',
-              zIndex: 10
-            }}>
+                gap: 4,
+                zIndex: 10,
+                boxShadow: '0 2px 8px rgba(79,140,255,0.10)',
+              }}
+            >
               <span>{getPlatformIcon(platform)}</span>
               <span>{selectedPlatform?.label}</span>
             </div>
@@ -1005,191 +1029,58 @@ const SocialMediaPostResult = ({
                   <span>💬 0 comments</span>
                   <span>📤 Share</span>
                 </div>
-              </div>
-            )}
-
-            {/* Post Statistics */}
-            <div style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginTop: '20px',
-              padding: '16px',
-              background: '#f8fafc',
-              borderRadius: '8px',
-              border: '1px solid #e2e8f0'
-            }}>
-              <div style={{
-                display: 'flex',
-                gap: '24px',
-                flexWrap: 'wrap'
-              }}>
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  fontSize: '14px',
-                  color: '#64748b'
-                }}>
-                  <span>📊</span>
-                  <span><strong>{(reviewedContent || enhancedContent).length}</strong> {t('socialMedia.characters')}</span>
-                </div>
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  fontSize: '14px',
-                  color: '#64748b'
-                }}>
-                  <span>📝</span>
-                  <span><strong>{(reviewedContent || enhancedContent).split(' ').length}</strong> {t('socialMedia.words')}</span>
-                </div>
-                {isOverLimit && (
-                  <div style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                    fontSize: '14px',
-                    color: '#ef4444',
-                    fontWeight: '600'
-                  }}>
-                    <span>⚠️</span>
-                    <span>Over character limit</span>
                   </div>
                 )}
               </div>
               
-              <div style={{
-                fontSize: '12px',
-                color: '#64748b',
-                background: '#e2e8f0',
-                padding: '4px 8px',
-                borderRadius: '4px'
-              }}>
-                {selectedPlatform?.maxLength} char limit
-              </div>
-            </div>
-
-            {/* Quick Platform Switcher & Content Editor */}
-            <div style={{
-              background: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)',
-              borderRadius: '12px',
-              padding: '20px',
-              marginTop: '20px',
-              border: '1px solid #e2e8f0'
-            }}>
-              <h3 style={{ margin: '0 0 16px 0', fontSize: '18px', fontWeight: '700', color: '#1e293b' }}>
-                🎛️ {t('socialMedia.quickPlatformSwitch')}
-              </h3>
-              
-              {/* Platform Switcher */}
-              <div style={{ marginBottom: '16px' }}>
-                <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '600', color: '#374151' }}>
-                  Switch Platform:
-                </label>
-                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                  {['facebook', 'instagram', 'tiktok'].map(p => (
-                    <button
-                      key={p}
-                      onClick={() => setPlatform(p)}
+          {/* Post Statistics (mobile-friendly) */}
+          <div
                       style={{
-                        background: platform === p ? 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)' : '#ffffff',
-                        color: platform === p ? 'white' : '#374151',
-                        border: `1px solid ${platform === p ? '#3b82f6' : '#d1d5db'}`,
-                        borderRadius: '8px',
-                        padding: '8px 16px',
-                        fontSize: '14px',
-                        fontWeight: '600',
-                        cursor: 'pointer',
-                        transition: 'all 0.3s ease',
                         display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
                         alignItems: 'center',
-                        gap: '6px'
-                      }}
-                      onMouseEnter={(e) => {
-                        if (platform !== p) {
-                          e.target.style.background = '#f3f4f6';
-                          e.target.style.transform = 'translateY(-1px)';
-                        }
-                      }}
-                      onMouseLeave={(e) => {
-                        if (platform !== p) {
-                          e.target.style.background = '#ffffff';
-                          e.target.style.transform = 'translateY(0)';
-                        }
-                      }}
-                    >
-                      <span>{getPlatformIcon(p)}</span>
-                      <span>{platforms.find(pl => pl.value === p)?.label}</span>
-                    </button>
-                  ))}
+              margin: '12px 0',
+              padding: '10px 0',
+              borderTop: '1px solid #e2e8f0',
+              borderBottom: '1px solid #e2e8f0',
+              fontSize: 13,
+              color: '#64748b',
+              gap: 8,
+            }}
+          >
+            <div style={{ display: 'flex', gap: 12 }}>
+              <span>📊 {(reviewedContent || enhancedContent).length} {t('socialMedia.characters')}</span>
+              <span>📝 {(reviewedContent || enhancedContent).split(' ').length} {t('socialMedia.words')}</span>
                 </div>
+            {isOverLimit && (
+              <span style={{ color: '#ef4444', fontWeight: 600, fontSize: 12 }}>⚠️ Over limit</span>
+            )}
               </div>
 
-              {/* Quick Content Editor */}
-              <div style={{ marginBottom: '16px' }}>
-                <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '600', color: '#374151' }}>
-                  {t('socialMedia.quickEditContent')}:
-                </label>
-                <textarea
-                  value={reviewedContent || enhancedContent}
-                  onChange={(e) => setEnhancedContent(e.target.value)}
+          {/* Quick Actions (mobile-friendly) */}
+          <div
                   style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 10,
+              margin: '16px 0',
                     width: '100%',
-                    minHeight: '100px',
-                    padding: '12px',
-                    borderRadius: '8px',
-                    border: '1px solid #d1d5db',
-                    fontSize: '14px',
-                    lineHeight: '1.5',
-                    resize: 'vertical',
-                    fontFamily: 'inherit'
-                  }}
-                                      placeholder={t('socialMedia.editContentPlaceholder')}
-                />
-                <div style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  marginTop: '8px',
-                  fontSize: '12px',
-                  color: '#6b7280'
-                }}>
-                                      <span>{(reviewedContent || enhancedContent).length} {t('socialMedia.characters')}</span>
-                    <span>{(reviewedContent || enhancedContent).split(' ').length} {t('socialMedia.words')}</span>
-                  {isOverLimit && (
-                    <span style={{ color: '#ef4444', fontWeight: '600' }}>
-                      ⚠️ Over limit
-                    </span>
-                  )}
-                </div>
-              </div>
-
-              {/* Quick Actions */}
-              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+            }}
+          >
                 <button
                   onClick={() => copyToClipboard(reviewedContent || enhancedContent)}
                   style={{
                     background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
                     color: 'white',
                     border: 'none',
-                    borderRadius: '8px',
-                    padding: '10px 16px',
-                    fontSize: '14px',
-                    fontWeight: '600',
+                borderRadius: 8,
+                padding: '12px 0',
+                fontSize: 16,
+                fontWeight: 600,
                     cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                    transition: 'all 0.3s ease'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.target.style.transform = 'translateY(-1px)';
-                    e.target.style.boxShadow = '0 4px 12px rgba(16, 185, 129, 0.3)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.transform = 'translateY(0)';
-                    e.target.style.boxShadow = 'none';
+                width: '100%',
+                boxShadow: '0 2px 8px rgba(16,185,129,0.10)',
                   }}
                 >
                   📋 {t('socialMedia.copy')}
@@ -1206,136 +1097,19 @@ const SocialMediaPostResult = ({
                     background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
                     color: 'white',
                     border: 'none',
-                    borderRadius: '8px',
-                    padding: '10px 16px',
-                    fontSize: '14px',
-                    fontWeight: '600',
+                borderRadius: 8,
+                padding: '12px 0',
+                fontSize: 16,
+                fontWeight: 600,
                     cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                    transition: 'all 0.3s ease'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.target.style.transform = 'translateY(-1px)';
-                    e.target.style.boxShadow = '0 4px 12px rgba(245, 158, 11, 0.3)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.transform = 'translateY(0)';
-                    e.target.style.boxShadow = 'none';
+                width: '100%',
+                boxShadow: '0 2px 8px rgba(245,158,11,0.10)',
                   }}
                 >
                   👁️ {t('socialMedia.preview')}
                 </button>
                 <button
                   onClick={() => {
-                    // Regenerate content for the current platform
-                    if (content.trim()) {
-                      // This would need to be passed as a prop or we can just show a message
-                      alert('Click the main "Generate Post" button to regenerate content for the new platform.');
-                    }
-                  }}
-                  style={{
-                    background: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '8px',
-                    padding: '10px 16px',
-                    fontSize: '14px',
-                    fontWeight: '600',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                    transition: 'all 0.3s ease'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.target.style.transform = 'translateY(-1px)';
-                    e.target.style.boxShadow = '0 4px 12px rgba(139, 92, 246, 0.3)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.transform = 'translateY(0)';
-                    e.target.style.boxShadow = 'none';
-                  }}
-                >
-                  🔄 {t('socialMedia.regenerate')}
-                </button>
-              </div>
-            </div>
-
-            {/* Action Buttons */}
-            <div style={{
-              display: 'flex',
-              gap: '12px',
-              justifyContent: 'center',
-              marginTop: '20px',
-              flexWrap: 'wrap'
-            }}>
-              <button
-                onClick={() => copyToClipboard(reviewedContent || enhancedContent)}
-                style={{
-                  background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '10px',
-                  padding: '14px 28px',
-                  fontSize: '16px',
-                  cursor: 'pointer',
-                  fontWeight: '600',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)',
-                  transition: 'all 0.3s ease'
-                }}
-                onMouseEnter={(e) => {
-                  e.target.style.transform = 'translateY(-2px)';
-                  e.target.style.boxShadow = '0 6px 20px rgba(37, 99, 235, 0.4)';
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.transform = 'translateY(0)';
-                  e.target.style.boxShadow = '0 4px 12px rgba(37, 99, 235, 0.3)';
-                }}
-              >
-                📋 {t('socialMedia.copyPost')}
-              </button>
-              <button
-                onClick={() => openPreviewWindow(
-                  reviewedContent || enhancedContent,
-                  platform,
-                  postType,
-                  tone,
-                  targetAudience
-                )}
-                style={{
-                  background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '10px',
-                  padding: '14px 28px',
-                  fontSize: '16px',
-                  cursor: 'pointer',
-                  fontWeight: '600',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  boxShadow: '0 4px 12px rgba(245, 158, 11, 0.3)',
-                  transition: 'all 0.3s ease'
-                }}
-                onMouseEnter={(e) => {
-                  e.target.style.transform = 'translateY(-2px)';
-                  e.target.style.boxShadow = '0 6px 20px rgba(245, 158, 11, 0.4)';
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.transform = 'translateY(0)';
-                  e.target.style.boxShadow = '0 4px 12px rgba(245, 158, 11, 0.3)';
-                }}
-              >
-                👁️ {t('socialMedia.previewPost')}
-              </button>
-              <button
-                onClick={() => {
-                  // Save to favorites or download
                   const postData = {
                     content: reviewedContent || enhancedContent,
                     platform,
@@ -1353,328 +1127,160 @@ const SocialMediaPostResult = ({
                   URL.revokeObjectURL(url);
                 }}
                 style={{
-                  background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                background: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
                   color: 'white',
                   border: 'none',
-                  borderRadius: '10px',
-                  padding: '14px 28px',
-                  fontSize: '16px',
+                borderRadius: 8,
+                padding: '12px 0',
+                fontSize: 16,
+                fontWeight: 600,
                   cursor: 'pointer',
-                  fontWeight: '600',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)',
-                  transition: 'all 0.3s ease'
-                }}
-                onMouseEnter={(e) => {
-                  e.target.style.transform = 'translateY(-2px)';
-                  e.target.style.boxShadow = '0 6px 20px rgba(16, 185, 129, 0.4)';
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.transform = 'translateY(0)';
-                  e.target.style.boxShadow = '0 4px 12px rgba(16, 185, 129, 0.3)';
+                width: '100%',
+                boxShadow: '0 2px 8px rgba(139,92,246,0.10)',
                 }}
               >
                 💾 {t('socialMedia.savePost')}
               </button>
-            </div>
           </div>
 
-          {/* Original Compact Preview (Keep for reference) */}
-          <div className="post-preview mobile-post-preview" style={{
-            background: 'white',
-            border: '1px solid #e2e8f0',
-            borderRadius: '12px',
-            padding: '24px',
-            marginBottom: '24px',
-            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05)',
-            transition: 'all 0.3s ease'
-          }}>
-            <div className="preview-header" style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px',
-              marginBottom: '16px',
-              paddingBottom: '12px',
-              borderBottom: '1px solid #f1f5f9'
-            }}>
-              <div className="preview-title" style={{ fontSize: '18px', fontWeight: '700', color: '#1e293b' }}>
-                {getPlatformIcon(platform)} {selectedPlatform?.label} Post
-              </div>
-              <div className="preview-meta" style={{ display: 'flex', gap: '8px', fontSize: '14px', color: '#64748b' }}>
-                <span>{getToneIcon(tone)} {tones.find(t => t.value === tone)?.label}</span>
-                <span>{getAudienceIcon(targetAudience)} {audiences.find(a => a.value === targetAudience)?.label}</span>
-              </div>
-            </div>
-            
-            <div className={`preview-content ${isOverLimit ? 'over-limit' : ''}`} style={{
-              fontSize: '16px',
-              lineHeight: '1.6',
-              color: '#374151',
-              whiteSpace: 'pre-wrap',
-              wordWrap: 'break-word',
-              marginBottom: '16px'
-            }}>
-              {reviewedContent || enhancedContent}
-            </div>
-            
-            <div className="preview-footer mobile-preview-footer" style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              paddingTop: '16px',
-              borderTop: '1px solid #f1f5f9'
-            }}>
-              <div className="character-count" style={{ fontSize: '14px', color: '#64748b' }}>
-                                  📊 {enhancedContent.length} {t('socialMedia.characters')}
-                {isOverLimit && (
-                  <span className="limit-warning" style={{ color: '#ef4444', marginLeft: '8px' }}>
-                    ⚠️ Over limit
-                  </span>
-                )}
-              </div>
-              <div className="preview-actions" style={{ display: 'flex', gap: '8px' }}>
-                <button
-                  onClick={() => copyToClipboard(reviewedContent || enhancedContent)}
-                  className="action-btn"
+          {/* Quick Content Editor (mobile-friendly) */}
+          <div style={{ margin: '16px 0' }}>
+            <label style={{ display: 'block', marginBottom: 6, fontSize: 14, fontWeight: 600, color: '#374151' }}>
+              {t('socialMedia.quickEditContent')}:
+            </label>
+            <textarea
+              value={reviewedContent || enhancedContent}
+              onChange={(e) => setEnhancedContent(e.target.value)}
                   style={{
-                    background: '#2563eb',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '6px',
-                    padding: '8px 16px',
-                    fontSize: '14px',
-                    cursor: 'pointer',
-                    fontWeight: '500'
-                  }}
-                >
-                  📋 {t('socialMedia.copy')}
-                </button>
-                <button
-                  onClick={() => openPreviewWindow(
-                    reviewedContent || enhancedContent,
-                    platform,
-                    postType,
-                    tone,
-                    targetAudience
-                  )}
-                  className="action-btn secondary"
-                  style={{
-                    background: '#f3f4f6',
-                    color: '#374151',
+                width: '100%',
+                minHeight: 80,
+                padding: 10,
+                borderRadius: 8,
                     border: '1px solid #d1d5db',
-                    borderRadius: '6px',
-                    padding: '8px 16px',
-                    fontSize: '14px',
-                    cursor: 'pointer',
-                    fontWeight: '500'
-                  }}
-                >
-                  👁️ {t('socialMedia.preview')}
-                </button>
-              </div>
+                fontSize: 14,
+                lineHeight: 1.5,
+                resize: 'vertical',
+                fontFamily: 'inherit',
+                marginBottom: 4,
+              }}
+              placeholder={t('socialMedia.editContentPlaceholder')}
+            />
+            <div style={{ fontSize: 12, color: '#6b7280', marginTop: 2, textAlign: 'right' }}>
+              {(reviewedContent || enhancedContent).length} {t('socialMedia.characters')} / {(reviewedContent || enhancedContent).split(' ').length} {t('socialMedia.words')}
             </div>
           </div>
 
-          {/* Quality Analysis */}
-          {qualityAnalysis && (
-            <div className="quality-overview" style={{
-              background: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)',
-              borderRadius: '12px',
-              padding: '24px',
-              marginBottom: '24px',
-              border: '1px solid #e2e8f0'
-            }}>
-              <h3 style={{ margin: '0 0 16px 0', fontSize: '20px', fontWeight: '700', color: '#1e293b' }}>
-                📊 {t('socialMedia.qualityAnalysis')}
-              </h3>
-              
-              <div className="quality-score" style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '16px',
-                marginBottom: '20px',
-                padding: '16px',
-                background: 'white',
-                borderRadius: '8px',
-                border: '1px solid #e2e8f0'
-              }}>
-                <div style={{ fontSize: '32px', fontWeight: '700', color: getQualityColor(qualityAnalysis.overallScore) }}>
-                  {(qualityAnalysis.overallScore * 100).toFixed(0)}%
-                </div>
-                <div>
-                  <div style={{ fontSize: '18px', fontWeight: '600', color: '#1e293b' }}>
-                    {getQualityLabel(qualityAnalysis.overallScore)}
-                  </div>
-                  <div style={{ fontSize: '14px', color: '#64748b' }}>
-                    {t('socialMedia.overallQualityScore')}
-                  </div>
-                </div>
-              </div>
-              
-              <div className="quality-metrics" style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-                gap: '16px'
-              }}>
-                {Object.entries(qualityAnalysis.metrics || {}).map(([metric, score]) => (
-                  <div key={metric} className="quality-metric" style={{
-                    background: 'white',
-                    padding: '16px',
-                    borderRadius: '8px',
-                    border: '1px solid #e2e8f0',
-                    transition: 'all 0.2s ease'
-                  }}>
-                    <h4 style={{ margin: '0 0 8px 0', fontSize: '16px', fontWeight: '600', color: '#1e293b' }}>
-                      {metric.charAt(0).toUpperCase() + metric.slice(1).replace(/([A-Z])/g, ' $1')}
-                    </h4>
-                    <div className="score" style={{
-                      fontSize: '24px',
-                      fontWeight: '700',
-                      color: getQualityColor(score)
-                    }}>
-                      {(score * 100).toFixed(0)}%
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Comparison Section */}
-          <div className="comparison-section" style={{ marginBottom: '24px' }}>
-            <h3 style={{ margin: '0 0 16px 0', fontSize: '20px', fontWeight: '700', color: '#1e293b' }}>
-              🔍 {t('socialMedia.contentComparison')}
-            </h3>
-            
-            <div style={{ display: 'flex', gap: '16px', marginBottom: '16px' }}>
+          {/* Comparison Section (mobile-friendly) */}
+          <div style={{ margin: '16px 0' }}>
               <button
                 onClick={() => setShowOriginalContent(!showOriginalContent)}
-                className="action-btn"
                 style={{
                   background: showOriginalContent ? '#2563eb' : '#f3f4f6',
                   color: showOriginalContent ? 'white' : '#374151',
                   border: '1px solid #d1d5db',
-                  borderRadius: '6px',
-                  padding: '8px 16px',
-                  fontSize: '14px',
+                borderRadius: 6,
+                padding: '8px 0',
+                fontSize: 14,
+                fontWeight: 500,
+                width: '100%',
+                marginBottom: 8,
                   cursor: 'pointer',
-                  fontWeight: '500'
                 }}
               >
                 📝 {showOriginalContent ? t('socialMedia.hide') : t('socialMedia.show')} {t('socialMedia.original')}
               </button>
               <button
                 onClick={() => setShowComparison(!showComparison)}
-                className="action-btn"
                 style={{
                   background: showComparison ? '#2563eb' : '#f3f4f6',
                   color: showComparison ? 'white' : '#374151',
                   border: '1px solid #d1d5db',
-                  borderRadius: '6px',
-                  padding: '8px 16px',
-                  fontSize: '14px',
+                borderRadius: 6,
+                padding: '8px 0',
+                fontSize: 14,
+                fontWeight: 500,
+                width: '100%',
                   cursor: 'pointer',
-                  fontWeight: '500'
                 }}
               >
                 ⚖️ {showComparison ? t('socialMedia.hide') : t('socialMedia.show')} {t('socialMedia.comparison')}
               </button>
-            </div>
-
-            {/* Original Content */}
             {showOriginalContent && (
-              <div className="original-content-section" style={{
+              <div style={{
                 background: '#fef3c7',
                 border: '1px solid #f59e0b',
-                borderRadius: '8px',
-                padding: '16px',
-                marginBottom: '16px'
+                borderRadius: 8,
+                padding: 12,
+                marginTop: 8,
+                fontSize: 14,
+                color: '#92400e',
+                whiteSpace: 'pre-wrap',
               }}>
-                <h4 style={{ margin: '0 0 12px 0', fontSize: '16px', fontWeight: '600', color: '#92400e' }}>
-                  📝 {t('socialMedia.originalContent')}
-                </h4>
-                <div style={{ fontSize: '14px', lineHeight: '1.5', color: '#92400e', whiteSpace: 'pre-wrap' }}>
-                  {content}
-                </div>
+                <strong>📝 {t('socialMedia.originalContent')}</strong>
+                <div>{content}</div>
               </div>
             )}
-
-            {/* Side-by-Side Comparison */}
             {showComparison && (
-              <div className="comparison-section" style={{
-                display: 'grid',
-                gridTemplateColumns: '1fr 1fr',
-                gap: '16px',
+              <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 8,
                 background: '#f8fafc',
-                borderRadius: '8px',
-                padding: '16px',
-                border: '1px solid #e2e8f0'
+                borderRadius: 8,
+                padding: 12,
+                border: '1px solid #e2e8f0',
+                marginTop: 8,
               }}>
                 <div>
-                  <h4 style={{ margin: '0 0 12px 0', fontSize: '16px', fontWeight: '600', color: '#1e293b' }}>
-                    📝 {t('socialMedia.original')} ({content.length} {t('socialMedia.chars')})
-                  </h4>
+                  <strong>📝 {t('socialMedia.original')}</strong>
                   <div style={{
                     background: 'white',
-                    padding: '12px',
-                    borderRadius: '6px',
-                    fontSize: '14px',
-                    lineHeight: '1.5',
+                    padding: 8,
+                    borderRadius: 6,
+                    fontSize: 13,
                     color: '#374151',
                     whiteSpace: 'pre-wrap',
-                    maxHeight: '300px',
-                    overflowY: 'auto'
-                  }}>
-                    {content}
-                  </div>
+                  }}>{content}</div>
                 </div>
                 <div>
-                  <h4 style={{ margin: '0 0 12px 0', fontSize: '16px', fontWeight: '600', color: '#1e293b' }}>
-                    ✨ {t('socialMedia.enhanced')} ({(reviewedContent || enhancedContent).length} {t('socialMedia.chars')})
-                  </h4>
+                  <strong>✨ {t('socialMedia.enhanced')}</strong>
                   <div style={{
                     background: 'white',
-                    padding: '12px',
-                    borderRadius: '6px',
-                    fontSize: '14px',
-                    lineHeight: '1.5',
+                    padding: 8,
+                    borderRadius: 6,
+                    fontSize: 13,
                     color: '#374151',
                     whiteSpace: 'pre-wrap',
-                    maxHeight: '300px',
-                    overflowY: 'auto'
-                  }}>
-                    {reviewedContent || enhancedContent}
-                  </div>
+                  }}>{reviewedContent || enhancedContent}</div>
                 </div>
               </div>
             )}
           </div>
 
-          {/* Loading indicator for review */}
+          {/* Loading indicator for review (mobile-friendly) */}
           {isReviewing && (
             <div style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '12px',
-              padding: '16px',
+              gap: 10,
+              padding: 12,
               background: '#f0f9ff',
-              borderRadius: '8px',
+              borderRadius: 8,
               border: '1px solid #0ea5e9',
-              marginBottom: '16px'
+              marginBottom: 8,
+              fontSize: 14,
+              color: '#0c4a6e',
+              fontWeight: 500,
             }}>
               <div className="loading-spinner" style={{
-                width: '20px',
-                height: '20px',
+                width: 18,
+                height: 18,
                 border: '2px solid #e0e7ff',
                 borderTop: '2px solid #3b82f6',
                 borderRadius: '50%',
-                animation: 'spin 1s linear infinite'
+                animation: 'spin 1s linear infinite',
               }}></div>
-              <span style={{ color: '#0c4a6e', fontWeight: '500' }}>
                                   🔍 {t('socialMedia.reviewingContent')}
-              </span>
             </div>
           )}
         </div>

@@ -564,6 +564,10 @@
   "socialMedia": {
     "title": "Social Media Post Generator",
     "subtitle": "Create engaging, platform-optimized social media content with AI-powered enhancement",
+    "wizard": {
+      "title": "Social Media Post Wizard",
+      "subtitle": "Create engaging posts in 5 simple steps"
+    },
     "platformSelection": "Platform Selection",
     "postType": "Post Type",
     "contentStructure": "Content Structure",
@@ -594,6 +598,12 @@
     "networkError": "Network error. Please try again.",
     "generatedContentEmpty": "The generated content was empty after cleaning. Using the original response.",
     "qualityAnalysis": "Quality Analysis",
+    "quality": {
+      "excellent": "Excellent",
+      "good": "Good",
+      "fair": "Fair",
+      "poor": "Poor"
+    },
     "excellent": "Excellent",
     "good": "Good",
     "fair": "Fair",
@@ -750,27 +760,44 @@
       "education": "Inform and teach",
       "conversion": "Drive actions",
       "communityBuilding": "Build relationships",
-      "concise": "Short and to the point (20-40 words)",
-      "optimal": "Platform-optimized length (40-80 words)",
-      "detailed": "Comprehensive content (80-150 words)",
-      "comprehensive": "In-depth content (150-300 words)",
+      "concise": "Short and punchy content",
+      "optimal": "Balanced length for engagement",
+      "detailed": "Comprehensive information",
+      "comprehensive": "In-depth content",
       "custom": "Specify exact word count",
-      "subtle": "Minimal brand voice influence",
+      "subtle": "Minimal brand presence",
       "moderate": "Balanced brand voice",
       "strong": "Prominent brand voice",
-      "dominant": "Very strong brand voice",
-      "low": "Relaxed, no urgency",
-      "normal": "Standard engagement level",
-      "high": "High engagement urgency",
-      "urgent": "Maximum engagement urgency",
-      "general": "Regular posting",
+      "dominant": "Heavy brand emphasis",
+      "low": "No immediate action needed",
+      "normal": "Standard engagement timeline",
+      "high": "Quick response desired",
+      "urgent": "Immediate action required",
+      "general": "Regular content",
       "promotional": "Product/service promotion",
-      "crisis": "Addressing issues or concerns",
-      "celebration": "Celebrating achievements",
-      "educational": "Teaching or informing",
-      "community": "Community engagement",
-      "trending": "Riding current trends",
-      "seasonal": "Seasonal or holiday content"
+      "crisis": "Crisis communication",
+      "celebration": "Celebratory content",
+      "educational": "Learning content",
+      "community": "Community-focused",
+      "trending": "Trending topics",
+      "seasonal": "Seasonal content"
+    },
+    "integration": {
+      "title": "Social Media Integration",
+      "subtitle": "Connect your social media accounts and publish content directly",
+      "connect": "Connect Account",
+      "reconnect": "Reconnect",
+      "disconnect": "Disconnect",
+      "publish": "Publish Now",
+      "publishing": "Publishing...",
+      "quickPublish": "Quick Publish",
+      "tips": {
+        "title": "Integration Tips",
+        "oauth": "OAuth authentication ensures secure access to your accounts",
+        "permissions": "We only request necessary permissions for posting content",
+        "security": "Your credentials are encrypted and never stored in plain text",
+        "refresh": "Tokens are automatically refreshed to maintain access"
+      }
     },
     "targetWords": "Target Words",
     "targetWordsLabel": "Target: {count} words",
@@ -808,6 +835,17 @@
     "viewAllComments": "View all {{count}} comments",
     "yourName": "Your Name",
     "yourHandle": "yourhandle",
+    "yourTitleAtCompany": "Your Title at Company",
+    "yourChannelName": "Your Channel Name",
+    "repost": "Repost",
+    "send": "Send",
+    "copyPost": "Copy Post",
+    "closeWindow": "Close Window",
+    "guidedMode": "Guided Mode",
+    "advancedMode": "Advanced Mode",
+    "tiktokHashtags": "#fyp #viral #trending #content #tiktok",
+    "originalSound": "Original Sound",
+    "fullPostDetails": "Full Post Details",
     "now": "now",
     "copy": "Copy",
     "preview": "Preview",
@@ -821,6 +859,557 @@
     "recentlyGeneratedPosts": "Your recently generated posts, grouped by platform. Click on any post to view the full content and copy it.",
     "notAvailable": "N/A",
     "viewFull": "View Full",
-    "copyEnhanced": "Copy Enhanced"
+    "copyEnhanced": "Copy Enhanced",
+    "helpfulTips": "Helpful Tips",
+    "platformSpecificTips": "Platform-Specific Tips",
+    "platformTips": {
+      "facebook": {
+        "title": "Facebook Optimization",
+        "bestPostingTimes": "Best posting times: 1-4 PM on weekdays",
+        "askQuestions": "Ask questions to encourage comments",
+        "includeImages": "Include images for 2.3x more engagement",
+        "useFacebookLive": "Use Facebook Live for real-time engagement",
+        "postConsistently": "Post consistently 1-2 times per day",
+        "wordCounts": {
+          "short": "40-60 words",
+          "optimal": "80-120 words",
+          "detailed": "150-200 words",
+          "comprehensive": "250-350 words"
+        },
+        "descriptions": {
+          "short": "Perfect for quick updates, announcements, and event promotions",
+          "optimal": "Ideal for personal stories, community engagement, and behind-the-scenes content",
+          "detailed": "Great for detailed updates, educational content, and thought leadership",
+          "comprehensive": "Perfect for comprehensive stories, detailed experiences, and in-depth insights"
+        },
+        "bestPractices": "Best practices",
+        "bestPracticesDescription": "Use questions to encourage comments, include call-to-actions, post during peak hours (1-4 PM)"
+      },
+      "instagram": {
+        "title": "Instagram Optimization",
+        "useHighQuality": "Use high-quality images and videos",
+        "addHashtags": "Add 3-5 relevant hashtags",
+        "useEmojis": "Use emojis and bullet points for visual appeal",
+        "peakHours": "Post during peak hours: 11 AM - 3 PM",
+        "tryReels": "Try Instagram Reels for viral potential",
+        "wordCounts": {
+          "short": "25-40 words",
+          "optimal": "60-90 words",
+          "detailed": "120-180 words",
+          "comprehensive": "200-300 words"
+        },
+        "descriptions": {
+          "short": "Short, punchy captions with emojis and 3-5 relevant hashtags",
+          "optimal": "Story captions with bullet points, emojis, and visual appeal",
+          "detailed": "Carousel captions for multi-image posts with detailed descriptions",
+          "comprehensive": "IGTV descriptions for longer video content"
+        },
+        "bestPractices": "Best practices",
+        "bestPracticesDescription": "Use emojis strategically, include bullet points (•), add 3-5 hashtags at the end, use line breaks for readability"
+      },
+      "tiktok": {
+        "title": "TikTok Tips",
+        "useTrendingSounds": "Use trending sounds and music",
+        "keepVideosShort": "Keep videos short and engaging (15-60 seconds)",
+        "jumpOnTrends": "Jump on trending challenges and hashtags",
+        "postConsistently": "Post consistently (1-3 times per day)",
+        "engageWithComments": "Engage with comments to boost visibility"
+      },
+      "linkedin": {
+        "title": "LinkedIn Optimization",
+        "keepProfessional": "Keep it professional and value-driven",
+        "shareInsights": "Share industry insights and data",
+        "network": "Network and connect with professionals",
+        "businessHours": "Post during business hours (9 AM - 5 PM)",
+        "thoughtLeadership": "Focus on thought leadership content",
+        "wordCounts": {
+          "short": "50-80 words",
+          "optimal": "100-150 words",
+          "detailed": "200-300 words",
+          "comprehensive": "400-600 words"
+        },
+        "descriptions": {
+          "short": "Brief professional announcements, updates, and quick insights",
+          "optimal": "Industry insights, thought leadership, and professional tips",
+          "detailed": "Professional stories, case studies, and detailed experiences",
+          "comprehensive": "Article previews, comprehensive insights, and in-depth professional content"
+        },
+        "bestPractices": "Best practices",
+        "bestPracticesDescription": "Use professional tone, include industry hashtags, post during business hours (9 AM-5 PM), focus on value-driven content"
+      },
+      "twitter": {
+        "title": "Twitter Tips",
+        "keepConcise": "Keep it concise and impactful",
+        "jumpOnTrends": "Jump on trending topics when relevant",
+        "useHashtags": "Use hashtags strategically (1-2 per tweet)",
+        "postFrequently": "Post frequently (3-5 times per day)",
+        "engageWithAudience": "Engage with your audience through replies"
+      },
+      "youtube": {
+        "title": "YouTube Tips",
+        "createDetailed": "Create detailed, valuable content",
+        "useEngagingThumbnails": "Use engaging thumbnails and titles",
+        "writeDescriptions": "Write detailed descriptions with keywords",
+        "postConsistently": "Post consistently on a schedule",
+        "respondToComments": "Respond to comments to build community"
+      }
+    },
+    "wizard": {
+      "steps": {
+        "step1": {
+          "title": "Choose Platform & Post Type",
+          "guidance": "Let's start! Pick your social media platform and the type of post you want to create. This helps us tailor your content for maximum impact. 🎯",
+          "tips": [
+            "💡 Facebook: Great for community engagement and longer stories",
+            "📸 Instagram: Perfect for visual content and aesthetic posts",
+            "💼 LinkedIn: Best for professional insights and networking",
+            "🐦 Twitter: Ideal for quick updates and trending topics",
+            "🎵 TikTok: Great for fun, creative, and viral content",
+            "📺 YouTube: Perfect for detailed explanations and tutorials"
+          ]
+        },
+        "step2": {
+          "title": "Set Tone, Audience & Structure",
+          "guidance": "Next, select the tone, audience, and structure. Want to be fun, professional, or inspirational? Choose what fits your vibe! ✨",
+          "tips": [
+            "😊 Engaging: Perfect for starting conversations and getting comments",
+            "💼 Professional: Great for business updates and industry insights",
+            "😄 Casual: Ideal for behind-the-scenes and personal stories",
+            "😂 Humorous: Best for entertainment and viral potential",
+            "✨ Inspirational: Perfect for motivation and positive vibes",
+            "📚 Educational: Great for sharing knowledge and tips"
+          ]
+        },
+        "step3": {
+          "title": "Enter Your Content",
+          "guidance": "Now, write your main message. Don't stress—just jot down your thoughts. We'll help polish it up! 💡",
+          "tips": [
+            "💭 Start with what you want to say - don't worry about perfection",
+            "🎯 Include a clear main point or message",
+            "💬 Think about what would make someone want to comment",
+            "📝 Use natural, conversational language",
+            "🔥 Add personal stories or examples if relevant",
+            "❓ Ask questions to encourage engagement"
+          ]
+        },
+        "step4": {
+          "title": "Review & Enhance",
+          "guidance": "Almost there! Review your post and let us enhance it for clarity, engagement, and style. 🚀",
+          "tips": [
+            "✨ We'll add emojis and formatting for visual appeal",
+            "📏 Optimize length for your chosen platform",
+            "🎯 Improve clarity and readability",
+            "💬 Add engaging elements like questions or calls-to-action",
+            "🔤 Fix grammar and improve flow",
+            "📱 Make it mobile-friendly and scannable"
+          ]
+        },
+        "step5": {
+          "title": "Preview & Save",
+          "guidance": "See how your post will look, then save or share it! You did it! 🎉",
+          "tips": [
+            "👀 Preview how it looks on your chosen platform",
+            "📋 Copy the text to paste directly into your social media",
+            "💾 Save for later use or reference",
+            "🔄 Make any final edits if needed",
+            "📤 Ready to post and engage with your audience!",
+            "🎊 Congratulations on creating great content!"
+          ]
+        }
+      },
+      "labels": {
+        "choosePlatform": "📱 Choose Your Platform:",
+        "choosePostType": "🎯 Choose Post Type:",
+        "chooseTone": "🎭 Choose Your Tone:",
+        "targetAudience": "👥 Target Audience:",
+        "contentStructure": "📋 Content Structure:",
+        "writePost": "✍️ Write Your Post:",
+        "reviewEnhance": "🔍 Review & Enhance Your Post:",
+        "previewPost": "👁️ Preview Your Post:"
+      },
+      "placeholders": {
+        "writePost": "Start typing your message here... Don't worry about perfection - just write what you want to say! 💭",
+        "enhancing": "Enhancing your post...",
+        "enhancedPost": "Your enhanced post will appear here after processing... ✨",
+        "postPreview": "Your post preview will appear here..."
+      },
+      "messages": {
+        "enhancing": "✨ Enhancing your post...",
+        "enhancingForPlatform": "Adding emojis, improving clarity, and optimizing for {platform}",
+        "enhancementError": "Failed to enhance content. Please try again.",
+        "postEnhanced": "✅ Post enhanced successfully! Click \"Next\" to preview your post.",
+        "greatJob": "🎉 Great job! Your post is ready to go. Use the buttons above to copy or preview your post.",
+        "pleaseEnterContent": "Please enter some content first"
+      },
+      "buttons": {
+        "copyPost": "📋 Copy Post",
+        "preview": "👁️ Preview",
+        "saveFinish": "🎉 Save & Finish",
+        "back": "← Back",
+        "next": "Next →",
+        "enhancing": "Enhancing..."
+      },
+      "platformOptions": {
+        "facebook": "Facebook - Community & Stories",
+        "instagram": "📸 Instagram - Visual & Aesthetic",
+        "linkedin": "💼 LinkedIn - Professional & Networking",
+        "twitter": "🐦 Twitter - Quick Updates & Trends",
+        "tiktok": "🎵 TikTok - Fun & Creative",
+        "youtube": "📺 YouTube - Detailed & Educational"
+      },
+      "postTypeOptions": {
+        "general": "📝 General - Everyday updates",
+        "story": "📖 Story - Personal experiences",
+        "promotional": "🎯 Promotional - Products/services",
+        "educational": "📚 Educational - Tips & knowledge",
+        "community": "🤝 Community - Engagement & connection",
+        "inspirational": "✨ Inspirational - Motivation & quotes",
+        "question": "❓ Question - Polls & discussions",
+        "announcement": "📢 Announcement - Important news"
+      },
+      "toneOptions": {
+        "engaging": "😊 Engaging - Start conversations",
+        "professional": "💼 Professional - Business-focused",
+        "casual": "😄 Casual - Relaxed & friendly",
+        "humorous": "😂 Humorous - Fun & entertaining",
+        "inspirational": "✨ Inspirational - Motivational",
+        "educational": "📚 Educational - Informative",
+        "empathetic": "🤗 Empathetic - Understanding",
+        "authoritative": "👑 Authoritative - Expert voice"
+      },
+      "audienceOptions": {
+        "general": "👥 General - Everyone",
+        "business": "🏢 Business - Professionals",
+        "youth": "👨‍🎓 Youth - Young people",
+        "parents": "👨‍👩‍👧‍👦 Parents - Families",
+        "professionals": "👔 Professionals - Career-focused",
+        "creatives": "🎨 Creatives - Artists & designers",
+        "seniors": "👴 Seniors - Older adults",
+        "local": "🏘️ Local - Community members"
+      },
+      "structureOptions": {
+        "story": "📖 Story - Narrative format",
+        "list": "📋 List - Bullet points",
+        "tips": "💡 Tips - Advice format",
+        "announcement": "📢 Announcement - Clear message",
+        "question": "❓ Question - Discussion starter",
+        "beforeAfter": "🔄 Before/After - Transformation",
+        "quote": "💬 Quote - Inspirational",
+        "problemSolution": "🔧 Problem/Solution - Helpful"
+      }
+    },
+    "platformOptimization": {
+      "title": "💡 Platform-Specific Tips",
+      "facebook": {
+        "title": "📘 Facebook Optimization",
+        "tips": [
+          "40-60 words: Perfect for quick updates, announcements, and event promotions",
+          "80-120 words: Ideal for personal stories, community engagement, and behind-the-scenes content",
+          "150-200 words: Great for detailed updates, educational content, and thought leadership",
+          "250-350 words: Perfect for comprehensive stories, detailed experiences, and in-depth insights",
+          "Best practices: Use questions to encourage comments, include call-to-actions, post during peak hours (1-4 PM)"
+        ]
+      },
+      "instagram": {
+        "title": "📸 Instagram Optimization",
+        "tips": [
+          "25-40 words: Short, punchy captions with emojis and 3-5 relevant hashtags",
+          "60-90 words: Story captions with bullet points, emojis, and visual appeal",
+          "120-180 words: Carousel captions for multi-image posts with detailed descriptions",
+          "200-300 words: IGTV descriptions for longer video content",
+          "Best practices: Use emojis strategically, include bullet points (•), add 3-5 hashtags at the end, use line breaks for readability"
+        ]
+      },
+      "linkedin": {
+        "title": "💼 LinkedIn Optimization",
+        "tips": [
+          "50-80 words: Brief professional announcements, updates, and quick insights",
+          "100-150 words: Industry insights, thought leadership, and professional tips",
+          "200-300 words: Professional stories, case studies, and detailed experiences",
+          "400-600 words: Article previews, comprehensive insights, and in-depth professional content",
+          "Best practices: Use professional tone, include industry hashtags, post during business hours (9 AM-5 PM), focus on value-driven content"
+        ]
+      }
+    },
+    "platformSpecific": {
+      "postTypes": {
+        "facebook": {
+          "event": "Event Promotion",
+          "live": "Live Video",
+          "group": "Group Discussion",
+          "marketplace": "Marketplace Listing"
+        },
+        "instagram": {
+          "reel": "Reel Promotion",
+          "story": "Story Content",
+          "igtv": "IGTV Episode",
+          "shopping": "Shopping Post"
+        },
+        "linkedin": {
+          "article": "Article Preview",
+          "career": "Career Update",
+          "industry": "Industry Insight",
+          "networking": "Networking"
+        }
+      },
+      "contentStructures": {
+        "facebook": {
+          "poll": "Poll/Question",
+          "milestone": "Milestone Celebration",
+          "behindScenes": "Behind the Scenes"
+        },
+        "instagram": {
+          "carousel": "Carousel Post",
+          "userGenerated": "User Generated Content",
+          "productShowcase": "Product Showcase"
+        },
+        "linkedin": {
+          "caseStudy": "Case Study",
+          "thoughtLeadership": "Thought Leadership",
+          "companyCulture": "Company Culture"
+        }
+      },
+      "engagementGoals": {
+        "facebook": {
+          "groupEngagement": "Group Engagement",
+          "eventRegistration": "Event Registration",
+          "pageLikes": "Page Likes"
+        },
+        "instagram": {
+          "storyViews": "Story Views",
+          "reelEngagement": "Reel Engagement",
+          "profileVisits": "Profile Visits"
+        },
+        "linkedin": {
+          "connectionRequests": "Connection Requests",
+          "articleReads": "Article Reads",
+          "jobApplications": "Job Applications"
+        }
+      },
+      "tones": {
+        "facebook": {
+          "friendly": "Friendly & Approachable",
+          "communityFocused": "Community-Focused"
+        },
+        "instagram": {
+          "aesthetic": "Aesthetic & Visual",
+          "trendy": "Trendy & Current"
+        },
+        "linkedin": {
+          "executive": "Executive & Strategic",
+          "mentoring": "Mentoring & Supportive"
+        }
+      },
+      "audiences": {
+        "facebook": {
+          "friendsFamily": "Friends & Family",
+          "localCommunity": "Local Community",
+          "interestGroups": "Interest Groups"
+        },
+        "instagram": {
+          "visualCreators": "Visual Creators",
+          "lifestyleEnthusiasts": "Lifestyle Enthusiasts",
+          "youngProfessionals": "Young Professionals"
+        },
+        "linkedin": {
+          "industryLeaders": "Industry Leaders",
+          "jobSeekers": "Job Seekers",
+          "decisionMakers": "Decision Makers"
+        }
+      },
+      "descriptions": {
+        "postTypes": {
+          "event": "Promote upcoming events, workshops, or meetups",
+          "live": "Announce or promote live streaming content",
+          "group": "Content specifically for Facebook groups",
+          "marketplace": "Promote products or services for sale",
+          "reel": "Promote or introduce Instagram Reels content",
+          "story": "Content designed for Instagram Stories",
+          "igtv": "Promote longer video content on IGTV",
+          "shopping": "Product-focused content with shopping features",
+          "article": "Introduce or promote LinkedIn articles",
+          "career": "Professional achievements and career milestones",
+          "industry": "Share industry trends and professional insights",
+          "networking": "Connect with other professionals"
+        },
+        "contentStructures": {
+          "poll": "Create engagement with polls and questions",
+          "milestone": "Celebrate achievements and milestones",
+          "behindScenes": "Show the human side of your brand",
+          "carousel": "Multi-image post with swipeable content",
+          "userGenerated": "Repost and celebrate customer content",
+          "productShowcase": "Highlight products with lifestyle context",
+          "caseStudy": "Share success stories and results",
+          "thoughtLeadership": "Share expert opinions and insights",
+          "companyCulture": "Showcase workplace culture and values"
+        },
+        "engagementGoals": {
+          "groupEngagement": "Encourage participation in Facebook groups",
+          "eventRegistration": "Drive event attendance and registrations",
+          "pageLikes": "Increase page followers and likes",
+          "storyViews": "Increase story views and engagement",
+          "reelEngagement": "Boost reel views, likes, and shares",
+          "profileVisits": "Drive traffic to your Instagram profile",
+          "connectionRequests": "Grow your professional network",
+          "articleReads": "Increase article views and engagement",
+          "jobApplications": "Attract talent and job applications"
+        },
+        "tones": {
+          "friendly": "Warm, welcoming tone for friends and family",
+          "communityFocused": "Emphasize local community and connections",
+          "aesthetic": "Focus on visual appeal and aesthetics",
+          "trendy": "Stay current with latest trends and styles",
+          "executive": "High-level strategic thinking and leadership",
+          "mentoring": "Supportive tone for professional development"
+        },
+        "audiences": {
+          "friendsFamily": "Close personal connections and family members",
+          "localCommunity": "People in your local area and community",
+          "interestGroups": "People with shared interests and hobbies",
+          "visualCreators": "Photographers, artists, and visual content creators",
+          "lifestyleEnthusiasts": "People interested in lifestyle and aesthetics",
+          "youngProfessionals": "Early to mid-career professionals",
+          "industryLeaders": "Senior professionals and industry experts",
+          "jobSeekers": "People looking for career opportunities",
+          "decisionMakers": "Business leaders and decision makers"
+        }
+      },
+      "features": {
+        "facebook": ["Stories", "Groups", "Live Video", "Events", "Marketplace"],
+        "instagram": ["Stories", "Reels", "IGTV", "Shopping", "Live Streams"],
+        "linkedin": ["Articles", "Company Pages", "Professional Groups", "Networking", "Job Posts"]
+      },
+      "bestPractices": {
+        "facebook": ["Engage with comments", "Use native video", "Post at peak times", "Include call-to-action"],
+        "instagram": ["Use high-quality visuals", "Include relevant hashtags", "Post consistently", "Engage with stories"],
+        "linkedin": ["Share professional insights", "Use industry hashtags", "Engage with connections", "Post during business hours"]
+      },
+      "audienceTypes": {
+        "facebook": ["Friends & Family", "Local Community", "Interest Groups", "Business Pages"],
+        "instagram": ["Visual Creators", "Lifestyle Enthusiasts", "Young Professionals", "Brand Followers"],
+        "linkedin": ["Professionals", "Industry Leaders", "Job Seekers", "Business Decision Makers"]
+      }
+    },
+    "integration": {
+      "title": "Social Media Integration",
+      "subtitle": "Connect your social media accounts and publish content directly",
+      "connect": "Connect Account",
+      "reconnect": "Reconnect",
+      "disconnect": "Disconnect",
+      "publish": "Publish Now",
+      "publishing": "Publishing...",
+      "quickPublish": "Quick Publish",
+      "tips": {
+        "title": "Integration Tips",
+        "oauth": "OAuth authentication ensures secure access to your accounts",
+        "permissions": "We only request necessary permissions for posting content",
+        "security": "Your credentials are encrypted and never stored in plain text",
+        "refresh": "Tokens are automatically refreshed to maintain access"
+      }
+    },
+    "result": {
+      "platform": "Platform",
+      "type": "Type",
+      "created": "Created",
+      "tone": "Tone",
+      "audience": "Audience",
+      "length": "Length",
+      "brandVoice": "Brand Voice",
+      "engagementUrgency": "Engagement Urgency",
+      "situation": "Situation",
+      "originalContent": "Original Content",
+      "enhancedContent": "Enhanced Content",
+      "notAvailable": "N/A",
+      "copyEnhanced": "Copy Enhanced Content",
+      "copied": "Copied to clipboard!",
+      "viewPost": "View Post"
+    },
+    "characters": "characters",
+    "words": "words",
+    "copy": "Copy",
+    "preview": "Preview",
+    "savePost": "Save Post",
+    "quickEditContent": "Quick Edit",
+    "editContentPlaceholder": "Edit your content here...",
+    "show": "Show",
+    "hide": "Hide",
+    "original": "Original",
+    "comparison": "Comparison",
+    "yourPageName": "Your Page Name",
+    "justNow": "Just now",
+    "like": "Like",
+    "comment": "Comment",
+    "share": "Share",
+    "comments": "comments",
+    "shares": "shares",
+    "yourUsername": "your_username",
+    "viewAllComments": "View all {count} comments",
+    "yourName": "Your Name",
+    "yourHandle": "yourhandle",
+    "now": "now",
+    "yourTitleAtCompany": "Your Title at Company",
+    "yourChannelName": "Your Channel Name",
+    "platformTips": {
+      "facebook": {
+        "title": "Facebook Best Practices",
+        "wordCounts": {
+          "short": "Short (40-60 words)",
+          "optimal": "Optimal (80-120 words)",
+          "detailed": "Detailed (150-200 words)",
+          "comprehensive": "Comprehensive (250-350 words)"
+        },
+        "descriptions": {
+          "short": "Perfect for quick updates and announcements",
+          "optimal": "Ideal for personal stories and community engagement",
+          "detailed": "Great for detailed updates and educational content",
+          "comprehensive": "Perfect for thought leadership and detailed stories"
+        },
+        "bestPractices": "Best Practices",
+        "bestPracticesDescription": "Use questions, tag people, include relevant hashtags, and post when your audience is most active"
+      },
+      "instagram": {
+        "title": "Instagram Best Practices",
+        "wordCounts": {
+          "short": "Short (25-40 words)",
+          "optimal": "Optimal (60-90 words)",
+          "detailed": "Detailed (120-180 words)",
+          "comprehensive": "Comprehensive (200-300 words)"
+        },
+        "descriptions": {
+          "short": "Short, punchy captions with emojis and hashtags",
+          "optimal": "Engaging captions with bullet points and visual appeal",
+          "detailed": "Detailed captions for multi-image posts",
+          "comprehensive": "Longer descriptions for video content"
+        },
+        "bestPractices": "Best Practices",
+        "bestPracticesDescription": "Use emojis, hashtags, bullet points, and call-to-actions. Post high-quality images and videos"
+      },
+      "linkedin": {
+        "title": "LinkedIn Best Practices",
+        "wordCounts": {
+          "short": "Short (50-80 words)",
+          "optimal": "Optimal (100-150 words)",
+          "detailed": "Detailed (200-300 words)",
+          "comprehensive": "Comprehensive (400-600 words)"
+        },
+        "descriptions": {
+          "short": "Brief professional announcements and updates",
+          "optimal": "Professional insights and thought leadership",
+          "detailed": "Detailed professional experiences and case studies",
+          "comprehensive": "Comprehensive professional content and insights"
+        },
+        "bestPractices": "Best Practices",
+        "bestPracticesDescription": "Share professional insights, use industry hashtags, and engage with your network"
+      }
+    },
+    "platformSpecificTips": "Platform-Specific Optimization Tips",
+    "contentLengthOptimization": "Content Length Optimization",
+    "brandVoiceEngagement": "Brand Voice & Engagement",
+    "engagementUrgency": "Engagement Urgency",
+    "situationContext": "Situation & Context",
+    "targetWords": "Target Words",
+    "target": "Target",
+    "guidedMode": "Guided Mode",
+    "advancedMode": "Advanced Mode"
   }
 } 

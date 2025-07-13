@@ -4,12 +4,131 @@ import { useTranslation } from 'react-i18next';
 import apiConfig from '../config/api';
 import '../screens/SocialMediaPost.css';
 import { Link } from 'react-router-dom';
+import FullPostView from '../components/FullPostView';
+
+// Define tones array for use in SocialMediaPostResult
+const tones = [
+  { value: 'friendly', label: 'Friendly', icon: '😊' },
+  { value: 'professional', label: 'Professional', icon: '💼' },
+  { value: 'playful', label: 'Playful', icon: '😜' },
+  { value: 'urgent', label: 'Urgent', icon: '⚡' },
+  { value: 'inspirational', label: 'Inspirational', icon: '🌟' },
+  // Add more as needed
+];
+
+// Subcomponent for each post card
+const PostCard = ({ item, platform, platformIcon, platformColor, expanded, onExpand, onCollapse }) => {
+  // Platform icon map (must be at the top)
+  const platformIcons = {
+    facebook: '📘',
+    instagram: '📸',
+    twitter: '🐦',
+    linkedin: '💼',
+    tiktok: '🎵',
+    youtube: '📺',
+  };
+  // Platform color map (must be at the top)
+  const platformColors = {
+    facebook: '#1877f2',
+    instagram: '#e4405f',
+    twitter: '#1da1f2',
+    linkedin: '#0077b5',
+    tiktok: '#000',
+    youtube: '#ff0000',
+  };
+  const { t } = useTranslation();
+  // Detect mobile
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 800);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Card click/hover handlers
+  const handleExpand = () => {
+    if (!expanded) onExpand(item._id || item.id);
+    else if (isMobile) onCollapse(); // On mobile, tap again to collapse
+  };
+
+  // Provide getToneIcon for SocialMediaPostResult
+  const getToneIcon = (tone) => {
+    const toneIcons = {
+      friendly: '😊',
+      professional: '💼',
+      playful: '😜',
+      urgent: '⚡',
+      inspirational: '🌟',
+      // Add more as needed
+    };
+    return toneIcons[tone] || '🎤';
+  };
+
+  // Provide getPlatformIcon for SocialMediaPostResult
+  const getPlatformIcon = (p) => platformIcons[p] || '';
+
+  return (
+    <div
+      className={`post-card expandable-card${expanded ? ' expanded' : ''}`}
+      style={{
+        background: '#fff',
+        borderRadius: 16,
+        boxShadow: expanded ? '0 8px 32px rgba(0,0,0,0.13)' : '0 2px 8px rgba(0,0,0,0.06)',
+        border: `2px solid ${platformColor || '#e2e8f0'}`,
+        padding: expanded ? 0 : 18,
+        minHeight: 180,
+        position: 'relative',
+        transition: 'box-shadow 0.25s, padding 0.25s',
+        cursor: 'pointer',
+        overflow: 'hidden',
+        gridColumn: expanded ? '1 / -1' : undefined,
+        zIndex: expanded ? 20 : 1,
+      }}
+      tabIndex={0}
+      aria-expanded={expanded}
+    >
+      {expanded ? (
+        <div style={{ padding: 0, background: '#f8fafc', borderRadius: 16 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '18px 18px 0 18px' }}>
+            <span style={{ fontSize: 22 }}>{platformIcon}</span>
+            <span style={{ fontWeight: 600, color: platformColor, fontSize: 15 }}>{t(`socialMedia.platforms.${platform}`) || platform}</span>
+            <span style={{ color: '#64748b', fontSize: 12, marginLeft: 'auto' }}>{new Date(item.timestamp).toLocaleDateString()}</span>
+            <button onClick={onCollapse} style={{ marginLeft: 12, background: 'none', border: 'none', fontSize: 20, color: '#64748b', cursor: 'pointer' }} aria-label="Collapse">✕</button>
+          </div>
+          <div style={{ padding: 18, paddingTop: 8 }}>
+            <FullPostView
+              post={item}
+              getToneIcon={getToneIcon}
+              tones={tones}
+              onClose={onCollapse}
+            />
+          </div>
+        </div>
+      ) : (
+        <>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <span style={{ fontSize: 22 }}>{platformIcon}</span>
+            <span style={{ fontWeight: 600, color: platformColor, fontSize: 15 }}>{t(`socialMedia.platforms.${platform}`) || platform}</span>
+            <span style={{ color: '#64748b', fontSize: 12, marginLeft: 'auto' }}>{new Date(item.timestamp).toLocaleDateString()}</span>
+          </div>
+          <div style={{ fontSize: 14, color: '#374151', margin: '6px 0', maxHeight: 60, overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical' }}>{item.enhanced.substring(0, 120)}...</div>
+          <div style={{ display: 'flex', gap: 8, marginTop: 'auto' }}>
+            <button onClick={() => onExpand(item._id || item.id)} className="action-btn" style={{ background: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)', color: 'white', border: 'none', borderRadius: 8, padding: '8px 16px', fontSize: 14, fontWeight: 600, flex: 1 }}>👁️ {t('socialMedia.viewFull')}</button>
+            <button onClick={() => navigator.clipboard.writeText(item.enhanced)} className="action-btn" style={{ background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', color: 'white', border: 'none', borderRadius: 8, padding: '8px 16px', fontSize: 14, fontWeight: 600, flex: 1 }}>📋 {t('socialMedia.copyEnhanced')}</button>
+          </div>
+        </>
+      )}
+    </div>
+  );
+};
 
 const SocialMediaPostHistory = () => {
   const { t } = useTranslation();
   const [globalHistory, setGlobalHistory] = useState([]);
   const [isHistoryLoading, setIsHistoryLoading] = useState(true);
   const [historyError, setHistoryError] = useState('');
+  const [expandedId, setExpandedId] = useState(null);
 
   // Dummy setters for props not used in history-only view
   const noop = () => {};
@@ -118,23 +237,16 @@ const SocialMediaPostHistory = () => {
               </div>
               <div className="post-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(290px, 1fr))', gap: 16 }}>
                 {posts.map((item) => (
-                  <div key={item._id || item.id} className="post-card" style={{ background: '#fff', borderRadius: 16, boxShadow: '0 2px 8px rgba(0,0,0,0.06)', border: `2px solid ${platformColors[platform] || '#e2e8f0'}`, padding: 18, display: 'flex', flexDirection: 'column', gap: 10, minHeight: 180, position: 'relative', transition: 'box-shadow 0.2s' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                      <span style={{ fontSize: 22 }}>{platformIcons[platform]}</span>
-                      <span style={{ fontWeight: 600, color: platformColors[platform], fontSize: 15 }}>{t(`socialMedia.platforms.${platform}`) || platform}</span>
-                      <span style={{ color: '#64748b', fontSize: 12, marginLeft: 'auto' }}>{new Date(item.timestamp).toLocaleDateString()}</span>
-                    </div>
-                    <div style={{ fontSize: 14, color: '#374151', margin: '6px 0', maxHeight: 60, overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical' }}>{item.enhanced.substring(0, 120)}...</div>
-                    <div style={{ display: 'flex', gap: 8, marginTop: 'auto' }}>
-                      <button onClick={() => {
-                        const win = window.open('', '_blank', 'width=700,height=900');
-                        if (!win) return;
-                        win.document.write('<!DOCTYPE html><html><head><title>Full Post</title></head><body>' + `<pre style="font-size:16px;white-space:pre-wrap;">${item.enhanced.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</pre>` + '</body></html>');
-                        win.document.close();
-                      }} className="action-btn" style={{ background: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)', color: 'white', border: 'none', borderRadius: 8, padding: '8px 16px', fontSize: 14, fontWeight: 600, flex: 1 }}>👁️ {t('socialMedia.viewFull')}</button>
-                      <button onClick={() => navigator.clipboard.writeText(item.enhanced)} className="action-btn" style={{ background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', color: 'white', border: 'none', borderRadius: 8, padding: '8px 16px', fontSize: 14, fontWeight: 600, flex: 1 }}>📋 {t('socialMedia.copyEnhanced')}</button>
-                    </div>
-                  </div>
+                  <PostCard
+                    key={item._id || item.id}
+                    item={item}
+                    platform={platform}
+                    platformIcon={platformIcons[platform]}
+                    platformColor={platformColors[platform]}
+                    expanded={expandedId === (item._id || item.id)}
+                    onExpand={(id) => setExpandedId(id)}
+                    onCollapse={() => setExpandedId(null)}
+                  />
                 ))}
               </div>
             </div>

@@ -15,6 +15,7 @@ import CustomerServiceResponse from './screens/CustomerServiceResponse';
 import VoiceTest from './screens/VoiceTest';
 import SocialMediaPost from './screens/SocialMediaPost';
 import SocialMediaPostHistory from './screens/SocialMediaPostHistory';
+import SocialMediaIntegrationScreen from './screens/SocialMediaIntegrationScreen';
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
           <Route path="/voice-test" component={VoiceTest} />
           <Route path="/social-media" component={SocialMediaPost} />
           <Route path="/social-media-history" component={SocialMediaPostHistory} />
+          <Route path="/social-media-integration" component={SocialMediaIntegrationScreen} />
         </Switch>
       </div>
     </Router>
