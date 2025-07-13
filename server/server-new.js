@@ -1,8 +1,8 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const session = require('express-session');
 const passport = require('./config/passport');
-require('dotenv').config();
 console.log('DEBUG NVIDIA_API_KEY:', process.env.NVIDIA_API_KEY, typeof process.env.NVIDIA_API_KEY);
 
 // Import modules

@@ -199,15 +199,15 @@ const SocialMediaPostOptions = ({
       <div className="option-group">
         <label>🎯 {t('socialMedia.situationContext')}</label>
         <div className="options-grid">
-          {situations.map(situation => (
+          {situations.map(situationItem => (
             <button
-              key={situation.value}
-              className={`option-btn ${situation === situation.value ? 'active' : ''}`}
-              onClick={() => setSituation(situation.value)}
+              key={situationItem.value}
+              className={`option-btn ${situation === situationItem.value ? 'active' : ''}`}
+              onClick={() => setSituation(situationItem.value)}
             >
-              <span className="option-icon">{situation.value === 'event' ? '🎉📅' : situation.value === 'announcement' ? '📢📰' : situation.value === 'promotion' ? '🏷️💸' : situation.value === 'holiday' ? '🎄🎆' : situation.value === 'trend' ? '📈🔥' : '💡🌟'}</span>
-              <span className="option-label">{situation.label}</span>
-              <span className="option-description">{situation.description}</span>
+              <span className="option-icon">{situationItem.value === 'event' ? '🎉📅' : situationItem.value === 'announcement' ? '📢📰' : situationItem.value === 'promotion' ? '🏷️💸' : situationItem.value === 'holiday' ? '🎄🎆' : situationItem.value === 'trend' ? '📈🔥' : '💡🌟'}</span>
+              <span className="option-label">{situationItem.label}</span>
+              <span className="option-description">{situationItem.description}</span>
             </button>
           ))}
         </div>
@@ -225,15 +225,15 @@ const SocialMediaPostOptions = ({
           <div className="option-group">
             <label>{t('socialMedia.tone')}</label>
             <div className="options-grid">
-              {tones.map(tone => (
+              {tones.map(toneItem => (
                 <button
-                  key={tone.value}
-                  className={`option-btn ${tone === tone.value ? 'active' : ''}`}
-                  onClick={() => setTone(tone.value)}
+                  key={toneItem.value}
+                  className={`option-btn ${tone === toneItem.value ? 'active' : ''}`}
+                  onClick={() => setTone(toneItem.value)}
                 >
-                  <span className="option-icon">{tone.icon}</span>
-                  <span className="option-label">{tone.label}</span>
-                  <span className="option-description">{tone.description}</span>
+                  <span className="option-icon">{toneItem.icon}</span>
+                  <span className="option-label">{toneItem.label}</span>
+                  <span className="option-description">{toneItem.description}</span>
                 </button>
               ))}
             </div>

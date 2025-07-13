@@ -4,28 +4,42 @@ const InstagramStrategy = require('passport-instagram').Strategy;
 const TwitterStrategy = require('passport-twitter').Strategy;
 const LinkedInStrategy = require('passport-linkedin-oauth2').Strategy;
 
+console.log('🔧 Passport Debug - Environment Variables:');
+console.log('FACEBOOK_APP_ID:', process.env.FACEBOOK_APP_ID ? 'SET' : 'NOT SET');
+console.log('FACEBOOK_APP_SECRET:', process.env.FACEBOOK_APP_SECRET ? 'SET' : 'NOT SET');
+console.log('BASE_URL:', process.env.BASE_URL || 'NOT SET');
+
 // Facebook OAuth Strategy
 if (process.env.FACEBOOK_APP_ID && process.env.FACEBOOK_APP_SECRET) {
-  passport.use(new FacebookStrategy({
-    clientID: process.env.FACEBOOK_APP_ID,
-    clientSecret: process.env.FACEBOOK_APP_SECRET,
-    callbackURL: `${process.env.BASE_URL}/api/auth/facebook/callback`,
-    profileFields: ['id', 'displayName', 'photos', 'email'],
-    scope: ['pages_manage_posts', 'pages_read_engagement']
-  }, (accessToken, refreshToken, profile, done) => {
-    // Store user info and tokens
-    const user = {
-      id: profile.id,
-      displayName: profile.displayName,
-      photos: profile.photos,
-      emails: profile.emails,
-      accessToken,
-      refreshToken,
-      expiresIn: 5184000 // 60 days in seconds
-    };
-    
-    return done(null, user);
-  }));
+  console.log('✅ Loading Facebook Strategy...');
+  try {
+    passport.use(new FacebookStrategy({
+      clientID: process.env.FACEBOOK_APP_ID,
+      clientSecret: process.env.FACEBOOK_APP_SECRET,
+      callbackURL: `${process.env.BASE_URL}/api/auth/facebook/callback`,
+      profileFields: ['id', 'displayName', 'photos', 'email'],
+      scope: ['public_profile', 'email']
+    }, (accessToken, refreshToken, profile, done) => {
+      console.log('✅ Facebook OAuth callback executed');
+      // Store user info and tokens
+      const user = {
+        id: profile.id,
+        displayName: profile.displayName,
+        photos: profile.photos,
+        emails: profile.emails,
+        accessToken,
+        refreshToken,
+        expiresIn: 5184000 // 60 days in seconds
+      };
+      
+      return done(null, user);
+    }));
+    console.log('✅ Facebook Strategy loaded successfully');
+  } catch (error) {
+    console.error('❌ Error loading Facebook Strategy:', error);
+  }
+} else {
+  console.log('❌ Facebook credentials not found, skipping Facebook Strategy');
 }
 
 // Instagram OAuth Strategy

@@ -146,24 +146,24 @@ const Header = ({ location }) => {
                             className="nav-group-header"
                             onClick={() => handleDropdownToggle('content')}
                         >
-                            <div className="nav-group-label">Content Creation</div>
+                        <div className="nav-group-label">Content Creation</div>
                             <span className="dropdown-arrow">▼</span>
                         </div>
                         <div className="dropdown-menu">
-                            <Link 
-                                to="/voice" 
-                                className={`nav-link ${location.pathname === '/voice' ? 'active' : ''}`}
-                                onClick={closeMenu}
-                            >
-                                🎤 {t('menu.voice')}
-                            </Link>
-                            <Link 
-                                to="/history" 
-                                className={`nav-link ${location.pathname === '/history' ? 'active' : ''}`}
-                                onClick={closeMenu}
-                            >
-                                📚 {t('menu.history')}
-                            </Link>
+                        <Link 
+                            to="/voice" 
+                            className={`nav-link ${location.pathname === '/voice' ? 'active' : ''}`}
+                            onClick={closeMenu}
+                        >
+                            🎤 {t('menu.voice')}
+                        </Link>
+                        <Link 
+                            to="/history" 
+                            className={`nav-link ${location.pathname === '/history' ? 'active' : ''}`}
+                            onClick={closeMenu}
+                        >
+                            📚 {t('menu.history')}
+                        </Link>
                         </div>
                     </div>
                     
@@ -177,17 +177,17 @@ const Header = ({ location }) => {
                             className="nav-group-header"
                             onClick={() => handleDropdownToggle('ai')}
                         >
-                            <div className="nav-group-label">AI & Tools</div>
+                        <div className="nav-group-label">AI & Tools</div>
                             <span className="dropdown-arrow">▼</span>
                         </div>
                         <div className="dropdown-menu">
-                            <Link 
-                                to="/llama" 
-                                className={`nav-link ${location.pathname === '/llama' ? 'active' : ''}`}
-                                onClick={closeMenu}
-                            >
-                                🤖 {t('menu.llama')}
-                            </Link>
+                        <Link 
+                            to="/llama" 
+                            className={`nav-link ${location.pathname === '/llama' ? 'active' : ''}`}
+                            onClick={closeMenu}
+                        >
+                            🤖 {t('menu.llama')}
+                        </Link>
                         </div>
                     </div>
                     
@@ -201,38 +201,38 @@ const Header = ({ location }) => {
                             className="nav-group-header"
                             onClick={() => handleDropdownToggle('management')}
                         >
-                            <div className="nav-group-label">Content Management</div>
+                        <div className="nav-group-label">Content Management</div>
                             <span className="dropdown-arrow">▼</span>
                         </div>
                         <div className="dropdown-menu">
-                            <Link 
-                                to="/blog" 
-                                className={`nav-link ${location.pathname.startsWith('/blog') && !location.pathname.includes('/blog-creator') ? 'active' : ''}`}
-                                onClick={closeMenu}
-                            >
-                                📝 {t('menu.blog')}
-                            </Link>
-                            <Link 
-                                to="/blog-creator" 
-                                className={`nav-link ${location.pathname === '/blog-creator' ? 'active' : ''}`}
-                                onClick={closeMenu}
-                            >
-                                ✍️ {t('menu.blogCreator')}
-                            </Link>
-                            <Link 
-                                to="/social-media" 
-                                className={`nav-link ${location.pathname === '/social-media' ? 'active' : ''}`}
-                                onClick={closeMenu}
-                            >
-                                📱 {t('menu.socialMedia')}
-                            </Link>
-                            <Link 
-                                to="/social-media-history" 
-                                className={`nav-link ${location.pathname === '/social-media-history' ? 'active' : ''}`}
-                                onClick={closeMenu}
-                            >
-                                📚 {t('menu.socialMediaHistory') || 'Social Media History'}
-                            </Link>
+                        <Link 
+                            to="/blog" 
+                            className={`nav-link ${location.pathname.startsWith('/blog') && !location.pathname.includes('/blog-creator') ? 'active' : ''}`}
+                            onClick={closeMenu}
+                        >
+                            📝 {t('menu.blog')}
+                        </Link>
+                        <Link 
+                            to="/blog-creator" 
+                            className={`nav-link ${location.pathname === '/blog-creator' ? 'active' : ''}`}
+                            onClick={closeMenu}
+                        >
+                            ✍️ {t('menu.blogCreator')}
+                        </Link>
+                        <Link 
+                            to="/social-media" 
+                            className={`nav-link ${location.pathname === '/social-media' ? 'active' : ''}`}
+                            onClick={closeMenu}
+                        >
+                            📱 {t('menu.socialMedia')}
+                        </Link>
+                        <Link 
+                            to="/social-media-history" 
+                            className={`nav-link ${location.pathname === '/social-media-history' ? 'active' : ''}`}
+                            onClick={closeMenu}
+                        >
+                            📚 {t('menu.socialMediaHistory') || 'Social Media History'}
+                        </Link>
                             <Link 
                                 to="/social-media-integration" 
                                 className={`nav-link ${location.pathname === '/social-media-integration' ? 'active' : ''}`}
@@ -261,7 +261,7 @@ const Header = ({ location }) => {
 
             <div className="language-selector">
                 <label 
-                    htmlFor="lang-switch"
+                    htmlFor="lang-switch" 
                 >
                     {isMobile ? '🌐' : `${getFlagEmoji(currentLanguage.code)} ${t('language')}`}:
                 </label>

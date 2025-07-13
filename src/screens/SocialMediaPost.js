@@ -1150,134 +1150,134 @@ ${content}`;
       )}
       {/* Old UI (Advanced) */}
       {!useWizard && (
-        <div style={{ padding: '16px 8px', maxWidth: 900, margin: '0 auto' }}>
-          {/* Option/Selector UI */}
-          <div className="section platform-section-mobile" style={{ marginBottom: 16 }}>
-            <SocialMediaPostOptions
-              platforms={platforms}
-              platform={platform}
-              setPlatform={setPlatform}
-              postTypes={postTypes}
-              postType={postType}
-              setPostType={setPostType}
-              tones={tones}
-              tone={tone}
-              setTone={setTone}
-              audiences={audiences}
-              targetAudience={targetAudience}
-              setTargetAudience={setTargetAudience}
-              contentStructures={contentStructures}
-              contentStructure={contentStructure}
-              setContentStructure={setContentStructure}
-              engagementGoals={engagementGoals}
-              engagementGoal={engagementGoal}
-              setEngagementGoal={setEngagementGoal}
-              contentLengths={contentLengths}
-              contentLength={contentLength}
-              setContentLength={setContentLength}
-              customLength={customLength}
-              setCustomLength={setCustomLength}
-              brandVoiceIntensities={brandVoiceIntensities}
-              brandVoiceIntensity={brandVoiceIntensity}
-              setBrandVoiceIntensity={setBrandVoiceIntensity}
-              engagementUrgencies={engagementUrgencies}
-              engagementUrgency={engagementUrgency}
-              setEngagementUrgency={setEngagementUrgency}
-              situations={situations}
-              situation={situation}
-              setSituation={setSituation}
-              showAdvancedOptions={showAdvancedOptions}
-              setShowAdvancedOptions={setShowAdvancedOptions}
+      <div style={{ padding: '16px 8px', maxWidth: 900, margin: '0 auto' }}>
+      {/* Option/Selector UI */}
+        <div className="section platform-section-mobile" style={{ marginBottom: 16 }}>
+      <SocialMediaPostOptions
+        platforms={platforms}
+        platform={platform}
+        setPlatform={setPlatform}
+        postTypes={postTypes}
+        postType={postType}
+        setPostType={setPostType}
+        tones={tones}
+        tone={tone}
+        setTone={setTone}
+        audiences={audiences}
+        targetAudience={targetAudience}
+        setTargetAudience={setTargetAudience}
+        contentStructures={contentStructures}
+        contentStructure={contentStructure}
+        setContentStructure={setContentStructure}
+        engagementGoals={engagementGoals}
+        engagementGoal={engagementGoal}
+        setEngagementGoal={setEngagementGoal}
+        contentLengths={contentLengths}
+        contentLength={contentLength}
+        setContentLength={setContentLength}
+        customLength={customLength}
+        setCustomLength={setCustomLength}
+        brandVoiceIntensities={brandVoiceIntensities}
+        brandVoiceIntensity={brandVoiceIntensity}
+        setBrandVoiceIntensity={setBrandVoiceIntensity}
+        engagementUrgencies={engagementUrgencies}
+        engagementUrgency={engagementUrgency}
+        setEngagementUrgency={setEngagementUrgency}
+        situations={situations}
+        situation={situation}
+        setSituation={setSituation}
+        showAdvancedOptions={showAdvancedOptions}
+        setShowAdvancedOptions={setShowAdvancedOptions}
+      />
+        </div>
+      {/* Content Input Section */}
+        <div className="section content-input-section" style={{ marginBottom: 16 }}>
+          <div className="content-label" style={{ fontSize: 18, fontWeight: 700, marginBottom: 12 }}>{t('socialMedia.enterContent')}</div>
+        <textarea
+            className="mobile-friendly-input"
+          value={content}
+          onChange={e => setContent(e.target.value)}
+          placeholder={t('socialMedia.contentPlaceholder')}
+            style={{
+              width: '100%',
+              minHeight: 220,
+              fontSize: 20,
+              padding: '28px 20px',
+              marginBottom: 18,
+              border: '2.5px solid #a5b4fc',
+              borderRadius: 18,
+              background: 'linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%)',
+              boxShadow: '0 6px 32px rgba(79,140,255,0.10)',
+              fontWeight: 500,
+              color: '#1e293b',
+              outline: 'none',
+              transition: 'border 0.2s, box-shadow 0.2s',
+            }}
+            onFocus={e => e.target.style.border = '2.5px solid #6366f1'}
+            onBlur={e => e.target.style.border = '2.5px solid #a5b4fc'}
+        />
+        <div className="content-actions" style={{ display: 'flex', gap: 12, marginTop: 8 }}>
+          <button
+              className="mobile-generate-btn generate-btn"
+            onClick={generateContent}
+              disabled={!content.trim() || isGenerating}
+              style={{ background: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)', color: 'white', border: 'none', borderRadius: 10, fontWeight: 700, fontSize: 16, padding: '14px 0', flex: 1 }}
+          >
+              {isGenerating ? t('socialMedia.generating') : t('socialMedia.generatePost')}
+          </button>
+          <button
+              className="mobile-clear-btn clear-btn"
+            onClick={clearAll}
+              style={{ background: 'linear-gradient(135deg, #e2e8f0 0%, #cbd5e0 100%)', color: '#4a5568', border: 'none', borderRadius: 10, fontWeight: 600, fontSize: 16, padding: '14px 0', flex: 1 }}
+          >
+            {t('socialMedia.clear')}
+          </button>
+        </div>
+      </div>
+        {/* Result Section (Enhanced Post, etc.) */}
+        {enhancedContent && (
+          <div className="section result-section mobile-result-section" style={{ position: 'relative' }}>
+      <SocialMediaPostResult
+        enhancedContent={enhancedContent}
+        reviewedContent={reviewedContent}
+        isReviewing={isReviewing}
+        showOriginalContent={showOriginalContent}
+        setShowOriginalContent={setShowOriginalContent}
+        showComparison={showComparison}
+        setShowComparison={setShowComparison}
+        content={content}
+        platform={platform}
+        postType={postType}
+        tone={tone}
+        targetAudience={targetAudience}
+        getPlatformIcon={getPlatformIcon}
+        getToneIcon={getToneIcon}
+        getAudienceIcon={getAudienceIcon}
+        tones={tones}
+        audiences={audiences}
+        platforms={platforms}
+        selectedPlatform={platforms.find(p => p.value === platform)}
+              isOverLimit={isOverLimit}
+        qualityAnalysis={qualityAnalysis}
+        copyToClipboard={copyToClipboard}
+        openPreviewWindow={openPreviewWindow}
+        setContent={setContent}
+        setEnhancedContent={setEnhancedContent}
+        setPlatform={setPlatform}
+        setPostType={setPostType}
+        setTone={setTone}
+        setTargetAudience={setTargetAudience}
+        setContentStructure={setContentStructure}
+        setEngagementGoal={setEngagementGoal}
+        setContentLength={setContentLength}
+        setBrandVoiceIntensity={setBrandVoiceIntensity}
+        setEngagementUrgency={setEngagementUrgency}
+        setSituation={setSituation}
+        postTypes={postTypes}
+        brandVoiceIntensities={brandVoiceIntensities}
+        engagementUrgencies={engagementUrgencies}
+        situations={situations}
             />
-          </div>
-          {/* Content Input Section */}
-          <div className="section content-input-section" style={{ marginBottom: 16 }}>
-            <div className="content-label" style={{ fontSize: 18, fontWeight: 700, marginBottom: 12 }}>{t('socialMedia.enterContent')}</div>
-            <textarea
-              className="mobile-friendly-input"
-              value={content}
-              onChange={e => setContent(e.target.value)}
-              placeholder={t('socialMedia.contentPlaceholder')}
-              style={{
-                width: '100%',
-                minHeight: 220,
-                fontSize: 20,
-                padding: '28px 20px',
-                marginBottom: 18,
-                border: '2.5px solid #a5b4fc',
-                borderRadius: 18,
-                background: 'linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%)',
-                boxShadow: '0 6px 32px rgba(79,140,255,0.10)',
-                fontWeight: 500,
-                color: '#1e293b',
-                outline: 'none',
-                transition: 'border 0.2s, box-shadow 0.2s',
-              }}
-              onFocus={e => e.target.style.border = '2.5px solid #6366f1'}
-              onBlur={e => e.target.style.border = '2.5px solid #a5b4fc'}
-            />
-            <div className="content-actions" style={{ display: 'flex', gap: 12, marginTop: 8 }}>
-              <button
-                className="mobile-generate-btn generate-btn"
-                onClick={generateContent}
-                disabled={!content.trim() || isGenerating}
-                style={{ background: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)', color: 'white', border: 'none', borderRadius: 10, fontWeight: 700, fontSize: 16, padding: '14px 0', flex: 1 }}
-              >
-                {isGenerating ? t('socialMedia.generating') : t('socialMedia.generatePost')}
-              </button>
-              <button
-                className="mobile-clear-btn clear-btn"
-                onClick={clearAll}
-                style={{ background: 'linear-gradient(135deg, #e2e8f0 0%, #cbd5e0 100%)', color: '#4a5568', border: 'none', borderRadius: 10, fontWeight: 600, fontSize: 16, padding: '14px 0', flex: 1 }}
-              >
-                {t('socialMedia.clear')}
-              </button>
-            </div>
-          </div>
-          {/* Result Section (Enhanced Post, etc.) */}
-          {enhancedContent && (
-            <div className="section result-section mobile-result-section" style={{ position: 'relative' }}>
-              <SocialMediaPostResult
-                enhancedContent={enhancedContent}
-                reviewedContent={reviewedContent}
-                isReviewing={isReviewing}
-                showOriginalContent={showOriginalContent}
-                setShowOriginalContent={setShowOriginalContent}
-                showComparison={showComparison}
-                setShowComparison={setShowComparison}
-                content={content}
-                platform={platform}
-                postType={postType}
-                tone={tone}
-                targetAudience={targetAudience}
-                getPlatformIcon={getPlatformIcon}
-                getToneIcon={getToneIcon}
-                getAudienceIcon={getAudienceIcon}
-                tones={tones}
-                audiences={audiences}
-                platforms={platforms}
-                selectedPlatform={platforms.find(p => p.value === platform)}
-                isOverLimit={isOverLimit}
-                qualityAnalysis={qualityAnalysis}
-                copyToClipboard={copyToClipboard}
-                openPreviewWindow={openPreviewWindow}
-                setContent={setContent}
-                setEnhancedContent={setEnhancedContent}
-                setPlatform={setPlatform}
-                setPostType={setPostType}
-                setTone={setTone}
-                setTargetAudience={setTargetAudience}
-                setContentStructure={setContentStructure}
-                setEngagementGoal={setEngagementGoal}
-                setContentLength={setContentLength}
-                setBrandVoiceIntensity={setBrandVoiceIntensity}
-                setEngagementUrgency={setEngagementUrgency}
-                setSituation={setSituation}
-                postTypes={postTypes}
-                brandVoiceIntensities={brandVoiceIntensities}
-                engagementUrgencies={engagementUrgencies}
-                situations={situations}
-              />
               
               {/* Social Media Integration */}
               <SocialMediaIntegration
@@ -1292,9 +1292,9 @@ ${content}`;
                   // You can add error notification here
                 }}
               />
-            </div>
-          )}
-        </div>
+          </div>
+        )}
+      </div>
       )}
     </div>
   );

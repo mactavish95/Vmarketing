@@ -109,46 +109,46 @@ const SocialMediaPostWizard = ({
   const getPlatformTips = () => {
     const platformTips = {
       facebook: [
-        <span key="fb-tip"><FacebookIcon size={32} style={{verticalAlign:'middle'}} /> {t('socialMedia.platformTips.facebook.bestPostingTimes')}</span>,
-        `💬 ${t('socialMedia.platformTips.facebook.askQuestions')}`,
-        `📸 ${t('socialMedia.platformTips.facebook.includeImages')}`,
-        `🎉 ${t('socialMedia.platformTips.facebook.useFacebookLive')}`,
-        `📅 ${t('socialMedia.platformTips.facebook.postConsistently')}`
+        <span key="fb-tip-1"><FacebookIcon size={24} style={{verticalAlign:'middle', marginRight: '8px'}} /> {t('socialMedia.platformTips.facebook.bestPostingTimes')}</span>,
+        <span key="fb-tip-2">💬 {t('socialMedia.platformTips.facebook.askQuestions')}</span>,
+        <span key="fb-tip-3">📸 {t('socialMedia.platformTips.facebook.includeImages')}</span>,
+        <span key="fb-tip-4">🎉 {t('socialMedia.platformTips.facebook.useFacebookLive')}</span>,
+        <span key="fb-tip-5">📅 {t('socialMedia.platformTips.facebook.postConsistently')}</span>
       ],
       instagram: [
-        `📸 ${t('socialMedia.platformTips.instagram.useHighQuality')}`,
-        `🏷️ ${t('socialMedia.platformTips.instagram.addHashtags')}`,
-        `💬 ${t('socialMedia.platformTips.instagram.useEmojis')}`,
-        `📱 ${t('socialMedia.platformTips.instagram.peakHours')}`,
-        `🎬 ${t('socialMedia.platformTips.instagram.tryReels')}`
+        <span key="ig-tip-1">📸 {t('socialMedia.platformTips.instagram.useHighQuality')}</span>,
+        <span key="ig-tip-2">🏷️ {t('socialMedia.platformTips.instagram.addHashtags')}</span>,
+        <span key="ig-tip-3">💬 {t('socialMedia.platformTips.instagram.useEmojis')}</span>,
+        <span key="ig-tip-4">📱 {t('socialMedia.platformTips.instagram.peakHours')}</span>,
+        <span key="ig-tip-5">🎬 {t('socialMedia.platformTips.instagram.tryReels')}</span>
       ],
       linkedin: [
-        `💼 ${t('socialMedia.platformTips.linkedin.keepProfessional')}`,
-        `📊 ${t('socialMedia.platformTips.linkedin.shareInsights')}`,
-        `🤝 ${t('socialMedia.platformTips.linkedin.network')}`,
-        `📅 ${t('socialMedia.platformTips.linkedin.businessHours')}`,
-        `📈 ${t('socialMedia.platformTips.linkedin.thoughtLeadership')}`
+        <span key="li-tip-1">💼 {t('socialMedia.platformTips.linkedin.keepProfessional')}</span>,
+        <span key="li-tip-2">📊 {t('socialMedia.platformTips.linkedin.shareInsights')}</span>,
+        <span key="li-tip-3">🤝 {t('socialMedia.platformTips.linkedin.network')}</span>,
+        <span key="li-tip-4">📅 {t('socialMedia.platformTips.linkedin.businessHours')}</span>,
+        <span key="li-tip-5">📈 {t('socialMedia.platformTips.linkedin.thoughtLeadership')}</span>
       ],
       twitter: [
-        `🐦 ${t('socialMedia.platformTips.twitter.keepConcise')}`,
-        `🔥 ${t('socialMedia.platformTips.twitter.jumpOnTrends')}`,
-        `💬 ${t('socialMedia.platformTips.twitter.useHashtags')}`,
-        `📱 ${t('socialMedia.platformTips.twitter.postFrequently')}`,
-        `🎯 ${t('socialMedia.platformTips.twitter.engageWithAudience')}`
+        <span key="tw-tip-1">🐦 {t('socialMedia.platformTips.twitter.keepConcise')}</span>,
+        <span key="tw-tip-2">🔥 {t('socialMedia.platformTips.twitter.jumpOnTrends')}</span>,
+        <span key="tw-tip-3">💬 {t('socialMedia.platformTips.twitter.useHashtags')}</span>,
+        <span key="tw-tip-4">📱 {t('socialMedia.platformTips.twitter.postFrequently')}</span>,
+        <span key="tw-tip-5">🎯 {t('socialMedia.platformTips.twitter.engageWithAudience')}</span>
       ],
       tiktok: [
-        `🎵 ${t('socialMedia.platformTips.tiktok.useTrendingSounds')}`,
-        `🎬 ${t('socialMedia.platformTips.tiktok.keepVideosShort')}`,
-        `🔥 ${t('socialMedia.platformTips.tiktok.jumpOnTrends')}`,
-        `📱 ${t('socialMedia.platformTips.tiktok.postConsistently')}`,
-        `💬 ${t('socialMedia.platformTips.tiktok.engageWithComments')}`
+        <span key="tt-tip-1">🎵 {t('socialMedia.platformTips.tiktok.useTrendingSounds')}</span>,
+        <span key="tt-tip-2">🎬 {t('socialMedia.platformTips.tiktok.keepVideosShort')}</span>,
+        <span key="tt-tip-3">🔥 {t('socialMedia.platformTips.tiktok.jumpOnTrends')}</span>,
+        <span key="tt-tip-4">📱 {t('socialMedia.platformTips.tiktok.postConsistently')}</span>,
+        <span key="tt-tip-5">💬 {t('socialMedia.platformTips.tiktok.engageWithComments')}</span>
       ],
       youtube: [
-        `📺 ${t('socialMedia.platformTips.youtube.createDetailed')}`,
-        `🎬 ${t('socialMedia.platformTips.youtube.useEngagingThumbnails')}`,
-        `📝 ${t('socialMedia.platformTips.youtube.writeDescriptions')}`,
-        `⏰ ${t('socialMedia.platformTips.youtube.postConsistently')}`,
-        `💬 ${t('socialMedia.platformTips.youtube.respondToComments')}`
+        <span key="yt-tip-1">📺 {t('socialMedia.platformTips.youtube.createDetailed')}</span>,
+        <span key="yt-tip-2">🎬 {t('socialMedia.platformTips.youtube.useEngagingThumbnails')}</span>,
+        <span key="yt-tip-3">📝 {t('socialMedia.platformTips.youtube.writeDescriptions')}</span>,
+        <span key="yt-tip-4">⏰ {t('socialMedia.platformTips.youtube.postConsistently')}</span>,
+        <span key="yt-tip-5">💬 {t('socialMedia.platformTips.youtube.respondToComments')}</span>
       ]
     };
     return platformTips[platform] || [];

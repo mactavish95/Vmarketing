@@ -23,7 +23,7 @@ const SocialMediaIntegration = ({
       icon: '📘',
       color: '#1877f2',
       authUrl: '/api/auth/facebook',
-      scope: 'pages_manage_posts,pages_read_engagement'
+      scope: 'public_profile,email'
     },
     instagram: {
       name: 'Instagram',
@@ -54,7 +54,7 @@ const SocialMediaIntegration = ({
 
   const fetchConnectedAccounts = async () => {
     try {
-      const response = await fetch('/api/social/accounts');
+      const response = await fetch('/api/auth/accounts');
       if (response.ok) {
         const accounts = await response.json();
         setConnectedAccounts(accounts);
@@ -69,17 +69,31 @@ const SocialMediaIntegration = ({
     if (!platform) return;
 
     try {
-      // Open OAuth popup
+      console.log(`🔗 Opening OAuth popup for ${platformKey}:`, platform.authUrl);
+      console.log(`📍 Current window location:`, window.location.href);
+      console.log(`🌐 Popup will open to:`, platform.authUrl);
+      
+      // Open OAuth popup - use the auth URL directly without query parameters
       const popup = window.open(
-        `${platform.authUrl}?scope=${platform.scope}`,
+        platform.authUrl,
         'social-auth',
         'width=600,height=600,scrollbars=yes,resizable=yes'
       );
+
+      if (!popup) {
+        console.error('❌ Popup blocked by browser. Please allow popups for this site.');
+        alert('Popup blocked! Please allow popups for this site and try again.');
+        return;
+      }
+
+      console.log(`✅ Popup opened successfully for ${platformKey}`);
+      console.log(`🔍 Popup location:`, popup.location.href);
 
       // Listen for OAuth completion
       const checkClosed = setInterval(() => {
         if (popup.closed) {
           clearInterval(checkClosed);
+          console.log(`✅ OAuth popup closed for ${platformKey}, refreshing accounts...`);
           fetchConnectedAccounts(); // Refresh accounts
         }
       }, 1000);
@@ -91,7 +105,7 @@ const SocialMediaIntegration = ({
 
   const disconnectAccount = async (platformKey) => {
     try {
-      const response = await fetch(`/api/social/disconnect/${platformKey}`, {
+      const response = await fetch(`/api/auth/disconnect/${platformKey}`, {
         method: 'DELETE'
       });
 

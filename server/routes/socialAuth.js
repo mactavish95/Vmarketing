@@ -3,13 +3,29 @@ const router = express.Router();
 const passport = require('passport');
 const SocialAccount = require('../models/SocialAccount');
 
+// Debug endpoint to check environment variables
+router.get('/debug', (req, res) => {
+  res.json({
+    facebook_app_id: process.env.FACEBOOK_APP_ID ? 'SET' : 'NOT SET',
+    facebook_app_secret: process.env.FACEBOOK_APP_SECRET ? 'SET' : 'NOT SET',
+    base_url: process.env.BASE_URL || 'NOT SET',
+    session_secret: process.env.SESSION_SECRET ? 'SET' : 'NOT SET',
+    strategies: {
+      facebook: passport._strategies.facebook ? 'LOADED' : 'NOT LOADED',
+      instagram: passport._strategies.instagram ? 'LOADED' : 'NOT LOADED',
+      twitter: passport._strategies.twitter ? 'LOADED' : 'NOT LOADED',
+      linkedin: passport._strategies.linkedin ? 'LOADED' : 'NOT LOADED'
+    }
+  });
+});
+
 // OAuth Configuration
 const oauthConfig = {
   facebook: {
     clientID: process.env.FACEBOOK_APP_ID,
     clientSecret: process.env.FACEBOOK_APP_SECRET,
     callbackURL: `${process.env.BASE_URL}/api/auth/facebook/callback`,
-    scope: ['pages_manage_posts', 'pages_read_engagement']
+    scope: ['public_profile', 'email']
   },
   instagram: {
     clientID: process.env.INSTAGRAM_APP_ID,
@@ -42,11 +58,7 @@ router.get('/facebook/callback',
       const { user } = req;
       const accessToken = user.accessToken;
       
-      // Get Facebook pages
-      const pagesResponse = await fetch(`https://graph.facebook.com/v18.0/me/accounts?access_token=${accessToken}`);
-      const pagesData = await pagesResponse.json();
-      
-      // Save account info
+      // Save account info with basic permissions first
       await SocialAccount.findOneAndUpdate(
         { userId: user.id, platform: 'facebook' },
         {
@@ -61,15 +73,15 @@ router.get('/facebook/callback',
             email: user.emails?.[0]?.value,
             profileImage: user.photos?.[0]?.value
           },
-          pages: pagesData.data || []
+          pages: [] // Will be populated later if page permissions are granted
         },
         { upsert: true, new: true }
       );
 
-      res.redirect('/social-media?connected=facebook');
+      res.redirect('http://localhost:3000/social-media-integration?connected=facebook');
     } catch (error) {
       console.error('Facebook OAuth error:', error);
-      res.redirect('/social-media?error=facebook_auth_failed');
+      res.redirect('http://localhost:3000/social-media-integration?error=facebook_auth_failed');
     }
   }
 );
@@ -107,10 +119,10 @@ router.get('/instagram/callback',
         { upsert: true, new: true }
       );
 
-      res.redirect('/social-media?connected=instagram');
+      res.redirect('http://localhost:3000/social-media-integration?connected=instagram');
     } catch (error) {
       console.error('Instagram OAuth error:', error);
-      res.redirect('/social-media?error=instagram_auth_failed');
+      res.redirect('http://localhost:3000/social-media-integration?error=instagram_auth_failed');
     }
   }
 );
@@ -141,10 +153,10 @@ router.get('/twitter/callback',
         { upsert: true, new: true }
       );
 
-      res.redirect('/social-media?connected=twitter');
+      res.redirect('http://localhost:3000/social-media-integration?connected=twitter');
     } catch (error) {
       console.error('Twitter OAuth error:', error);
-      res.redirect('/social-media?error=twitter_auth_failed');
+      res.redirect('http://localhost:3000/social-media-integration?error=twitter_auth_failed');
     }
   }
 );
@@ -187,10 +199,10 @@ router.get('/linkedin/callback',
         { upsert: true, new: true }
       );
 
-      res.redirect('/social-media?connected=linkedin');
+      res.redirect('http://localhost:3000/social-media-integration?connected=linkedin');
     } catch (error) {
       console.error('LinkedIn OAuth error:', error);
-      res.redirect('/social-media?error=linkedin_auth_failed');
+      res.redirect('http://localhost:3000/social-media-integration?error=linkedin_auth_failed');
     }
   }
 );
