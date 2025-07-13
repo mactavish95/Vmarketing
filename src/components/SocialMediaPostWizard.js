@@ -213,10 +213,7 @@ const SocialMediaPostWizard = ({
                   <li key={`platform-${index}`} className="tip-item">{tip}</li>
                 ))}
               </ul>
-              {/* Debug info */}
-              <div style={{fontSize: '12px', color: '#666', marginTop: '10px', padding: '10px', background: '#f5f5f5', borderRadius: '5px'}}>
-                Debug: {t('socialMedia.platformTips.facebook.bestPostingTimes')}
-              </div>
+
             </div>
           )}
           {step !== 0 && (

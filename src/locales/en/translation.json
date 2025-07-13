@@ -1349,59 +1349,7 @@
     "now": "now",
     "yourTitleAtCompany": "Your Title at Company",
     "yourChannelName": "Your Channel Name",
-    "platformTips": {
-      "facebook": {
-        "title": "Facebook Best Practices",
-        "wordCounts": {
-          "short": "Short (40-60 words)",
-          "optimal": "Optimal (80-120 words)",
-          "detailed": "Detailed (150-200 words)",
-          "comprehensive": "Comprehensive (250-350 words)"
-        },
-        "descriptions": {
-          "short": "Perfect for quick updates and announcements",
-          "optimal": "Ideal for personal stories and community engagement",
-          "detailed": "Great for detailed updates and educational content",
-          "comprehensive": "Perfect for thought leadership and detailed stories"
-        },
-        "bestPractices": "Best Practices",
-        "bestPracticesDescription": "Use questions, tag people, include relevant hashtags, and post when your audience is most active"
-      },
-      "instagram": {
-        "title": "Instagram Best Practices",
-        "wordCounts": {
-          "short": "Short (25-40 words)",
-          "optimal": "Optimal (60-90 words)",
-          "detailed": "Detailed (120-180 words)",
-          "comprehensive": "Comprehensive (200-300 words)"
-        },
-        "descriptions": {
-          "short": "Short, punchy captions with emojis and hashtags",
-          "optimal": "Engaging captions with bullet points and visual appeal",
-          "detailed": "Detailed captions for multi-image posts",
-          "comprehensive": "Longer descriptions for video content"
-        },
-        "bestPractices": "Best Practices",
-        "bestPracticesDescription": "Use emojis, hashtags, bullet points, and call-to-actions. Post high-quality images and videos"
-      },
-      "linkedin": {
-        "title": "LinkedIn Best Practices",
-        "wordCounts": {
-          "short": "Short (50-80 words)",
-          "optimal": "Optimal (100-150 words)",
-          "detailed": "Detailed (200-300 words)",
-          "comprehensive": "Comprehensive (400-600 words)"
-        },
-        "descriptions": {
-          "short": "Brief professional announcements and updates",
-          "optimal": "Professional insights and thought leadership",
-          "detailed": "Detailed professional experiences and case studies",
-          "comprehensive": "Comprehensive professional content and insights"
-        },
-        "bestPractices": "Best Practices",
-        "bestPracticesDescription": "Share professional insights, use industry hashtags, and engage with your network"
-      }
-    },
+
     "platformSpecificTips": "Platform-Specific Optimization Tips",
     "contentLengthOptimization": "Content Length Optimization",
     "brandVoiceEngagement": "Brand Voice & Engagement",
