@@ -1467,6 +1467,5 @@
       "security": "Thông tin đăng nhập của bạn được mã hóa và không bao giờ lưu trữ dưới dạng văn bản thuần",
       "refresh": "Token được tự động làm mới để duy trì quyền truy cập"
     }
-  },
-  "targetWords": "Số từ mục tiêu"
+  }
 } 

@@ -624,9 +624,9 @@
     "platforms": {
       "facebook": "Facebook",
       "instagram": "Instagram",
-      "twitter": "Twitter",
-      "linkedin": "LinkedIn",
       "tiktok": "TikTok",
+      "twitter": "Twitter/X",
+      "linkedin": "LinkedIn",
       "youtube": "YouTube"
     },
     "load": "Load",
@@ -636,14 +636,6 @@
     "type": "Type",
     "created": "Created",
     "copyEnhanced": "Copy Enhanced",
-    "platforms": {
-      "facebook": "Facebook",
-      "instagram": "Instagram",
-      "tiktok": "TikTok",
-      "twitter": "Twitter/X",
-      "linkedin": "LinkedIn",
-      "youtube": "YouTube"
-    },
     "postTypes": {
       "general": "General Post",
       "story": "Story/Personal",
@@ -1290,23 +1282,6 @@
         "linkedin": ["Professionals", "Industry Leaders", "Job Seekers", "Business Decision Makers"]
       }
     },
-    "integration": {
-      "title": "Social Media Integration",
-      "subtitle": "Connect your social media accounts and publish content directly",
-      "connect": "Connect Account",
-      "reconnect": "Reconnect",
-      "disconnect": "Disconnect",
-      "publish": "Publish Now",
-      "publishing": "Publishing...",
-      "quickPublish": "Quick Publish",
-      "tips": {
-        "title": "Integration Tips",
-        "oauth": "OAuth authentication ensures secure access to your accounts",
-        "permissions": "We only request necessary permissions for posting content",
-        "security": "Your credentials are encrypted and never stored in plain text",
-        "refresh": "Tokens are automatically refreshed to maintain access"
-      }
-    },
     "result": {
       "platform": "Platform",
       "type": "Type",
@@ -1348,16 +1323,6 @@
     "yourHandle": "yourhandle",
     "now": "now",
     "yourTitleAtCompany": "Your Title at Company",
-    "yourChannelName": "Your Channel Name",
-
-    "platformSpecificTips": "Platform-Specific Optimization Tips",
-    "contentLengthOptimization": "Content Length Optimization",
-    "brandVoiceEngagement": "Brand Voice & Engagement",
-    "engagementUrgency": "Engagement Urgency",
-    "situationContext": "Situation & Context",
-    "targetWords": "Target Words",
-    "target": "Target",
-    "guidedMode": "Guided Mode",
-    "advancedMode": "Advanced Mode"
+    "yourChannelName": "Your Channel Name"
   }
 } 
