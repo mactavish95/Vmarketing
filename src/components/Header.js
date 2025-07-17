@@ -119,15 +119,9 @@ const Header = () => {
 
     return (
         <header className="header">
-            <div className="header-content">
-                <Link to="/" className="logo" onClick={closeMenu}>
-                    <span className="logo-icon">📝</span>
-                    <span className="logo-text">ReviewGen</span>
-                </Link>
-                
-                {/* Mobile hamburger menu */}
+            <div className="header-row">
                 <button 
-                    className={`hamburger ${isMenuOpen ? 'active' : ''}`}
+                    className={`hamburger${isMenuOpen ? ' active' : ''}`}
                     onClick={toggleMenu}
                     aria-label="Toggle navigation menu"
                 >
@@ -135,166 +129,168 @@ const Header = () => {
                     <span></span>
                     <span></span>
                 </button>
-                
-                <nav className={`nav-menu ${isMenuOpen ? 'active' : ''}`}>
-                    {/* Home */}
-                    <Link 
-                        to="/" 
-                        className={`nav-link ${location.pathname === '/' ? 'active' : ''}`}
-                        onClick={closeMenu}
+                <Link to="/" className="logo" onClick={closeMenu}>
+                    <span className="logo-icon">📝</span>
+                    <span className="logo-text">ReviewGen</span>
+                </Link>
+                <div className="header-spacer" />
+                <div className="language-selector">
+                    <label htmlFor="lang-switch">
+                        {isMobile ? '🌐' : `${getFlagEmoji(currentLanguage.code)} ${t('language')}`}:
+                    </label>
+                    <select
+                        id="lang-switch"
+                        value={i18n.language}
+                        onChange={e => changeLanguage(e.target.value)}
                     >
-                        🏠 {t('menu.home')}
-                    </Link>
-                    
-                    {/* Content Generation Group */}
+                        {supportedLanguages.map(lang => (
+                            <option key={lang.code} value={lang.code}>
+                                {getFlagEmoji(lang.code)} {isMobile ? lang.shortName : lang.name}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+            </div>
+            <nav className={`nav-menu ${isMenuOpen ? 'active' : ''}`}>
+                {/* Home */}
+                <Link 
+                    to="/" 
+                    className={`nav-link ${location.pathname === '/' ? 'active' : ''}`}
+                    onClick={closeMenu}
+                >
+                    🏠 {t('menu.home')}
+                </Link>
+
+                {/* Create Group */}
+                <div 
+                    className={`nav-group dropdown ${openDropdown === 'create' ? 'open' : ''}`}
+                    onMouseEnter={() => handleDropdownHover('create')}
+                    onMouseLeave={handleDropdownLeave}
+                >
                     <div 
-                        className={`nav-group dropdown ${openDropdown === 'content' ? 'open' : ''}`}
-                        onMouseEnter={() => handleDropdownHover('content')}
-                        onMouseLeave={handleDropdownLeave}
+                        className="nav-group-header"
+                        onClick={() => handleDropdownToggle('create')}
                     >
-                        <div 
-                            className="nav-group-header"
-                            onClick={() => handleDropdownToggle('content')}
-                        >
-                        <div className="nav-group-label">Content Creation</div>
-                            <span className="dropdown-arrow">▼</span>
-                        </div>
-                        <div className="dropdown-menu">
-                        <Link 
-                            to="/voice" 
-                            className={`nav-link ${location.pathname === '/voice' ? 'active' : ''}`}
-                            onClick={closeMenu}
-                        >
-                            🎤 {t('menu.voice')}
-                        </Link>
-                        <Link 
-                            to="/history" 
-                            className={`nav-link ${location.pathname === '/history' ? 'active' : ''}`}
-                            onClick={closeMenu}
-                        >
-                            📚 {t('menu.history')}
-                        </Link>
-                        </div>
+                        <div className="nav-group-label">✍️ {t('headerNav.create')}</div>
+                        <span className="dropdown-arrow">▼</span>
                     </div>
-                    
-                    {/* AI & Tools Group */}
-                    <div 
-                        className={`nav-group dropdown ${openDropdown === 'ai' ? 'open' : ''}`}
-                        onMouseEnter={() => handleDropdownHover('ai')}
-                        onMouseLeave={handleDropdownLeave}
-                    >
-                        <div 
-                            className="nav-group-header"
-                            onClick={() => handleDropdownToggle('ai')}
-                        >
-                        <div className="nav-group-label">AI & Tools</div>
-                            <span className="dropdown-arrow">▼</span>
-                        </div>
-                        <div className="dropdown-menu">
-                        <Link 
-                            to="/llama" 
-                            className={`nav-link ${location.pathname === '/llama' ? 'active' : ''}`}
-                            onClick={closeMenu}
-                        >
-                            🤖 {t('menu.llama')}
-                        </Link>
-                        </div>
-                    </div>
-                    
-                    {/* Content Management Group */}
-                    <div 
-                        className={`nav-group dropdown ${openDropdown === 'management' ? 'open' : ''}`}
-                        onMouseEnter={() => handleDropdownHover('management')}
-                        onMouseLeave={handleDropdownLeave}
-                    >
-                        <div 
-                            className="nav-group-header"
-                            onClick={() => handleDropdownToggle('management')}
-                        >
-                        <div className="nav-group-label">Content Management</div>
-                            <span className="dropdown-arrow">▼</span>
-                        </div>
-                        <div className="dropdown-menu">
-                        <Link 
-                            to="/blog" 
-                            className={`nav-link ${location.pathname.startsWith('/blog') && !location.pathname.includes('/blog-creator') ? 'active' : ''}`}
-                            onClick={closeMenu}
-                        >
-                            📝 {t('menu.blog')}
-                        </Link>
+                    <div className="dropdown-menu">
                         <Link 
                             to="/blog-creator" 
                             className={`nav-link ${location.pathname === '/blog-creator' ? 'active' : ''}`}
                             onClick={closeMenu}
                         >
-                            ✍️ {t('menu.blogCreator')}
+                            📝 {t('headerNav.createGroup.blogCreator')}
                         </Link>
                         <Link 
                             to="/social-media" 
                             className={`nav-link ${location.pathname === '/social-media' ? 'active' : ''}`}
                             onClick={closeMenu}
                         >
-                            📱 {t('menu.socialMedia')}
+                            📱 {t('headerNav.createGroup.socialMediaPost')}
                         </Link>
-                        {/* <Link 
+                        <Link 
+                            to="/voice" 
+                            className={`nav-link ${location.pathname === '/voice' ? 'active' : ''}`}
+                            onClick={closeMenu}
+                        >
+                            🎤 {t('headerNav.createGroup.voiceReview')}
+                        </Link>
+                        <Link 
+                            to="/llama" 
+                            className={`nav-link ${location.pathname === '/llama' ? 'active' : ''}`}
+                            onClick={closeMenu}
+                        >
+                            🤖 {t('headerNav.createGroup.llamaChat')}
+                        </Link>
+                    </div>
+                </div>
+
+                {/* Manage Group */}
+                <div 
+                    className={`nav-group dropdown ${openDropdown === 'manage' ? 'open' : ''}`}
+                    onMouseEnter={() => handleDropdownHover('manage')}
+                    onMouseLeave={handleDropdownLeave}
+                >
+                    <div 
+                        className="nav-group-header"
+                        onClick={() => handleDropdownToggle('manage')}
+                    >
+                        <div className="nav-group-label">📚 {t('headerNav.manage')}</div>
+                        <span className="dropdown-arrow">▼</span>
+                    </div>
+                    <div className="dropdown-menu">
+                        <Link 
+                            to="/blog" 
+                            className={`nav-link ${location.pathname.startsWith('/blog') && !location.pathname.includes('/blog-creator') ? 'active' : ''}`}
+                            onClick={closeMenu}
+                        >
+                            📝 {t('headerNav.manageGroup.blogPosts')}
+                        </Link>
+                        <Link 
                             to="/social-media-history" 
                             className={`nav-link ${location.pathname === '/social-media-history' ? 'active' : ''}`}
                             onClick={closeMenu}
                         >
-                            📚 {t('menu.socialMediaHistory') || 'Social Media History'}
-                        </Link> */}
-                            <Link 
-                                to="/social-media-integration" 
-                                className={`nav-link ${location.pathname === '/social-media-integration' ? 'active' : ''}`}
-                                onClick={closeMenu}
-                            >
-                                🔗 {t('socialMedia.integration.title')}
-                            </Link>
-                        </div>
-                    </div>
-                    
-                    {/* Additional Services */}
-                    <Link 
-                        to="/customer-service" 
-                        className={`nav-link ${location.pathname === '/customer-service' ? 'active' : ''}`}
-                        onClick={closeMenu}
-                    >
-                        👨‍💼 {t('menu.customerService')}
-                    </Link>
-                    {isAuthenticated && (
-                        <Link to="/dashboard" className={`nav-link ${location.pathname.startsWith('/dashboard') ? 'active' : ''}`} onClick={closeMenu}>
-                            📊 {t('dashboard')}
+                            📱 {t('headerNav.manageGroup.socialMediaHistory')}
                         </Link>
-                    )}
-                    <Link to="/login" className="nav-link">
-                        <span role="img" aria-label="login">🔑</span> {t('header.login') || 'Login'}
+                        <Link 
+                            to="/history" 
+                            className={`nav-link ${location.pathname === '/history' ? 'active' : ''}`}
+                            onClick={closeMenu}
+                        >
+                            📊 {t('headerNav.manageGroup.reviewHistory')}
+                        </Link>
+                    </div>
+                </div>
+
+                {/* Tools Group */}
+                <div 
+                    className={`nav-group dropdown ${openDropdown === 'tools' ? 'open' : ''}`}
+                    onMouseEnter={() => handleDropdownHover('tools')}
+                    onMouseLeave={handleDropdownLeave}
+                >
+                    <div 
+                        className="nav-group-header"
+                        onClick={() => handleDropdownToggle('tools')}
+                    >
+                        <div className="nav-group-label">🛠️ {t('headerNav.tools')}</div>
+                        <span className="dropdown-arrow">▼</span>
+                    </div>
+                    <div className="dropdown-menu">
+                        <Link 
+                            to="/social-media-integration" 
+                            className={`nav-link ${location.pathname === '/social-media-integration' ? 'active' : ''}`}
+                            onClick={closeMenu}
+                        >
+                            🔗 {t('headerNav.toolsGroup.socialMediaIntegration')}
+                        </Link>
+                        <Link 
+                            to="/customer-service" 
+                            className={`nav-link ${location.pathname === '/customer-service' ? 'active' : ''}`}
+                            onClick={closeMenu}
+                        >
+                            👨‍💼 {t('headerNav.toolsGroup.customerService')}
+                        </Link>
+                    </div>
+                </div>
+
+                {/* Dashboard (if authenticated) */}
+                {isAuthenticated && (
+                    <Link to="/dashboard" className={`nav-link ${location.pathname.startsWith('/dashboard') ? 'active' : ''}`} onClick={closeMenu}>
+                        📊 {t('headerNav.dashboard')}
                     </Link>
-                </nav>
-            </div>
+                )}
+                {/* Login/Logout */}
+                <Link to="/login" className="nav-link">
+                    <span role="img" aria-label="login">🔑</span> {t('headerNav.login') || 'Login'}
+                </Link>
+            </nav>
             
             {/* Mobile menu overlay */}
             {isMenuOpen && (
                 <div className="mobile-overlay" onClick={closeMenu}></div>
             )}
-
-            <div className="language-selector">
-                <label 
-                    htmlFor="lang-switch" 
-                >
-                    {isMobile ? '🌐' : `${getFlagEmoji(currentLanguage.code)} ${t('language')}`}:
-                </label>
-                <select
-                    id="lang-switch"
-                    value={i18n.language}
-                    onChange={e => changeLanguage(e.target.value)}
-                >
-                    {supportedLanguages.map(lang => (
-                        <option key={lang.code} value={lang.code}>
-                            {getFlagEmoji(lang.code)} {isMobile ? lang.shortName : lang.name}
-                        </option>
-                    ))}
-                </select>
-            </div>
         </header>
     );
 };

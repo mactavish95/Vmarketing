@@ -868,7 +868,7 @@ const ReviewGenerator = () => {
                                         ← Back
                                     </button>
                                 )}
-                                {currentStep < steps.length - 1 && currentStep !== 2 && (
+                                {currentStep < steps.length - 1 && (
                                     <button onClick={nextStep} className="nav-btn next-btn">
                                         Next →
                                     </button>

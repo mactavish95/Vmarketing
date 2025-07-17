@@ -62,6 +62,22 @@ const SocialMediaPostWizard = ({
   const [step, setStep] = useState(0);
   const [isEnhancing, setIsEnhancing] = useState(false);
   const [enhancementError, setEnhancementError] = useState('');
+  const [showGuidance, setShowGuidance] = useState(true);
+  const [showTipsPanel, setShowTipsPanel] = useState(true);
+
+  // Collapse guidance by default on mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      if (window.innerWidth <= 768) {
+        setShowGuidance(false);
+      } else {
+        setShowGuidance(true);
+      }
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const nextStep = async () => {
     // Special handling for step 3 (Review & Enhance)
@@ -183,11 +199,13 @@ const SocialMediaPostWizard = ({
             style={{ width: `${((step + 1) / steps.length) * 100}%` }}
           ></div>
         </div>
+        {/* Only show current step on mobile, all steps on desktop */}
         <div className="progress-steps">
           {steps.map((s, i) => (
             <div 
               key={i} 
               className={`progress-step ${i <= step ? 'active' : ''} ${i === step ? 'current' : ''}`}
+              style={window.innerWidth <= 768 && i !== step ? { display: 'none' } : {}}
             >
               <div className="step-number">{i + 1}</div>
               <div className="step-info">
@@ -201,39 +219,78 @@ const SocialMediaPostWizard = ({
 
       {/* Main Content */}
       <div className="wizard-layout">
+        {window.innerWidth <= 768 && (
+          <button
+            className="tips-toggle-btn"
+            onClick={() => setShowTipsPanel(v => !v)}
+            aria-label={showTipsPanel ? t('Hide tips panel') : t('Show tips panel')}
+            style={{
+              width: '100%',
+              padding: '10px 0',
+              background: '#f0f9ff',
+              border: 'none',
+              borderRadius: '8px',
+              marginBottom: '8px',
+              fontWeight: 600,
+              color: '#0ea5e9',
+              fontSize: '15px',
+              cursor: 'pointer',
+              display: 'block',
+            }}
+          >
+            {showTipsPanel ? 'Hide Tips 💡' : 'Show Tips 💡'}
+          </button>
+        )}
         {/* Sidebar for tips/help */}
-        <aside className="wizard-sidebar">
-          {step === 0 && platform && (
-            <div className="tips-card platform-tips">
-              <div className="tips-header">
-                <span className="tips-icon">💡</span>
-                <h3 className="tips-title">{t(`socialMedia.platformTips.${platform}.title`)}</h3>
-              </div>
-              <ul className="tips-list">
-                {getPlatformTips().map((tip, index) => (
-                  <li key={`platform-${index}`} className="tip-item">{tip}</li>
-                ))}
-              </ul>
+        {showTipsPanel && (
+          <aside className="wizard-sidebar">
+            {step === 0 && platform && (
+              <div className="tips-card platform-tips">
+                <div className="tips-header">
+                  <span className="tips-icon">💡</span>
+                  <h3 className="tips-title">{t(`socialMedia.platformTips.${platform}.title`)}</h3>
+                </div>
+                <ul className="tips-list">
+                  {getPlatformTips().map((tip, index) => (
+                    <li key={`platform-${index}`} className="tip-item">{tip}</li>
+                  ))}
+                </ul>
 
-            </div>
-          )}
-          {step !== 0 && (
-            <div className="tips-card general-tips">
-              <div className="tips-header">
-                <span className="tips-icon">💡</span>
-                <h3 className="tips-title">{t('socialMedia.helpfulTips')}</h3>
               </div>
-              <ul className="tips-list">
-                {steps[step].tips.map((tip, index) => (
-                  <li key={index} className="tip-item">{tip}</li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </aside>
+            )}
+            {step !== 0 && (
+              <div className="tips-card general-tips">
+                <div className="tips-header">
+                  <span className="tips-icon">💡</span>
+                  <h3 className="tips-title">{t('socialMedia.helpfulTips')}</h3>
+                </div>
+                <ul className="tips-list">
+                  {steps[step].tips.map((tip, index) => (
+                    <li key={index} className="tip-item">{tip}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </aside>
+        )}
         {/* Main form content */}
         <main className="wizard-main-content">
           <div className="step-content">
+            {/* Guidance Card */}
+            <div className={`guidance-card${showGuidance ? '' : ' collapsed'}`}> 
+              <button 
+                className="guidance-toggle-btn" 
+                onClick={() => setShowGuidance(v => !v)}
+                aria-expanded={showGuidance}
+                aria-label={showGuidance ? t('Hide guidance') : t('Show guidance')}
+              >
+                {showGuidance ? '−' : '+'}
+              </button>
+              <div className="guidance-content" style={{ display: showGuidance ? 'block' : 'none' }}>
+                <span className="guidance-icon" aria-hidden="true">ℹ️</span>
+                <span className="guidance-text">{steps[step].guidance}</span>
+              </div>
+            </div>
             {step === 0 && (
               <div className="form-section">
                 <div className="form-group">
@@ -1211,6 +1268,103 @@ const SocialMediaPostWizard = ({
         .action-btn:hover, .nav-btn:hover, .finish-btn:hover {
           filter: brightness(1.08);
           box-shadow: 0 2px 8px rgba(79,140,255,0.10);
+        }
+
+        /* New styles for guidance card */
+        .guidance-card {
+          background: #f8fafc;
+          border: 2px solid #e2e8f0;
+          border-radius: 12px;
+          padding: 16px 20px;
+          margin-bottom: 24px;
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          position: relative;
+        }
+
+        .guidance-card.collapsed {
+          padding: 16px 20px;
+          border-radius: 12px;
+          border: 2px solid #e2e8f0;
+          background: #f8fafc;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .guidance-toggle-btn {
+          background: none;
+          border: none;
+          font-size: 24px;
+          color: #64748b;
+          cursor: pointer;
+          padding: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 32px;
+          height: 32px;
+          border-radius: 8px;
+          transition: background-color 0.2s ease;
+          flex-shrink: 0;
+        }
+
+        .guidance-toggle-btn:hover {
+          background-color: #f1f5f9;
+        }
+
+        .guidance-toggle-btn:focus {
+          outline: none;
+          box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .guidance-content {
+          flex-grow: 1;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          color: #475569;
+          font-size: 14px;
+          line-height: 1.6;
+        }
+
+        .guidance-icon {
+          font-size: 18px;
+          color: #64748b;
+        }
+
+        .guidance-text {
+          flex-wrap: wrap;
+          word-break: break-word;
+          max-width: calc(100% - 40px); /* Adjust for toggle button */
+        }
+
+        /* Mobile Responsive for guidance card */
+        @media (max-width: 768px) {
+          .guidance-card {
+            padding: 12px 16px;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            background: #f8fafc;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+          }
+          .guidance-toggle-btn {
+            width: 28px;
+            height: 28px;
+            font-size: 20px;
+            border-radius: 6px;
+          }
+          .guidance-content {
+            font-size: 13px;
+            gap: 6px;
+          }
+          .guidance-icon {
+            font-size: 16px;
+          }
+          .guidance-text {
+            max-width: calc(100% - 36px); /* Adjust for toggle button */
+          }
         }
       `}</style>
     </div>
