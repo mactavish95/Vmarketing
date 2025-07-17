@@ -1355,7 +1355,10 @@
     "withFacebook": "Continue with Facebook",
     "withGoogle": "Continue with Google",
     "withTwitter": "Continue with Twitter",
-    "withLinkedIn": "Continue with LinkedIn"
+    "withLinkedIn": "Continue with LinkedIn",
+    "errorLocal": "Incorrect email or password.",
+    "localLogin": "Log in",
+    "orLocal": "Or log in with email:"
   },
   "signup": {
     "title": "Create your account",

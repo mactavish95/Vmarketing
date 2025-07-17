@@ -1478,7 +1478,10 @@
     "withFacebook": "Đăng nhập với Facebook",
     "withGoogle": "Đăng nhập với Google",
     "withTwitter": "Đăng nhập với Twitter",
-    "withLinkedIn": "Đăng nhập với LinkedIn"
+    "withLinkedIn": "Đăng nhập với LinkedIn",
+    "errorLocal": "Email hoặc mật khẩu không đúng.",
+    "localLogin": "Đăng nhập",
+    "orLocal": "Hoặc đăng nhập bằng email:"
   },
   "header": {
     "login": "Đăng nhập"
