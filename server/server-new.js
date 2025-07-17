@@ -3,7 +3,6 @@ const express = require('express');
 const cors = require('cors');
 const session = require('express-session');
 const passport = require('./config/passport');
-console.log('DEBUG NVIDIA_API_KEY:', process.env.NVIDIA_API_KEY, typeof process.env.NVIDIA_API_KEY);
 
 // Import modules
 const { connectToMongoDB } = require('./config/database');

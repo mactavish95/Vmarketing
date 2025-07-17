@@ -168,10 +168,10 @@ const SocialMediaPostWizard = ({
       <div className="wizard-header">
         <h1 className="wizard-title">
           <span className="wizard-icon">✨</span>
-          {t('socialMedia.wizard.title')}
+          {t('socialMedia.wizards.title')}
         </h1>
         <p className="wizard-subtitle">
-          {t('socialMedia.wizard.subtitle')}
+          {t('socialMedia.wizards.subtitle')}
         </p>
       </div>
 

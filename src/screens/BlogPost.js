@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { withRouter, Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import './BlogPost.css';
 
@@ -171,8 +171,8 @@ const blogPosts = {
   }
 };
 
-const BlogPost = ({ match }) => {
-  const { slug } = match.params;
+const BlogPost = () => {
+  const { slug } = useParams();
   const [generatedPost, setGeneratedPost] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isEditMode, setIsEditMode] = useState(false);
@@ -1088,4 +1088,4 @@ ${t('generatedOn')}: ${new Date(generatedPost.timestamp).toLocaleString()}`;
   );
 };
 
-export default withRouter(BlogPost); 
+export default BlogPost; 

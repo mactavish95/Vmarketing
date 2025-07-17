@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import './SocialMediaIntegration.css';
+import { getApiUrl } from '../config/api';
 
 const SocialMediaIntegration = ({ 
   content, 
@@ -54,7 +55,7 @@ const SocialMediaIntegration = ({
 
   const fetchConnectedAccounts = async () => {
     try {
-      const response = await fetch('/api/auth/accounts');
+      const response = await fetch(getApiUrl('/auth/accounts'), { credentials: 'include' });
       if (response.ok) {
         const accounts = await response.json();
         setConnectedAccounts(accounts);
@@ -69,13 +70,14 @@ const SocialMediaIntegration = ({
     if (!platform) return;
 
     try {
-      console.log(`🔗 Opening OAuth popup for ${platformKey}:`, platform.authUrl);
+      const authUrl = getApiUrl(`/auth/${platformKey}`);
+      console.log(`🔗 Opening OAuth popup for ${platformKey}:`, authUrl);
       console.log(`📍 Current window location:`, window.location.href);
-      console.log(`🌐 Popup will open to:`, platform.authUrl);
+      console.log(`🌐 Popup will open to:`, authUrl);
       
       // Open OAuth popup - use the auth URL directly without query parameters
       const popup = window.open(
-        platform.authUrl,
+        authUrl,
         'social-auth',
         'width=600,height=600,scrollbars=yes,resizable=yes'
       );
@@ -105,8 +107,9 @@ const SocialMediaIntegration = ({
 
   const disconnectAccount = async (platformKey) => {
     try {
-      const response = await fetch(`/api/auth/disconnect/${platformKey}`, {
-        method: 'DELETE'
+      const response = await fetch(getApiUrl(`/auth/disconnect/${platformKey}`), {
+        method: 'DELETE',
+        credentials: 'include'
       });
 
       if (response.ok) {
@@ -130,17 +133,29 @@ const SocialMediaIntegration = ({
     setPublishStatus(null);
 
     try {
-      const response = await fetch('/api/social/publish', {
+      const response = await fetch(getApiUrl('/social/publish'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
+        credentials: 'include', // Ensure cookies/session are sent
         body: JSON.stringify({
           platform: platformKey,
           content: content,
           accountId: connectedAccounts[platformKey].id
         })
       });
+
+      if (response.status === 401) {
+        setPublishStatus({
+          type: 'error',
+          message: 'You must be logged in to publish. Please log in and try again.'
+        });
+        onPublishError && onPublishError(platformKey, 'Authentication required');
+        setIsPublishing(false);
+        window.location.replace('/login');
+        return;
+      }
 
       const result = await response.json();
 
@@ -288,7 +303,7 @@ const SocialMediaIntegration = ({
                   <span className="status-message">{publishStatus.message}</span>
                   {publishStatus.postId && (
                     <a 
-                      href={`/api/social/post/${publishStatus.postId}`}
+                      href={getApiUrl(`/social/post/${publishStatus.postId}`)}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="view-post-link"

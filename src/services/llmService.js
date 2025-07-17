@@ -926,8 +926,9 @@ function formatEnhancedGeneralResponse(sentences, structure) {
 
 class LLMService {
     constructor() {
-        this.apiKey = process.env.REACT_APP_OPENAI_API_KEY || '';
-        this.anthropicKey = process.env.REACT_APP_ANTHROPIC_API_KEY || '';
+        // In the browser, process.env is not available. Use empty string or inject via build tools if needed.
+        this.apiKey = '';
+        this.anthropicKey = '';
         this.useLocalFallback = true;
     }
 
@@ -1331,6 +1332,32 @@ Context: ${JSON.stringify(context)}`
         // Clean the response before returning
         return cleanAIResponse(reviewText);
     }
+}
+
+import { getApiUrl } from '../config/api';
+/**
+ * Get LLM-powered recommendations for a final post result using the Qwen model
+ * @param {string} post - The final post content
+ * @param {string} platform - The target platform (e.g., 'instagram', 'facebook')
+ * @returns {Promise<string>} Recommendations string
+ */
+export async function getPostRecommendations(post, platform = '') {
+  try {
+    const url = getApiUrl('/enhanced-llm/recommendation');
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ post, platform })
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || 'Failed to get recommendations');
+    }
+    const data = await res.json();
+    return data.recommendations;
+  } catch (error) {
+    throw new Error(error.message || 'Failed to get recommendations');
+  }
 }
 
 export default new LLMService(); 

@@ -78,6 +78,32 @@ const HomeScreen = () => {
                 </div>
             </section>
 
+            {/* CTA Section */}
+            <section className="cta-section">
+                <div className="container">
+                    <div className="cta-content">
+                        <h2 className="cta-title">Ready to Transform Your Content Creation?</h2>
+                        <p className="cta-subtitle">Join creators network who are already using our AI-powered tools</p>
+                        <div className="cta-actions">
+                            <Link to="/voice-review" className="cta-btn primary">
+                                <span className="btn-icon">🚀</span>
+                                <span className="btn-text">Start Creating Now</span>
+                                <span className="btn-arrow">→</span>
+                            </Link>
+                            <Link to="/social-media" className="cta-btn secondary">
+                                <span className="btn-icon">📱</span>
+                                <span className="btn-text">Start Publishing</span>
+                            </Link>
+                        </div>
+                        <div className="cta-features">
+                            <div className="feature-tag">✨ Free to Start</div>
+                            <div className="feature-tag">🔒 Secure & Private</div>
+                            <div className="feature-tag">📱 Mobile Optimized</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             {/* Features Showcase */}
             <section className="features-showcase">
                 <div className="container">
@@ -265,32 +291,6 @@ const HomeScreen = () => {
                                 </div>
                                 <div className="rating">⭐⭐⭐⭐⭐</div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* CTA Section */}
-            <section className="cta-section">
-                <div className="container">
-                    <div className="cta-content">
-                        <h2 className="cta-title">Ready to Transform Your Content Creation?</h2>
-                        <p className="cta-subtitle">Join thousands of creators who are already using our AI-powered tools</p>
-                        <div className="cta-actions">
-                            <Link to="/voice-review" className="cta-btn primary">
-                                <span className="btn-icon">🚀</span>
-                                <span className="btn-text">Start Creating Now</span>
-                                <span className="btn-arrow">→</span>
-                            </Link>
-                            <Link to="/social-media" className="cta-btn secondary">
-                                <span className="btn-icon">📱</span>
-                                <span className="btn-text">Try Social Media</span>
-                            </Link>
-                        </div>
-                        <div className="cta-features">
-                            <div className="feature-tag">✨ Free to Start</div>
-                            <div className="feature-tag">🔒 Secure & Private</div>
-                            <div className="feature-tag">📱 Mobile Optimized</div>
                         </div>
                     </div>
                 </div>

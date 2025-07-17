@@ -3,11 +3,19 @@ const router = express.Router();
 const SocialAccount = require('../models/SocialAccount');
 const PublishedPost = require('../models/PublishedPost');
 
+// Authentication middleware
+function ensureAuthenticated(req, res, next) {
+  if (req.isAuthenticated && req.isAuthenticated()) {
+    return next();
+  }
+  res.status(401).json({ success: false, error: 'Authentication required', code: 'AUTH_REQUIRED' });
+}
+
 // Publish content to social media platforms
-router.post('/publish', async (req, res) => {
+router.post('/publish', ensureAuthenticated, async (req, res) => {
   try {
     const { platform, content, accountId } = req.body;
-    const userId = req.user?.id || 'demo-user';
+    const userId = req.user?.id;
 
     // Get account credentials
     const account = await SocialAccount.findOne({ 
@@ -227,9 +235,9 @@ async function publishToLinkedIn(account, content) {
 }
 
 // Get published posts
-router.get('/posts', async (req, res) => {
+router.get('/posts', ensureAuthenticated, async (req, res) => {
   try {
-    const userId = req.user?.id || 'demo-user';
+    const userId = req.user?.id;
     const { platform, limit = 20, offset = 0 } = req.query;
 
     const query = { userId };
@@ -256,10 +264,10 @@ router.get('/posts', async (req, res) => {
 });
 
 // Get specific post
-router.get('/post/:postId', async (req, res) => {
+router.get('/post/:postId', ensureAuthenticated, async (req, res) => {
   try {
     const { postId } = req.params;
-    const userId = req.user?.id || 'demo-user';
+    const userId = req.user?.id;
 
     const post = await PublishedPost.findOne({ _id: postId, userId });
     
@@ -275,10 +283,10 @@ router.get('/post/:postId', async (req, res) => {
 });
 
 // Delete published post
-router.delete('/post/:postId', async (req, res) => {
+router.delete('/post/:postId', ensureAuthenticated, async (req, res) => {
   try {
     const { postId } = req.params;
-    const userId = req.user?.id || 'demo-user';
+    const userId = req.user?.id;
 
     const post = await PublishedPost.findOne({ _id: postId, userId });
     
@@ -344,9 +352,9 @@ async function deleteFromPlatform(post) {
 }
 
 // Get publishing analytics
-router.get('/analytics', async (req, res) => {
+router.get('/analytics', ensureAuthenticated, async (req, res) => {
   try {
-    const userId = req.user?.id || 'demo-user';
+    const userId = req.user?.id;
     const { platform, period = '30d' } = req.query;
 
     const query = { userId };

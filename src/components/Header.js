@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Link, withRouter } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import './Header.css';
 import { useTranslation } from 'react-i18next';
+import { getApiUrl } from '../config/api';
 
-const Header = ({ location }) => {
+const Header = () => {
+    const location = useLocation();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
     const [openDropdown, setOpenDropdown] = useState(null);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
     const { t, i18n } = useTranslation();
 
     // Language configuration with flags
@@ -72,6 +75,13 @@ const Header = ({ location }) => {
         return () => window.removeEventListener('resize', checkMobile);
     }, []);
 
+    useEffect(() => {
+        fetch(getApiUrl('/auth/session'), { credentials: 'include' })
+            .then(res => res.json())
+            .then(data => setIsAuthenticated(!!data?.authenticated))
+            .catch(() => setIsAuthenticated(false));
+    }, [location]);
+
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
     };
@@ -111,8 +121,8 @@ const Header = ({ location }) => {
         <header className="header">
             <div className="header-content">
                 <Link to="/" className="logo" onClick={closeMenu}>
-                    <span className="logo-icon">⭐</span>
-                    <span className="logo-text">Vmarketing</span>
+                    <span className="logo-icon">📝</span>
+                    <span className="logo-text">ReviewGen</span>
                 </Link>
                 
                 {/* Mobile hamburger menu */}
@@ -226,13 +236,13 @@ const Header = ({ location }) => {
                         >
                             📱 {t('menu.socialMedia')}
                         </Link>
-                        <Link 
+                        {/* <Link 
                             to="/social-media-history" 
                             className={`nav-link ${location.pathname === '/social-media-history' ? 'active' : ''}`}
                             onClick={closeMenu}
                         >
                             📚 {t('menu.socialMediaHistory') || 'Social Media History'}
-                        </Link>
+                        </Link> */}
                             <Link 
                                 to="/social-media-integration" 
                                 className={`nav-link ${location.pathname === '/social-media-integration' ? 'active' : ''}`}
@@ -250,6 +260,14 @@ const Header = ({ location }) => {
                         onClick={closeMenu}
                     >
                         👨‍💼 {t('menu.customerService')}
+                    </Link>
+                    {isAuthenticated && (
+                        <Link to="/dashboard" className={`nav-link ${location.pathname.startsWith('/dashboard') ? 'active' : ''}`} onClick={closeMenu}>
+                            📊 {t('dashboard')}
+                        </Link>
+                    )}
+                    <Link to="/login" className="nav-link">
+                        <span role="img" aria-label="login">🔑</span> {t('header.login') || 'Login'}
                     </Link>
                 </nav>
             </div>
@@ -281,4 +299,4 @@ const Header = ({ location }) => {
     );
 };
 
-export default withRouter(Header); 
+export default Header; 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { withRouter } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import VoiceAnalysis from '../components/VoiceAnalysis';
 import VoiceRecognition from '../components/VoiceRecognition';
 import LocationAttachment from '../components/LocationAttachment';
@@ -8,7 +8,8 @@ import apiConfig from '../config/api';
 import './ReviewGenerator.css';
 import { useTranslation } from 'react-i18next';
 
-const ReviewGenerator = ({ history }) => {
+const ReviewGenerator = () => {
+    const navigate = useNavigate();
     const [currentStep, setCurrentStep] = useState(0);
     const [reviewData, setReviewData] = useState({
         reviewType: 'restaurant',

@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const llamaService = require('../services/llamaService');
+const enhancedLLMService = require('../services/enhancedLLMService');
 const { Review, mongoose } = require('../config/database');
 
 // Voice Analysis endpoint using NVIDIA Llama
@@ -322,7 +323,12 @@ router.post('/voice/customer-service-response', async (req, res) => {
       });
     }
 
-    const result = await llamaService.generateCustomerServiceResponse(review, apiKey);
+    // Use enhancedLLMService for customer service response with Mistral model
+    const result = await enhancedLLMService.generateEnhancedResponse(
+      review,
+      apiKey,
+      { type: 'customer_service', sentiment, model: 'mistralai/mistral-nemotron' }
+    );
 
     // Save to MongoDB (if available)
     if (mongoose.connection.readyState === 1) {
@@ -343,7 +349,12 @@ router.post('/voice/customer-service-response', async (req, res) => {
       console.log('💾 Database not available, skipping save');
     }
 
-    res.json(result);
+    res.json({
+      success: true,
+      response: result.response,
+      staffName: result.staffName || 'Customer Care Team',
+      model: result.model || undefined
+    });
   } catch (error) {
     console.error('Customer Service Agent Error:', error);
     res.status(500).json({

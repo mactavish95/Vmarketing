@@ -1,6 +1,7 @@
 const axios = require('axios');
 const { cleanAIResponse } = require('../utils/responseFormatter');
 const { analyzeConversationFlow, enhanceUserMessage } = require('../utils/conversationUtils');
+const OpenAI = require('openai');
 
 class EnhancedLLMService {
     constructor() {
@@ -32,6 +33,20 @@ class EnhancedLLMService {
                 strengths: ['multimodal', 'creative', 'diverse_responses'],
                 temperature: 0.7,
                 maxTokens: 2048
+            },
+            mistral: {
+                name: 'mistralai/mistral-nemotron',
+                baseURL: 'https://integrate.api.nvidia.com/v1',
+                strengths: ['customer_service', 'reasoning', 'long_context'],
+                temperature: 0.6,
+                maxTokens: 4096
+            },
+            qwen: {
+                name: 'qwen/qwen3-235b-a22b',
+                baseURL: 'https://integrate.api.nvidia.com/v1',
+                strengths: ['recommendations', 'reasoning', 'long_context', 'engagement'],
+                temperature: 0.2,
+                maxTokens: 8192
             }
         };
         
@@ -298,6 +313,10 @@ class EnhancedLLMService {
             return await this.callAnthropicAPI(messages, model, strategy, apiKey);
         } else if (model.name.includes('gemini')) {
             return await this.callGeminiAPI(messages, model, strategy, apiKey);
+        } else if (model.name.includes('mistral')) {
+            return await this.callMistralAPI(messages, model, strategy, apiKey);
+        } else if (model.name.includes('qwen')) {
+            return await this.callQwenAPI(messages, model, strategy, apiKey);
         }
         
         throw new Error(`Unsupported model: ${model.name}`);
@@ -498,6 +517,43 @@ Provide creative, engaging responses that are both memorable and genuinely helpf
         );
 
         return response.data.candidates[0]?.content?.parts[0]?.text || 'No response generated';
+    }
+
+    // Call Mistral API using OpenAI npm package
+    async callMistralAPI(messages, model, strategy, apiKey) {
+        const openai = new OpenAI({
+            apiKey: apiKey,
+            baseURL: model.baseURL
+        });
+        const completion = await openai.chat.completions.create({
+            model: model.name,
+            messages: messages,
+            temperature: strategy.temperature,
+            top_p: 0.7,
+            max_tokens: strategy.maxTokens,
+            stream: false
+        });
+        // The OpenAI npm package returns choices[0].message.content
+        return completion.choices[0]?.message?.content || 'No response generated';
+    }
+
+    // Call Qwen API using OpenAI npm package
+    async callQwenAPI(messages, model, strategy, apiKey) {
+        const openai = new OpenAI({
+            apiKey: apiKey,
+            baseURL: model.baseURL
+        });
+        const completion = await openai.chat.completions.create({
+            model: model.name,
+            messages: messages,
+            temperature: strategy.temperature,
+            top_p: 0.7,
+            max_tokens: strategy.maxTokens,
+            chat_template_kwargs: { thinking: true },
+            stream: false
+        });
+        // The OpenAI npm package returns choices[0].message.content
+        return completion.choices[0]?.message?.content || 'No response generated';
     }
 
     // Analyze and enhance the generated response

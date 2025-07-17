@@ -8,7 +8,7 @@ const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/reviewgen'
 const connectToMongoDB = async () => {
   try {
     console.log('🔌 Attempting to connect to MongoDB...');
-    console.log(`📡 Connection URI: ${MONGO_URI}`);
+
     
     await mongoose.connect(MONGO_URI, {
       serverSelectionTimeoutMS: 10000, // 10 second timeout
@@ -50,6 +50,7 @@ const Review = mongoose.model('Review', reviewSchema);
 
 // Social Media Post Schema and Model (global history)
 const socialMediaPostSchema = new mongoose.Schema({
+  userId: { type: String, required: true },
   original: { type: String, required: true },
   enhanced: { type: String, required: true },
   platform: { type: String, required: true },
@@ -63,6 +64,8 @@ const socialMediaPostSchema = new mongoose.Schema({
   situation: { type: String },
   timestamp: { type: Date, default: Date.now }
 });
+
+socialMediaPostSchema.index({ userId: 1 });
 
 const SocialMediaPost = mongoose.model('SocialMediaPost', socialMediaPostSchema);
 
@@ -89,6 +92,17 @@ const blogPostSchema = new mongoose.Schema({
 });
 
 const BlogPost = mongoose.model('BlogPost', blogPostSchema);
+
+// User Schema and Model (for local registration)
+const userSchema = new mongoose.Schema({
+  email: { type: String, required: true, unique: true, index: true },
+  password: { type: String, required: true }, // hashed
+  name: { type: String },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now }
+});
+
+const User = mongoose.model('User', userSchema);
 
 // Event listeners
 mongoose.connection.on('connected', () => {
@@ -132,5 +146,6 @@ module.exports = {
   SocialMediaPost,
   BlogPost,
   isMongoDBAvailable,
-  safeSave
+  safeSave,
+  User // Export User model
 }; 

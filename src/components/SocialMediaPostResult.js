@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import formatInstagramContent from '../utils/formatInstagramContent';
+import { getPostRecommendations } from '../services/llmService';
 
 const SocialMediaPostResult = ({
   enhancedContent,
@@ -63,6 +64,58 @@ const SocialMediaPostResult = ({
     if (score >= 0.6) return t('socialMedia.quality.good');
     if (score >= 0.4) return t('socialMedia.quality.fair');
     return t('socialMedia.quality.poor');
+  };
+
+  // Demo quality analysis for testing (remove in production)
+  const demoQualityAnalysis = {
+    overallScore: 85,
+    metrics: {
+      coherence: 0.9,
+      relevance: 0.8,
+      completeness: 0.7,
+      clarity: 0.85,
+      engagement: 0.75,
+      structure: 0.8,
+      tone: 0.9,
+      length: 0.8
+    },
+    strengths: [
+      'Excellent logical flow and coherence',
+      'Highly relevant to the target audience',
+      'Clear and easy to understand'
+    ],
+    weaknesses: [
+      'Could include more engagement elements',
+      'Length could be optimized for platform'
+    ],
+    suggestions: [
+      'Add a compelling call-to-action to encourage interaction',
+      'Include relevant hashtags for better discoverability',
+      'Ask a question to encourage comments and engagement',
+      'Use more emotional language to connect with your audience'
+    ]
+  };
+
+  // Use demo analysis if no real analysis is provided (for demonstration)
+  const displayQualityAnalysis = qualityAnalysis || demoQualityAnalysis;
+
+  // LLM Recommendations state
+  const [recommendations, setRecommendations] = React.useState('');
+  const [recLoading, setRecLoading] = React.useState(false);
+  const [recError, setRecError] = React.useState('');
+
+  // Handler to fetch recommendations
+  const handleGetRecommendations = async () => {
+    setRecLoading(true);
+    setRecError('');
+    setRecommendations('');
+    try {
+      const recs = await getPostRecommendations(reviewedContent || enhancedContent, platform);
+      setRecommendations(recs);
+    } catch (err) {
+      setRecError(err.message || 'Failed to get recommendations');
+    }
+    setRecLoading(false);
   };
 
   // Helper: Platform-specific post HTML for popouts
@@ -1057,6 +1110,268 @@ const SocialMediaPostResult = ({
               <span style={{ color: '#ef4444', fontWeight: 600, fontSize: 12 }}>⚠️ Over limit</span>
             )}
               </div>
+
+          {/* Quality Score Display */}
+          {displayQualityAnalysis && (
+            <div style={{
+              background: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)',
+              borderRadius: 12,
+              padding: 16,
+              margin: '16px 0',
+              border: '1px solid #e2e8f0',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
+            }}>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                marginBottom: 12
+              }}>
+                <h3 style={{
+                  fontSize: 16,
+                  fontWeight: 700,
+                  color: '#1e293b',
+                  margin: 0,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 8
+                }}>
+                  📊 {t('socialMedia.qualityAnalysis')}
+                </h3>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  padding: '6px 12px',
+                  borderRadius: 20,
+                  background: 'white',
+                  border: '1px solid #e2e8f0',
+                  boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+                }}>
+                  <span style={{
+                    fontSize: 14,
+                    fontWeight: 600,
+                    color: getQualityColor(displayQualityAnalysis.overallScore / 100)
+                  }}>
+                    {getQualityLabel(displayQualityAnalysis.overallScore / 100)}
+                  </span>
+                  <span style={{
+                    fontSize: 18,
+                    fontWeight: 800,
+                    color: getQualityColor(displayQualityAnalysis.overallScore / 100)
+                  }}>
+                    {displayQualityAnalysis.overallScore}
+                  </span>
+                </div>
+              </div>
+
+              {/* Quality Metrics Grid */}
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
+                gap: 8,
+                marginBottom: 16
+              }}>
+                {Object.entries(displayQualityAnalysis.metrics || {}).map(([metric, score]) => (
+                  <div key={metric} style={{
+                    background: 'white',
+                    padding: 8,
+                    borderRadius: 8,
+                    border: '1px solid #e2e8f0',
+                    textAlign: 'center'
+                  }}>
+                    <div style={{
+                      fontSize: 11,
+                      fontWeight: 600,
+                      color: '#64748b',
+                      marginBottom: 4,
+                      textTransform: 'capitalize'
+                    }}>
+                      {metric.replace(/([A-Z])/g, ' $1').trim()}
+                    </div>
+                    <div style={{
+                      fontSize: 16,
+                      fontWeight: 700,
+                      color: getQualityColor(score)
+                    }}>
+                      {(score * 100).toFixed(0)}%
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Strengths and Weaknesses */}
+              <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 12
+              }}>
+                {displayQualityAnalysis.strengths && displayQualityAnalysis.strengths.length > 0 && (
+                  <div>
+                    <h4 style={{
+                      fontSize: 14,
+                      fontWeight: 600,
+                      color: '#059669',
+                      margin: '0 0 8px 0',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 6
+                    }}>
+                      ✅ {t('socialMedia.strengths')}
+                    </h4>
+                    <ul style={{
+                      margin: 0,
+                      paddingLeft: 20,
+                      fontSize: 13,
+                      color: '#374151',
+                      lineHeight: 1.4
+                    }}>
+                      {displayQualityAnalysis.strengths.slice(0, 3).map((strength, index) => (
+                        <li key={index}>{strength}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {displayQualityAnalysis.weaknesses && displayQualityAnalysis.weaknesses.length > 0 && (
+                  <div>
+                    <h4 style={{
+                      fontSize: 14,
+                      fontWeight: 600,
+                      color: '#dc2626',
+                      margin: '0 0 8px 0',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 6
+                    }}>
+                      ⚠️ {t('socialMedia.areasForImprovement')}
+                    </h4>
+                    <ul style={{
+                      margin: 0,
+                      paddingLeft: 20,
+                      fontSize: 13,
+                      color: '#374151',
+                      lineHeight: 1.4
+                    }}>
+                      {displayQualityAnalysis.weaknesses.slice(0, 3).map((weakness, index) => (
+                        <li key={index}>{weakness}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+
+              {/* Recommendations */}
+              {displayQualityAnalysis.suggestions && displayQualityAnalysis.suggestions.length > 0 && (
+                <div style={{
+                  marginTop: 16,
+                  padding: 12,
+                  background: 'linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)',
+                  borderRadius: 8,
+                  border: '1px solid #bfdbfe'
+                }}>
+                  <h4 style={{
+                    fontSize: 14,
+                    fontWeight: 600,
+                    color: '#1e40af',
+                    margin: '0 0 8px 0',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 6
+                  }}>
+                    💡 {t('socialMedia.recommendations')}
+                  </h4>
+                  <ul style={{
+                    margin: 0,
+                    paddingLeft: 20,
+                    fontSize: 13,
+                    color: '#1e293b',
+                    lineHeight: 1.5
+                  }}>
+                    {displayQualityAnalysis.suggestions.slice(0, 4).map((suggestion, index) => (
+                      <li key={index} style={{ marginBottom: 4 }}>{suggestion}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* Platform-Specific Tips */}
+              <div style={{
+                marginTop: 12,
+                padding: 10,
+                background: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
+                borderRadius: 8,
+                border: '1px solid #f59e0b'
+              }}>
+                <h4 style={{
+                  fontSize: 13,
+                  fontWeight: 600,
+                  color: '#92400e',
+                  margin: '0 0 6px 0',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 6
+                }}>
+                  🎯 {t('socialMedia.platformTips')}
+                </h4>
+                <div style={{
+                  fontSize: 12,
+                  color: '#92400e',
+                  lineHeight: 1.4
+                }}>
+                  {platform === 'instagram' && 'Use relevant hashtags and emojis for better discoverability. Share personal stories to build authentic connections.'}
+                  {platform === 'facebook' && 'Focus on community engagement. Ask questions to encourage comments and discussions.'}
+                  {platform === 'twitter' && 'Keep your message concise and use trending hashtags to join relevant conversations.'}
+                  {platform === 'linkedin' && 'Share professional insights and use industry-specific hashtags for better visibility.'}
+                  {platform === 'tiktok' && 'Use trending hashtags and sounds. Keep your caption short and engaging.'}
+                  {platform === 'youtube' && 'Include timestamps for longer videos and add relevant links in your description.'}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* LLM Recommendations Button & Display */}
+          <div style={{ margin: '24px 0 0 0', textAlign: 'center' }}>
+            <button
+              onClick={handleGetRecommendations}
+              disabled={recLoading}
+              style={{
+                background: 'linear-gradient(135deg, #6366f1 0%, #06b6d4 100%)',
+                color: '#fff',
+                border: 'none',
+                borderRadius: 8,
+                padding: '12px 28px',
+                fontWeight: 700,
+                fontSize: 16,
+                cursor: recLoading ? 'not-allowed' : 'pointer',
+                boxShadow: '0 2px 8px rgba(99,102,241,0.10)',
+                marginBottom: 12
+              }}
+            >
+              {recLoading ? 'Getting Recommendations...' : '💡 Get LLM Recommendations'}
+            </button>
+            {recError && (
+              <div style={{ color: '#dc2626', marginTop: 8, fontWeight: 500 }}>{recError}</div>
+            )}
+            {recommendations && (
+              <div style={{
+                background: 'linear-gradient(135deg, #f0fdfa 0%, #e0f2fe 100%)',
+                border: '1px solid #bae6fd',
+                borderRadius: 10,
+                padding: 18,
+                marginTop: 16,
+                color: '#0369a1',
+                fontSize: 15,
+                textAlign: 'left',
+                whiteSpace: 'pre-line',
+                fontFamily: 'inherit',
+                boxShadow: '0 2px 8px rgba(14,165,233,0.06)'
+              }}>
+                <strong>🔍 {t('socialMedia.llmRecommendations') || 'LLM Recommendations'}:</strong>
+                <div style={{ marginTop: 8 }}>{recommendations}</div>
+              </div>
+            )}
+          </div>
 
           {/* Quick Actions (mobile-friendly) */}
           <div

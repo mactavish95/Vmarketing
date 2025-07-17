@@ -711,4 +711,625 @@ class ResponseQualityAnalyzer {
     }
 }
 
-module.exports = ResponseQualityAnalyzer;
+// Platform-Specific Quality Analyzer
+// Provides customized scoring systems for different social media platforms
+class PlatformSpecificAnalyzer extends ResponseQualityAnalyzer {
+    constructor() {
+        super();
+        
+        // Platform-specific configurations
+        this.platformConfigs = {
+            instagram: {
+                name: 'Instagram',
+                characterLimit: 2200,
+                optimalLength: { min: 50, max: 150 },
+                hashtagLimit: { min: 5, max: 30 },
+                emojiUsage: 'high',
+                visualFocus: true,
+                engagementMetrics: {
+                    hashtags: 0.25,
+                    emojis: 0.20,
+                    questions: 0.20,
+                    callToAction: 0.15,
+                    personalStory: 0.20
+                },
+                tonePreferences: ['authentic', 'personal', 'inspirational', 'aspirational'],
+                contentTypes: ['lifestyle', 'product', 'behind-the-scenes', 'user-generated'],
+                hashtagCategories: ['brand', 'niche', 'trending', 'location', 'community'],
+                visualKeywords: ['beautiful', 'stunning', 'amazing', 'perfect', 'gorgeous', 'incredible'],
+                engagementPhrases: ['double tap', 'save this', 'share with friends', 'comment below', 'tag a friend']
+            },
+            
+            facebook: {
+                name: 'Facebook',
+                characterLimit: 63206,
+                optimalLength: { min: 100, max: 300 },
+                hashtagLimit: { min: 0, max: 5 },
+                emojiUsage: 'moderate',
+                visualFocus: false,
+                engagementMetrics: {
+                    community: 0.30,
+                    personalStory: 0.25,
+                    questions: 0.20,
+                    callToAction: 0.15,
+                    hashtags: 0.10
+                },
+                tonePreferences: ['friendly', 'community-focused', 'informative', 'supportive'],
+                contentTypes: ['community', 'news', 'personal', 'business', 'events'],
+                hashtagCategories: ['community', 'local', 'business', 'events'],
+                communityKeywords: ['community', 'together', 'friends', 'family', 'support', 'share'],
+                engagementPhrases: ['share your thoughts', 'what do you think', 'join the conversation', 'tag someone who needs this']
+            },
+            
+            twitter: {
+                name: 'Twitter',
+                characterLimit: 280,
+                optimalLength: { min: 50, max: 250 },
+                hashtagLimit: { min: 1, max: 3 },
+                emojiUsage: 'moderate',
+                visualFocus: false,
+                engagementMetrics: {
+                    hashtags: 0.30,
+                    mentions: 0.25,
+                    questions: 0.20,
+                    trending: 0.15,
+                    brevity: 0.10
+                },
+                tonePreferences: ['concise', 'informative', 'engaging', 'trending'],
+                contentTypes: ['news', 'opinion', 'trending', 'conversation', 'announcement'],
+                hashtagCategories: ['trending', 'niche', 'brand', 'conversation'],
+                trendingKeywords: ['breaking', 'update', 'announcement', 'trending', 'viral'],
+                engagementPhrases: ['retweet if you agree', 'quote tweet with your thoughts', 'follow for more', 'thread coming']
+            },
+            
+            linkedin: {
+                name: 'LinkedIn',
+                characterLimit: 3000,
+                optimalLength: { min: 200, max: 600 },
+                hashtagLimit: { min: 3, max: 10 },
+                emojiUsage: 'low',
+                visualFocus: false,
+                engagementMetrics: {
+                    professionalInsight: 0.35,
+                    industryRelevance: 0.25,
+                    thoughtLeadership: 0.20,
+                    networking: 0.15,
+                    hashtags: 0.05
+                },
+                tonePreferences: ['professional', 'thoughtful', 'insightful', 'authoritative'],
+                contentTypes: ['industry-insights', 'career-advice', 'business-updates', 'professional-development'],
+                hashtagCategories: ['industry', 'professional', 'business', 'leadership'],
+                professionalKeywords: ['industry', 'leadership', 'strategy', 'growth', 'innovation', 'expertise'],
+                engagementPhrases: ['what are your thoughts', 'share your experience', 'connect with me', 'let\'s discuss']
+            },
+            
+            tiktok: {
+                name: 'TikTok',
+                characterLimit: 150,
+                optimalLength: { min: 20, max: 100 },
+                hashtagLimit: { min: 3, max: 8 },
+                emojiUsage: 'high',
+                visualFocus: true,
+                engagementMetrics: {
+                    trending: 0.30,
+                    hashtags: 0.25,
+                    emojis: 0.20,
+                    callToAction: 0.15,
+                    brevity: 0.10
+                },
+                tonePreferences: ['fun', 'trendy', 'authentic', 'entertaining'],
+                contentTypes: ['trending', 'entertainment', 'educational', 'challenge', 'duet'],
+                hashtagCategories: ['trending', 'challenge', 'niche', 'fyp'],
+                trendingKeywords: ['trending', 'viral', 'fyp', 'challenge', 'duet'],
+                engagementPhrases: ['follow for more', 'duet this', 'save this', 'share with friends']
+            },
+            
+            youtube: {
+                name: 'YouTube',
+                characterLimit: 5000,
+                optimalLength: { min: 100, max: 500 },
+                hashtagLimit: { min: 5, max: 15 },
+                emojiUsage: 'moderate',
+                visualFocus: true,
+                engagementMetrics: {
+                    videoDescription: 0.30,
+                    callToAction: 0.25,
+                    hashtags: 0.20,
+                    timestamps: 0.15,
+                    links: 0.10
+                },
+                tonePreferences: ['informative', 'entertaining', 'educational', 'engaging'],
+                contentTypes: ['tutorial', 'review', 'entertainment', 'educational', 'vlog'],
+                hashtagCategories: ['content-type', 'niche', 'trending', 'brand'],
+                videoKeywords: ['subscribe', 'like', 'comment', 'share', 'bell', 'notification'],
+                engagementPhrases: ['subscribe for more', 'hit the like button', 'comment below', 'share with friends']
+            }
+        };
+    }
+
+    // Analyze response quality for specific platform
+    analyzePlatformQuality(response, platform, postType = 'general', context = {}) {
+        const platformConfig = this.platformConfigs[platform.toLowerCase()];
+        if (!platformConfig) {
+            return this.analyzeResponseQuality(response, 'general', context);
+        }
+
+        const analysis = {
+            platform: platformConfig.name,
+            overallScore: 0,
+            platformScore: 0,
+            metrics: { ...this.qualityMetrics },
+            platformMetrics: {},
+            strengths: [],
+            weaknesses: [],
+            suggestions: [],
+            platformSuggestions: [],
+            patternAnalysis: {},
+            structureAnalysis: {},
+            keyPoints: [],
+            sentiment: 'neutral',
+            complexity: 'moderate',
+            engagement: 'medium',
+            platformOptimization: {}
+        };
+
+        // Standard quality analysis
+        analysis.metrics.coherence = this.analyzeCoherence(response);
+        analysis.metrics.relevance = this.analyzeRelevance(response, context);
+        analysis.metrics.completeness = this.analyzeCompleteness(response, postType);
+        analysis.metrics.clarity = this.analyzeClarity(response);
+        analysis.metrics.engagement = this.analyzeEngagement(response);
+        analysis.metrics.structure = this.analyzeStructure(response, postType);
+        analysis.metrics.tone = this.analyzeTone(response, postType);
+        analysis.metrics.length = this.analyzeLength(response, postType);
+
+        // Platform-specific analysis
+        analysis.platformMetrics = this.analyzePlatformMetrics(response, platformConfig);
+        analysis.platformOptimization = this.analyzePlatformOptimization(response, platformConfig);
+        
+        // Calculate scores
+        analysis.overallScore = this.calculateOverallScore(analysis.metrics);
+        analysis.platformScore = this.calculatePlatformScore(analysis.platformMetrics, platformConfig);
+
+        // Generate suggestions
+        analysis.strengths = this.identifyStrengths(analysis.metrics);
+        analysis.weaknesses = this.identifyWeaknesses(analysis.metrics);
+        analysis.suggestions = this.generateSuggestions(analysis);
+        analysis.platformSuggestions = this.generatePlatformSuggestions(analysis, platformConfig);
+
+        // Additional analysis
+        analysis.patternAnalysis = this.analyzeResponsePatterns(response, postType);
+        analysis.structureAnalysis = this.analyzeResponseStructure(response, postType);
+        analysis.keyPoints = this.extractKeyPoints(response);
+        analysis.sentiment = this.analyzeSentiment(response);
+        analysis.complexity = this.analyzeComplexity(response);
+
+        return analysis;
+    }
+
+    // Analyze platform-specific metrics
+    analyzePlatformMetrics(response, platformConfig) {
+        const metrics = {};
+        const responseLower = response.toLowerCase();
+        const wordCount = response.split(/\s+/).length;
+        const charCount = response.length;
+
+        // Hashtag analysis
+        const hashtags = (response.match(/#\w+/g) || []);
+        metrics.hashtagCount = hashtags.length;
+        metrics.hashtagScore = this.calculateHashtagScore(hashtags.length, platformConfig.hashtagLimit);
+        metrics.hashtagRelevance = this.analyzeHashtagRelevance(hashtags, platformConfig.hashtagCategories);
+
+        // Emoji analysis
+        const emojis = (response.match(/[\u{1F600}-\u{1F64F}]|[\u{1F300}-\u{1F5FF}]|[\u{1F680}-\u{1F6FF}]|[\u{1F1E0}-\u{1F1FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/gu) || []);
+        metrics.emojiCount = emojis.length;
+        metrics.emojiScore = this.calculateEmojiScore(emojis.length, platformConfig.emojiUsage, wordCount);
+
+        // Length analysis
+        metrics.lengthScore = this.calculatePlatformLengthScore(charCount, wordCount, platformConfig);
+        metrics.characterEfficiency = this.calculateCharacterEfficiency(response, platformConfig);
+
+        // Engagement analysis
+        metrics.engagementScore = this.calculatePlatformEngagementScore(response, platformConfig);
+        metrics.callToActionScore = this.analyzeCallToAction(response, platformConfig.engagementPhrases);
+        metrics.questionScore = this.analyzeQuestions(response);
+
+        // Tone analysis
+        metrics.toneScore = this.analyzePlatformTone(response, platformConfig.tonePreferences);
+        metrics.keywordScore = this.analyzePlatformKeywords(response, platformConfig);
+
+        // Visual focus analysis
+        if (platformConfig.visualFocus) {
+            metrics.visualKeywordsScore = this.analyzeVisualKeywords(response, platformConfig.visualKeywords);
+        }
+
+        return metrics;
+    }
+
+    // Calculate hashtag score
+    calculateHashtagScore(count, limit) {
+        const { min, max } = limit;
+        if (count >= min && count <= max) return 1.0;
+        if (count >= min * 0.8 && count <= max * 1.2) return 0.8;
+        if (count >= min * 0.6 && count <= max * 1.4) return 0.6;
+        return 0.3;
+    }
+
+    // Analyze hashtag relevance
+    analyzeHashtagRelevance(hashtags, categories) {
+        if (hashtags.length === 0) return 0;
+        
+        let relevantCount = 0;
+        hashtags.forEach(hashtag => {
+            const tag = hashtag.toLowerCase().replace('#', '');
+            if (categories.some(category => tag.includes(category))) {
+                relevantCount++;
+            }
+        });
+        
+        return relevantCount / hashtags.length;
+    }
+
+    // Calculate emoji score
+    calculateEmojiScore(count, usage, wordCount) {
+        const emojiRatio = count / wordCount;
+        
+        switch (usage) {
+            case 'high':
+                return emojiRatio >= 0.1 && emojiRatio <= 0.3 ? 1.0 : 
+                       emojiRatio >= 0.05 && emojiRatio <= 0.4 ? 0.7 : 0.4;
+            case 'moderate':
+                return emojiRatio >= 0.05 && emojiRatio <= 0.15 ? 1.0 :
+                       emojiRatio >= 0.02 && emojiRatio <= 0.25 ? 0.7 : 0.4;
+            case 'low':
+                return emojiRatio <= 0.05 ? 1.0 :
+                       emojiRatio <= 0.1 ? 0.7 : 0.3;
+            default:
+                return 0.5;
+        }
+    }
+
+    // Calculate platform length score
+    calculatePlatformLengthScore(charCount, wordCount, platformConfig) {
+        const { optimalLength, characterLimit } = platformConfig;
+        const { min, max } = optimalLength;
+        
+        // Check character limit
+        if (charCount > characterLimit) return 0.1;
+        
+        // Check optimal word count
+        if (wordCount >= min && wordCount <= max) return 1.0;
+        if (wordCount >= min * 0.8 && wordCount <= max * 1.2) return 0.8;
+        if (wordCount >= min * 0.6 && wordCount <= max * 1.4) return 0.6;
+        return 0.3;
+    }
+
+    // Calculate character efficiency
+    calculateCharacterEfficiency(response, platformConfig) {
+        const charCount = response.length;
+        const wordCount = response.split(/\s+/).length;
+        const avgWordLength = charCount / wordCount;
+        
+        // Optimal word length varies by platform
+        const optimalWordLength = platformConfig.name === 'Twitter' ? 4.5 : 5.5;
+        const deviation = Math.abs(avgWordLength - optimalWordLength);
+        
+        return Math.max(0, 1 - (deviation / optimalWordLength));
+    }
+
+    // Calculate platform engagement score
+    calculatePlatformEngagementScore(response, platformConfig) {
+        const responseLower = response.toLowerCase();
+        let score = 0;
+        
+        // Check for platform-specific engagement phrases
+        platformConfig.engagementPhrases.forEach(phrase => {
+            if (responseLower.includes(phrase.toLowerCase())) {
+                score += 0.2;
+            }
+        });
+        
+        // Check for questions
+        const questionCount = (response.match(/\?/g) || []).length;
+        score += Math.min(questionCount * 0.15, 0.3);
+        
+        // Check for personal pronouns
+        const pronounCount = (responseLower.match(/\b(you|your|we|our|us)\b/g) || []).length;
+        score += Math.min(pronounCount * 0.1, 0.2);
+        
+        return Math.min(score, 1.0);
+    }
+
+    // Analyze call to action
+    analyzeCallToAction(response, engagementPhrases) {
+        const responseLower = response.toLowerCase();
+        const foundPhrases = engagementPhrases.filter(phrase => 
+            responseLower.includes(phrase.toLowerCase())
+        );
+        
+        return foundPhrases.length > 0 ? 1.0 : 0.0;
+    }
+
+    // Analyze questions
+    analyzeQuestions(response) {
+        const questionCount = (response.match(/\?/g) || []).length;
+        return questionCount > 0 ? Math.min(questionCount * 0.3, 1.0) : 0.0;
+    }
+
+    // Analyze platform tone
+    analyzePlatformTone(response, preferredTones) {
+        const responseLower = response.toLowerCase();
+        let score = 0;
+        
+        const toneIndicators = {
+            'professional': ['professional', 'industry', 'business', 'strategy', 'leadership'],
+            'friendly': ['hello', 'hi', 'thanks', 'appreciate', 'welcome'],
+            'authentic': ['real', 'honest', 'genuine', 'authentic', 'truth'],
+            'inspirational': ['inspire', 'motivate', 'dream', 'achieve', 'success'],
+            'informative': ['learn', 'discover', 'explore', 'understand', 'knowledge'],
+            'entertaining': ['fun', 'amazing', 'incredible', 'awesome', 'exciting'],
+            'trendy': ['trending', 'viral', 'hot', 'popular', 'latest'],
+            'concise': ['brief', 'quick', 'simple', 'direct', 'clear']
+        };
+        
+        preferredTones.forEach(tone => {
+            const indicators = toneIndicators[tone] || [];
+            const matches = indicators.filter(indicator => 
+                responseLower.includes(indicator)
+            );
+            score += (matches.length / indicators.length) * 0.25;
+        });
+        
+        return Math.min(score, 1.0);
+    }
+
+    // Analyze platform keywords
+    analyzePlatformKeywords(response, platformConfig) {
+        const responseLower = response.toLowerCase();
+        let score = 0;
+        
+        // Check for platform-specific keywords
+        if (platformConfig.professionalKeywords) {
+            const keywordMatches = platformConfig.professionalKeywords.filter(keyword =>
+                responseLower.includes(keyword)
+            );
+            score += (keywordMatches.length / platformConfig.professionalKeywords.length) * 0.5;
+        }
+        
+        if (platformConfig.communityKeywords) {
+            const communityMatches = platformConfig.communityKeywords.filter(keyword =>
+                responseLower.includes(keyword)
+            );
+            score += (communityMatches.length / platformConfig.communityKeywords.length) * 0.5;
+        }
+        
+        if (platformConfig.trendingKeywords) {
+            const trendingMatches = platformConfig.trendingKeywords.filter(keyword =>
+                responseLower.includes(keyword)
+            );
+            score += (trendingMatches.length / platformConfig.trendingKeywords.length) * 0.5;
+        }
+        
+        return Math.min(score, 1.0);
+    }
+
+    // Analyze visual keywords
+    analyzeVisualKeywords(response, visualKeywords) {
+        const responseLower = response.toLowerCase();
+        const matches = visualKeywords.filter(keyword =>
+            responseLower.includes(keyword)
+        );
+        
+        return matches.length > 0 ? Math.min(matches.length * 0.2, 1.0) : 0.0;
+    }
+
+    // Calculate platform score
+    calculatePlatformScore(platformMetrics, platformConfig) {
+        const weights = platformConfig.engagementMetrics;
+        let totalScore = 0;
+        let totalWeight = 0;
+        
+        Object.keys(weights).forEach(metric => {
+            const weight = weights[metric];
+            const score = platformMetrics[metric + 'Score'] || 0;
+            totalScore += score * weight;
+            totalWeight += weight;
+        });
+        
+        return totalWeight > 0 ? (totalScore / totalWeight) * 100 : 0;
+    }
+
+    // Analyze platform optimization
+    analyzePlatformOptimization(response, platformConfig) {
+        const optimization = {
+            hashtagOptimization: {},
+            emojiOptimization: {},
+            lengthOptimization: {},
+            engagementOptimization: {},
+            toneOptimization: {}
+        };
+        
+        // Hashtag optimization
+        const hashtags = (response.match(/#\w+/g) || []);
+        optimization.hashtagOptimization = {
+            current: hashtags.length,
+            recommended: platformConfig.hashtagLimit,
+            status: hashtags.length >= platformConfig.hashtagLimit.min && 
+                   hashtags.length <= platformConfig.hashtagLimit.max ? 'optimal' : 'needs-improvement'
+        };
+        
+        // Emoji optimization
+        const emojis = (response.match(/[\u{1F600}-\u{1F64F}]|[\u{1F300}-\u{1F5FF}]|[\u{1F680}-\u{1F6FF}]|[\u{1F1E0}-\u{1F1FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/gu) || []);
+        optimization.emojiOptimization = {
+            current: emojis.length,
+            recommended: platformConfig.emojiUsage,
+            status: this.getEmojiStatus(emojis.length, platformConfig.emojiUsage)
+        };
+        
+        // Length optimization
+        const wordCount = response.split(/\s+/).length;
+        optimization.lengthOptimization = {
+            current: wordCount,
+            recommended: platformConfig.optimalLength,
+            status: wordCount >= platformConfig.optimalLength.min && 
+                   wordCount <= platformConfig.optimalLength.max ? 'optimal' : 'needs-improvement'
+        };
+        
+        return optimization;
+    }
+
+    // Get emoji status
+    getEmojiStatus(count, usage) {
+        switch (usage) {
+            case 'high':
+                return count >= 3 ? 'optimal' : 'needs-improvement';
+            case 'moderate':
+                return count >= 1 && count <= 5 ? 'optimal' : 'needs-improvement';
+            case 'low':
+                return count <= 2 ? 'optimal' : 'needs-improvement';
+            default:
+                return 'needs-improvement';
+        }
+    }
+
+    // Generate platform-specific suggestions
+    generatePlatformSuggestions(analysis, platformConfig) {
+        const suggestions = [];
+        
+        // Hashtag suggestions
+        if (analysis.platformOptimization.hashtagOptimization.status === 'needs-improvement') {
+            const { current, recommended } = analysis.platformOptimization.hashtagOptimization;
+            if (current < recommended.min) {
+                suggestions.push(`Add ${recommended.min - current} more hashtags for better discoverability`);
+            } else if (current > recommended.max) {
+                suggestions.push(`Reduce hashtags to ${recommended.max} for better readability`);
+            }
+        }
+        
+        // Emoji suggestions
+        if (analysis.platformOptimization.emojiOptimization.status === 'needs-improvement') {
+            const { recommended } = analysis.platformOptimization.emojiOptimization;
+            if (recommended === 'high') {
+                suggestions.push('Add more emojis to make your content more engaging and visual');
+            } else if (recommended === 'low') {
+                suggestions.push('Reduce emoji usage for a more professional tone');
+            }
+        }
+        
+        // Length suggestions
+        if (analysis.platformOptimization.lengthOptimization.status === 'needs-improvement') {
+            const { current, recommended } = analysis.platformOptimization.lengthOptimization;
+            if (current < recommended.min) {
+                suggestions.push(`Expand your content to at least ${recommended.min} words for better engagement`);
+            } else if (current > recommended.max) {
+                suggestions.push(`Keep your content under ${recommended.max} words for better readability`);
+            }
+        }
+        
+        // Platform-specific suggestions
+        switch (platformConfig.name.toLowerCase()) {
+            case 'instagram':
+                suggestions.push('Use relevant hashtags in your niche for better discoverability');
+                suggestions.push('Include a clear call-to-action to encourage engagement');
+                suggestions.push('Share personal stories to build authentic connections');
+                break;
+            case 'facebook':
+                suggestions.push('Focus on community-building and personal connections');
+                suggestions.push('Ask questions to encourage comments and discussions');
+                suggestions.push('Share valuable information that helps your audience');
+                break;
+            case 'twitter':
+                suggestions.push('Use trending hashtags to join relevant conversations');
+                suggestions.push('Keep your message concise and impactful');
+                suggestions.push('Include mentions to engage with others in your industry');
+                break;
+            case 'linkedin':
+                suggestions.push('Share professional insights and industry knowledge');
+                suggestions.push('Use industry-specific hashtags for better visibility');
+                suggestions.push('Focus on thought leadership and professional development');
+                break;
+            case 'tiktok':
+                suggestions.push('Use trending sounds and hashtags');
+                suggestions.push('Keep your caption short and engaging');
+                suggestions.push('Include a clear call-to-action for engagement');
+                break;
+            case 'youtube':
+                suggestions.push('Include timestamps for longer videos');
+                suggestions.push('Add relevant links in your description');
+                suggestions.push('Use keywords that match your video content');
+                break;
+        }
+        
+        return suggestions.slice(0, 5); // Limit to 5 suggestions
+    }
+
+    // Get platform recommendations
+    getPlatformRecommendations(platform) {
+        const platformConfig = this.platformConfigs[platform.toLowerCase()];
+        if (!platformConfig) return null;
+        
+        return {
+            platform: platformConfig.name,
+            characterLimit: platformConfig.characterLimit,
+            optimalLength: platformConfig.optimalLength,
+            hashtagLimit: platformConfig.hashtagLimit,
+            emojiUsage: platformConfig.emojiUsage,
+            tonePreferences: platformConfig.tonePreferences,
+            contentTypes: platformConfig.contentTypes,
+            engagementPhrases: platformConfig.engagementPhrases,
+            bestPractices: this.getPlatformBestPractices(platformConfig)
+        };
+    }
+
+    // Get platform best practices
+    getPlatformBestPractices(platformConfig) {
+        const practices = {
+            instagram: [
+                'Use high-quality visuals with your posts',
+                'Post consistently at optimal times',
+                'Engage with your audience through comments',
+                'Use Instagram Stories for behind-the-scenes content',
+                'Collaborate with influencers in your niche'
+            ],
+            facebook: [
+                'Focus on community engagement',
+                'Share valuable, informative content',
+                'Use Facebook Live for real-time engagement',
+                'Create Facebook Groups for deeper community building',
+                'Respond to comments and messages promptly'
+            ],
+            twitter: [
+                'Join trending conversations with relevant hashtags',
+                'Retweet and engage with industry leaders',
+                'Use Twitter threads for longer content',
+                'Monitor and respond to mentions',
+                'Post consistently throughout the day'
+            ],
+            linkedin: [
+                'Share professional insights and industry knowledge',
+                'Publish LinkedIn articles for thought leadership',
+                'Engage with industry professionals',
+                'Use LinkedIn polls for audience insights',
+                'Share company updates and achievements'
+            ],
+            tiktok: [
+                'Use trending sounds and hashtags',
+                'Create authentic, entertaining content',
+                'Post consistently to build momentum',
+                'Engage with comments and duets',
+                'Follow current trends and challenges'
+            ],
+            youtube: [
+                'Optimize video titles and descriptions with keywords',
+                'Create engaging thumbnails',
+                'Use end screens and cards for engagement',
+                'Respond to comments to build community',
+                'Collaborate with other creators'
+            ]
+        };
+        
+        return practices[platformConfig.name.toLowerCase()] || [];
+    }
+}
+
+module.exports = { ResponseQualityAnalyzer, PlatformSpecificAnalyzer };

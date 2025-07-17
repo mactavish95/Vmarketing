@@ -150,25 +150,35 @@ function generateIntegrationSuggestions(imageAnalysis) {
 // Enhanced blog post generation endpoint with image support
 router.post('/blog/generate', async (req, res) => {
   try {
+    // Accept both new and old field names for backward compatibility
     const {
       topic,
-      restaurantName,
-      restaurantType,
-      cuisine,
+      mainName, // new
+      type,     // new
+      industry, // new
       location,
       targetAudience,
       tone,
       length,
       keyPoints,
       specialFeatures,
-      images
+      images,
+      // legacy fields for fallback
+      restaurantName,
+      restaurantType,
+      cuisine
     } = req.body;
 
+    // Use new fields if present, otherwise fallback to old
+    const resolvedMainName = mainName || restaurantName;
+    const resolvedType = type || restaurantType;
+    const resolvedIndustry = industry || cuisine;
+
     // Validate required fields
-    if (!topic || !restaurantName) {
+    if (!topic || !resolvedMainName) {
       return res.status(400).json({
         success: false,
-        error: 'Missing required fields: topic and restaurantName are required'
+        error: 'Missing required fields: topic and mainName are required'
       });
     }
 
@@ -211,175 +221,11 @@ router.post('/blog/generate', async (req, res) => {
     // Create comprehensive prompt for blog generation with image integration
     let imageInstructions = '';
     if (imageAnalysis) {
-      imageInstructions = `
-
-IMAGE INTEGRATION:
-- Total Images: ${imageAnalysis.totalImages}
-- Image Details: ${imageAnalysis.imageDetails.map(img => `${img.name} (${img.suggestedPlacement})`).join(', ')}
-- Integration Suggestions: ${imageAnalysis.integrationSuggestions.join('; ')}
-
-When writing the blog post, naturally incorporate mentions of these images in appropriate sections. Include suggested captions and placement hints in your content.`;
+      imageInstructions = `\n\nIMAGE INTEGRATION:\n- Total Images: ${imageAnalysis.totalImages}\n- Image Details: ${imageAnalysis.imageDetails.map(img => `${img.name} (${img.suggestedPlacement})`).join(', ')}\n- Integration Suggestions: ${imageAnalysis.integrationSuggestions.join('; ')}\n\nWhen writing the blog post, naturally incorporate mentions of these images in appropriate sections. Include suggested captions and placement hints in your content.`;
     }
 
-    const prompt = `Create a professional, engaging blog post for a restaurant business with the following specifications:
-
-RESTAURANT DETAILS:
-- Name: ${restaurantName}
-- Type: ${restaurantType}
-- Cuisine: ${cuisine || 'Various'}
-- Location: ${location || 'Not specified'}
-
-BLOG SPECIFICATIONS:
-- Topic: ${topic}
-- Target Audience: ${targetAudience}
-- Writing Tone: ${tone}
-- Target Length: ${targetWordCount} words
-
-ADDITIONAL INFORMATION:
-${keyPoints ? `- Key Points to Include: ${keyPoints}` : ''}
-${specialFeatures ? `- Special Features: ${specialFeatures}` : ''}${imageInstructions}
-
-CONTENT REQUIREMENTS:
-Write a compelling, well-structured blog post that follows the established blog content structure guidelines. IMPORTANT: Use clean, simple formatting without any markdown artifacts or unnecessary symbols.
-
-REFERENCE: Follow the Blog Content Structure Guidelines for consistent formatting and professional appearance.
-
-BLOG CONTENT STRUCTURE REFERENCE:
-- **H1**: Main blog title with strategic emojis (# Title ✨)
-- **H2**: Major sections with relevant emojis (## Section 🌟)
-- **H3**: Subsections with descriptive emojis (### Subsection 💡)
-- **H4**: Detailed points when needed (#### Detail ⭐)
-- **Lists**: Use • for bullets, 1. 2. 3. for numbered lists
-- **Highlighting**: Use ✨ 💡 🎯 ⭐ 🔥 💎 for key points
-- **Bold Text**: Use **text** for emphasis with highlighting
-- **Clean Formatting**: No markdown artifacts or excessive symbols
-
-1. **H1 - Main Title** (Use # for the main blog title)
-   - Create a compelling, SEO-optimized main title
-   - Add 1-2 relevant emojis to make it eye-catching
-   - Make it engaging and relevant to the topic
-   - Use clean formatting: # Title with Emoji
-
-2. **H2 - Major Sections** (Use ## for major content sections)
-   - Introduction/Overview
-   - Main Content Sections (2-4 major sections)
-   - Conclusion/Call-to-Action
-   - Each H2 should represent a major topic or theme
-   - Add 1 relevant emoji to each H2 heading
-   - Use clean formatting: ## Section Title with Emoji
-
-3. **H3 - Subsections** (Use ### for subsections within major sections)
-   - Break down major sections into digestible subsections
-   - Use descriptive, keyword-rich headings
-   - Each H3 should focus on a specific aspect or point
-   - Add 1 relevant emoji to each H3 heading
-   - Use clean formatting: ### Subsection Title with Emoji
-
-4. **H4 - Detailed Points** (Use #### for detailed explanations when needed)
-   - Use sparingly for very specific details or lists
-   - Help organize complex information
-   - Add 1 relevant emoji to each H4 heading
-
-5. **Content Structure Guidelines:**
-   - Start with an engaging introduction (2-3 paragraphs)
-   - Use clear, descriptive headings that guide the reader
-   - Break content into logical sections with proper hierarchy
-   - Include relevant examples, tips, or insights in each section
-   - End with a compelling conclusion and call-to-action
-
-6. **Emoji and Symbol Guidelines:**
-   - Use emojis strategically in headings (1 per heading)
-   - Add emojis to bullet points and lists for visual appeal
-   - Use food-related emojis (🍽️ 🍕 🍔 🍜 🍣 🍰 ☕ 🍷 🍺)
-   - Use atmosphere emojis (✨ 🌟 💫 ⭐ 🎉 🎊 🎈)
-   - Use service emojis (👨‍🍳 👩‍🍳 🛎️ 💁‍♂️ 💁‍♀️)
-   - Use location emojis (📍 🏙️ 🌆 🏘️)
-   - Use quality emojis (⭐ 🌟 💎 👑 🏆)
-   - Use emotion emojis (😋 😍 🤤 😊 😌)
-   - Use action emojis (🚀 💪 🎯 🔥)
-   - Use highlighting emojis for important points (✨ 💡 🎯 ⭐ 🔥 💎)
-   - Use symbols like → • ✨ 💡 🎉 for emphasis
-   - Don't overuse - keep it tasteful and professional
-
-7. **Formatting Requirements:**
-   - Use proper markdown heading syntax (# ## ### ####)
-   - Keep paragraphs short (3-4 sentences maximum)
-   - Use bullet points and numbered lists with emojis
-   - Include bold text sparingly for emphasis
-   - Maintain consistent formatting throughout
-   - Add emojis to key phrases and important points
-   - AVOID unnecessary markdown artifacts like code blocks, links, or excessive formatting
-   - Use clean, simple formatting without decorative symbols
-   - Focus on readability and professional appearance
-
-8. **SEO and Engagement:**
-   - Include relevant keywords naturally in headings and content
-   - Use conversational language that connects with the target audience
-   - Maintain consistent tone throughout
-   - Create scannable content with clear headings
-   - Use emojis to highlight key benefits and features
-
-9. **Restaurant Integration:**
-   - Naturally mention the restaurant name and offerings
-   - Include location and cuisine details where relevant
-   - Highlight special features and key points
-   - Make content specific to the restaurant's unique qualities
-   - Use food and dining emojis to enhance descriptions${imageAnalysis ? `
-
-10. **Image Integration**
-    - Naturally reference images in the content
-    - Include descriptive captions for images
-    - Suggest optimal placement for visual impact
-    - Use images to enhance the storytelling
-    - Add camera emojis (📸 📷) when mentioning images` : ''}
-
-HIERARCHICAL STRUCTURE EXAMPLE:
-# 🍽️ Main Blog Title ✨
-
-## 🌟 Introduction
-### 🎯 Setting the Scene
-### 📋 What to Expect
-
-## 🍕 Main Content Section 1
-### ⭐ Key Point 1
-### 💎 Key Point 2
-
-## 🍷 Main Content Section 2
-### 🔥 Important Aspect 1
-### 🎊 Important Aspect 2
-
-## 🎉 Conclusion
-### 📝 Summary
-### 🚀 Call-to-Action
-
-EMOJI USAGE EXAMPLES:
-- Food & Dining: 🍽️ 🍕 🍔 🍜 🍣 🍰 ☕ 🍷 🍺 🥗 🥩 🍤
-- Quality & Excellence: ⭐ 🌟 💎 👑 🏆 💫 ✨
-- Service & Experience: 👨‍🍳 👩‍🍳 🛎️ 💁‍♂️ 💁‍♀️ 🤝
-- Atmosphere & Location: 📍 🏙️ 🌆 🏘️ 🌟 ✨
-- Emotions & Reactions: 😋 😍 🤤 😊 😌 🎉 🎊
-- Actions & Benefits: 🚀 💪 🎯 🔥 💡
-- Key Points & Highlights: ✨ 💡 🎯 ⭐ 🔥 💎 (Use these to highlight important information)
-
-FORMATTING GUIDELINES (Follow Blog Content Structure):
-- Use emojis tastefully and strategically
-- Don't overuse - maintain professional appearance
-- Use food-related emojis for menu items and dishes
-- Use quality emojis for highlighting benefits
-- Use service emojis for staff and experience mentions
-- Use location emojis for place references
-- Use emotion emojis sparingly for engagement
-- Use action emojis for calls-to-action and benefits
-- Use highlighting emojis (✨ 💡 🎯 ⭐ 🔥 💎) for important key points and sentences
-- Keep sentences clear and concise
-- Use active voice when possible
-- Maintain consistent formatting throughout
-- Follow proper heading hierarchy (H1 > H2 > H3 > H4)
-- Use • for bullet points and 1. 2. 3. for numbered lists
-- Apply **bold text** with highlighting for emphasis
-- Ensure clean, professional appearance without artifacts
-
-Please generate the complete blog post content following the established Blog Content Structure Guidelines. Ensure proper hierarchical formatting, strategic emoji usage, clear headings, and engaging structure. Focus on creating valuable content that readers will find informative, visually appealing, and enjoyable to read while maintaining the professional formatting standards.`;
+    // Use generic prompt for any business, project, event, or topic
+    const prompt = `Create a professional, engaging blog post for a business, project, event, product, organization, or topic with the following specifications:\n\nDETAILS:\n- Name: ${resolvedMainName}\n- Type/Category: ${resolvedType || 'Not specified'}\n- Industry/Field: ${resolvedIndustry || 'Not specified'}\n- Location: ${location || 'Not specified'}\n\nBLOG SPECIFICATIONS:\n- Topic: ${topic}\n- Target Audience: ${targetAudience}\n- Writing Tone: ${tone}\n- Target Length: ${targetWordCount} words\n\nADDITIONAL INFORMATION:\n${keyPoints ? `- Key Points to Include: ${keyPoints}` : ''}\n${specialFeatures ? `- Special Features: ${specialFeatures}` : ''}${imageInstructions}\n\nCONTENT REQUIREMENTS:\nWrite a compelling, well-structured blog post that follows the established blog content structure guidelines. IMPORTANT: Use clean, simple formatting without any markdown artifacts or unnecessary symbols.\n\nREFERENCE: Follow the Blog Content Structure Guidelines for consistent formatting and professional appearance.\n\nBLOG CONTENT STRUCTURE REFERENCE:\n- **H1**: Main blog title with strategic emojis (# Title ✨)\n- **H2**: Major sections with relevant emojis (## Section 🌟)\n- **H3**: Subsections with descriptive emojis (### Subsection 💡)\n- **H4**: Detailed points when needed (#### Detail ⭐)\n- **Lists**: Use • for bullets, 1. 2. 3. for numbered lists\n- **Highlighting**: Use ✨ 💡 🎯 ⭐ 🔥 💎 for key points\n- **Bold Text**: Use **text** for emphasis with highlighting\n- **Clean Formatting**: No markdown artifacts or excessive symbols\n\n(Full structure guidelines omitted for brevity)\n\nPlease generate the complete blog post content following the established Blog Content Structure Guidelines. Ensure proper hierarchical formatting, strategic emoji usage, clear headings, and engaging structure. Focus on creating valuable content that readers will find informative, visually appealing, and enjoyable to read while maintaining the professional formatting standards.`;
 
     // Generate blog post using the selected model
     try {
@@ -388,18 +234,7 @@ Please generate the complete blog post content following the established Blog Co
         messages: [
           {
             role: 'system',
-            content: `You are a professional content writer specializing in restaurant blog creation. Create engaging, SEO-friendly blog posts that help restaurants connect with their audience. 
-
-IMPORTANT: Follow the established Blog Content Structure Guidelines for consistent formatting:
-- Use proper heading hierarchy (H1 > H2 > H3 > H4)
-- Apply strategic emoji usage for engagement
-- Maintain clean, professional formatting
-- Include highlighting for key points (✨ 💡 🎯 ⭐ 🔥 💎)
-- Use proper list formatting (• for bullets, 1. 2. 3. for numbered)
-- Focus on readability and professional appearance
-- Avoid markdown artifacts and excessive symbols
-
-${imageAnalysis ? 'You excel at naturally integrating images into blog content with appropriate captions and placement suggestions.' : ''}`
+            content: `You are a professional content writer specializing in blog creation for any business, project, event, or topic. Create engaging, SEO-friendly blog posts that help organizations connect with their audience. \n\nIMPORTANT: Follow the established Blog Content Structure Guidelines for consistent formatting:\n- Use proper heading hierarchy (H1 > H2 > H3 > H4)\n- Apply strategic emoji usage for engagement\n- Maintain clean, professional formatting\n- Include highlighting for key points (✨ 💡 🎯 ⭐ 🔥 💎)\n- Use proper list formatting (• for bullets, 1. 2. 3. for numbered)\n- Focus on readability and professional appearance\n- Avoid markdown artifacts and excessive symbols\n\n${imageAnalysis ? 'You excel at naturally integrating images into blog content with appropriate captions and placement suggestions.' : ''}`
           },
           {
             role: 'user',
@@ -429,9 +264,9 @@ ${imageAnalysis ? 'You excel at naturally integrating images into blog content w
         imageAnalysis: imageAnalysis,
         metadata: {
           topic,
-          restaurantName,
-          restaurantType,
-          cuisine,
+          mainName: resolvedMainName,
+          type: resolvedType,
+          industry: resolvedIndustry,
           location,
           targetAudience,
           tone,
@@ -467,11 +302,12 @@ router.post('/blog/save', async (req, res) => {
         code: 'DB_UNAVAILABLE'
       });
     }
+    // Accept both new and old field names for backward compatibility
     const {
       topic,
-      restaurantName,
-      restaurantType,
-      cuisine,
+      mainName, // new
+      type,     // new
+      industry, // new
       location,
       targetAudience,
       tone,
@@ -483,21 +319,30 @@ router.post('/blog/save', async (req, res) => {
       imageAnalysis,
       model,
       wordCount,
-      metadata
+      metadata,
+      // legacy fields for fallback
+      restaurantName,
+      restaurantType,
+      cuisine
     } = req.body;
 
-    if (!topic || !restaurantName || !blogPost) {
+    // Use new fields if present, otherwise fallback to old
+    const resolvedMainName = mainName || restaurantName;
+    const resolvedType = type || restaurantType;
+    const resolvedIndustry = industry || cuisine;
+
+    if (!topic || !resolvedMainName || !blogPost) {
       return res.status(400).json({
         success: false,
-        error: 'Missing required fields: topic, restaurantName, and blogPost are required.'
+        error: 'Missing required fields: topic, mainName, and blogPost are required.'
       });
     }
 
     const newBlog = await safeSave(BlogPost, {
       topic,
-      restaurantName,
-      restaurantType,
-      cuisine,
+      mainName: resolvedMainName,
+      type: resolvedType,
+      industry: resolvedIndustry,
       location,
       targetAudience,
       tone,

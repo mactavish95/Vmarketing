@@ -2,10 +2,20 @@ const express = require('express');
 const router = express.Router();
 const { SocialMediaPost, mongoose, isMongoDBAvailable, safeSave } = require('../config/database');
 
+// Authentication middleware
+function ensureAuthenticated(req, res, next) {
+  if (req.isAuthenticated && req.isAuthenticated()) {
+    return next();
+  }
+  res.status(401).json({ success: false, error: 'Authentication required', code: 'AUTH_REQUIRED' });
+}
+
 // POST /social-posts - Save a new social media post
-router.post('/social-posts', async (req, res) => {
+router.post('/social-posts', ensureAuthenticated, async (req, res) => {
   try {
     const postData = req.body;
+    // Attach user ID to the post
+    postData.userId = req.user?.id;
     
     if (!isMongoDBAvailable()) {
       console.warn('⚠️  MongoDB not available, cannot save post');
@@ -38,20 +48,12 @@ router.post('/social-posts', async (req, res) => {
   }
 });
 
-// GET /social-posts - Get all social media posts (global history, latest first, limit 100)
-router.get('/social-posts', async (req, res) => {
+// GET /social-posts - Get all social media posts (user's history, latest first, limit 100)
+router.get('/social-posts', ensureAuthenticated, async (req, res) => {
   try {
-    if (!isMongoDBAvailable()) {
-      console.warn('⚠️  MongoDB not available, returning empty posts list');
-      return res.json({ 
-        success: true, 
-        posts: [],
-        message: 'Database not available. No posts can be retrieved.',
-        code: 'DB_UNAVAILABLE'
-      });
-    }
-    
-    const posts = await SocialMediaPost.find().sort({ timestamp: -1 }).limit(100);
+    // Only fetch posts for the authenticated user
+    const userId = req.user?.id;
+    const posts = await SocialMediaPost.find({ userId }).sort({ timestamp: -1 }).limit(100);
     res.json({ success: true, posts });
   } catch (error) {
     console.error('Social posts fetch error:', error);
@@ -63,30 +65,20 @@ router.get('/social-posts', async (req, res) => {
   }
 });
 
-// DELETE /social-posts/:id - Delete a post by id
-router.delete('/social-posts/:id', async (req, res) => {
+// DELETE /social-posts/:id - Delete a post by id (only if owned by user)
+router.delete('/social-posts/:id', ensureAuthenticated, async (req, res) => {
   try {
     const { id } = req.params;
-    
-    if (!isMongoDBAvailable()) {
-      console.warn('⚠️  MongoDB not available, cannot delete post');
-      return res.status(503).json({ 
-        success: false, 
-        error: 'Database not available',
-        message: 'Post cannot be deleted. MongoDB is not running.',
-        code: 'DB_UNAVAILABLE'
-      });
-    }
-    
-    const result = await SocialMediaPost.findByIdAndDelete(id);
-    
+    const userId = req.user?.id;
+    // Only allow deletion if the post belongs to the user
+    const result = await SocialMediaPost.findOneAndDelete({ _id: id, userId });
     if (result) {
       res.json({ success: true, message: 'Post deleted successfully' });
     } else {
       res.status(404).json({ 
         success: false, 
-        error: 'Post not found',
-        code: 'NOT_FOUND'
+        error: 'Post not found or not authorized',
+        code: 'NOT_FOUND_OR_UNAUTHORIZED'
       });
     }
   } catch (error) {

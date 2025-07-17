@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const enhancedLLMService = require('../services/enhancedLLMService');
-const ResponseQualityAnalyzer = require('../utils/responseQualityAnalyzer');
+const { ResponseQualityAnalyzer } = require('../utils/responseQualityAnalyzer');
 const { Review, mongoose } = require('../config/database');
 
 // Initialize response quality analyzer
@@ -133,6 +133,59 @@ router.post('/enhanced-llm', async (req, res) => {
       success: false,
       error: 'Failed to generate enhanced response',
       code: 'ENHANCED_LLM_ERROR',
+      details: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
+    });
+  }
+});
+
+// Enhanced LLM Recommendation endpoint using Qwen model
+router.post('/enhanced-llm/recommendation', async (req, res) => {
+  try {
+    const { post, platform = '', context = {} } = req.body;
+    if (!post || typeof post !== 'string') {
+      return res.status(400).json({
+        success: false,
+        error: 'Post content is required and must be a string',
+        code: 'INVALID_INPUT'
+      });
+    }
+    const apiKey = process.env.QWEN_API_KEY;
+    if (!apiKey) {
+      return res.status(500).json({
+        success: false,
+        error: 'NVIDIA API key not configured on server',
+        code: 'API_KEY_NOT_CONFIGURED'
+      });
+    }
+    // Compose a prompt for Qwen to give creative, actionable, platform-optimized recommendations
+    const prompt = `You are a world-class social media strategist and content coach. Analyze the following post and provide detailed, actionable, and creative recommendations to maximize engagement, clarity, and platform best practices. Focus on:
+- Improving the opening hook
+- Enhancing structure and readability
+- Adding platform-appropriate hashtags, emojis, and calls-to-action
+- Optimizing for the target platform: ${platform}
+- Making the content more engaging, authentic, and shareable
+- Any other improvements for viral success
+
+POST TO ANALYZE:
+"""
+${post}
+"""
+
+Respond with a bullet list of 5-10 specific, creative recommendations. Be concise, practical, and platform-aware. Do not repeat the post content. Do not include markdown or code blocks.`;
+    // Use Qwen model explicitly
+    const result = await enhancedLLMService.generateEnhancedResponse(prompt, apiKey, { model: 'qwen/qwen3-235b-a22b', platform, ...context });
+    res.json({
+      success: true,
+      recommendations: result.response,
+      model: result.model,
+      timestamp: result.timestamp
+    });
+  } catch (error) {
+    console.error('Enhanced LLM Recommendation Error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      code: 'RECOMMENDATION_ERROR',
       details: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
     });
   }

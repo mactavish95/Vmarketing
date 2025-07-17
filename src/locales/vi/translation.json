@@ -560,7 +560,7 @@
   "socialMedia": {
     "title": "Tạo bài đăng mạng xã hội",
     "subtitle": "Tạo nội dung mạng xã hội hấp dẫn, tối ưu cho từng nền tảng với sự hỗ trợ của AI",
-    "wizard": {
+    "wizards": {
       "title": "Thuật sĩ bài đăng mạng xã hội",
       "subtitle": "Tạo bài đăng hấp dẫn trong 5 bước đơn giản"
     },
@@ -594,6 +594,10 @@
     "networkError": "Lỗi mạng. Vui lòng thử lại.",
     "generatedContentEmpty": "Nội dung được tạo trống sau khi làm sạch. Sử dụng phản hồi gốc.",
     "qualityAnalysis": "Phân tích chất lượng",
+    "strengths": "Điểm mạnh",
+    "areasForImprovement": "Cần cải thiện",
+    "recommendations": "Khuyến nghị",
+    "platformTips": "Mẹo cho nền tảng",
     "quality": {
       "excellent": "Xuất sắc",
       "good": "Tốt",
@@ -1467,5 +1471,40 @@
       "security": "Thông tin đăng nhập của bạn được mã hóa và không bao giờ lưu trữ dưới dạng văn bản thuần",
       "refresh": "Token được tự động làm mới để duy trì quyền truy cập"
     }
+  },
+  "login": {
+    "title": "Đăng nhập vào tài khoản của bạn",
+    "subtitle": "Chọn một nhà cung cấp để tiếp tục:",
+    "withFacebook": "Đăng nhập với Facebook",
+    "withGoogle": "Đăng nhập với Google",
+    "withTwitter": "Đăng nhập với Twitter",
+    "withLinkedIn": "Đăng nhập với LinkedIn"
+  },
+  "header": {
+    "login": "Đăng nhập"
+  },
+  "signup": {
+    "title": "Tạo tài khoản mới",
+    "subtitle": "Đăng ký để bắt đầu:",
+    "name": "Tên (không bắt buộc)",
+    "email": "Email",
+    "password": "Mật khẩu",
+    "submit": "Đăng ký",
+    "loading": "Đang đăng ký...",
+    "success": "Tạo tài khoản thành công! Bạn có thể đăng nhập ngay.",
+    "errorRequired": "Email và mật khẩu là bắt buộc.",
+    "errorEmail": "Định dạng email không hợp lệ.",
+    "errorPassword": "Mật khẩu phải có ít nhất 6 ký tự.",
+    "errorGeneric": "Không thể tạo tài khoản.",
+    "errorNetwork": "Lỗi mạng. Vui lòng thử lại.",
+    "haveAccount": "Đã có tài khoản?",
+    "loginLink": "Đăng nhập",
+    "confirmPassword": "Xác nhận mật khẩu",
+    "errorPasswordMatch": "Mật khẩu không khớp."
+  },
+  "dashboard": "Bảng điều khiển",
+  "dashboardPage": {
+    "title": "Bảng điều khiển bài viết của tôi",
+    "subtitle": "Tất cả các bài viết đã tạo & xuất bản, được tổ chức theo nền tảng."
   }
 } 
