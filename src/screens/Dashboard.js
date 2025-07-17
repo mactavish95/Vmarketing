@@ -295,18 +295,18 @@ export default function Dashboard() {
           <div className="header-left">
             <div className="header-icon">📊</div>
             <div className="header-text">
-              <h1 className="header-title">Content Dashboard</h1>
-              <p className="header-subtitle">Manage and track your social media content</p>
+              <h1 className="header-title">{t('dashboard.headerTitle')}</h1>
+              <p className="header-subtitle">{t('dashboard.headerSubtitle')}</p>
             </div>
           </div>
-          <div className="header-actions">
+          <div className={`header-actions${isMobile ? ' mobile-header-actions' : ''}`}>
             <Link to="/social-media" className="new-post-btn">
               <span className="btn-icon">+</span>
-              <span className="btn-text">New Post</span>
+              <span className="btn-text">{t('dashboard.newPost')}</span>
             </Link>
             <Link to="/social-media-integration" className="integration-btn">
               <span className="btn-icon">🔗</span>
-              <span className="btn-text">Connect Accounts</span>
+              <span className="btn-text">{t('dashboard.connectAccounts')}</span>
             </Link>
           </div>
         </div>
@@ -320,8 +320,8 @@ export default function Dashboard() {
                   {user.name ? user.name.split(' ').map(n => n[0]).join('').toUpperCase() : (user.email ? user.email[0].toUpperCase() : '?')}
                 </div>
             <div className="welcome-text">
-              <h2 className="welcome-title">Welcome back, {user.name || user.email.split('@')[0]}! 👋</h2>
-              <p className="welcome-subtitle">Ready to create amazing content today?</p>
+              <h2 className="welcome-title">{t('dashboard.welcome', { name: user.name || user.email.split('@')[0] })}</h2>
+              <p className="welcome-subtitle">{t('dashboard.ready')}</p>
             </div>
           </div>
         </section>
@@ -335,28 +335,28 @@ export default function Dashboard() {
               <div className="stat-icon">📝</div>
               <div className="stat-content">
                 <div className="stat-number">{totalPosts}</div>
-                <div className="stat-label">Draft Posts</div>
+                <div className="stat-label">{t('dashboard.stats.draftPosts')}</div>
               </div>
             </div>
             <div className="stat-card published-posts">
               <div className="stat-icon">📤</div>
               <div className="stat-content">
                 <div className="stat-number">{totalPublishedPosts}</div>
-                <div className="stat-label">Published Posts</div>
+                <div className="stat-label">{t('dashboard.stats.publishedPosts')}</div>
               </div>
             </div>
             <div className="stat-card platforms">
               <div className="stat-icon">🌐</div>
               <div className="stat-content">
                 <div className="stat-number">{totalPlatforms}</div>
-                <div className="stat-label">Platforms</div>
+                <div className="stat-label">{t('dashboard.stats.platforms')}</div>
               </div>
                 </div>
             <div className="stat-card recent">
               <div className="stat-icon">🕒</div>
               <div className="stat-content">
                 <div className="stat-number">{recentPublishedPosts}</div>
-                <div className="stat-label">Published This Week</div>
+                <div className="stat-label">{t('dashboard.stats.publishedThisWeek')}</div>
               </div>
             </div>
           </div>
@@ -381,34 +381,34 @@ export default function Dashboard() {
             <div className="section-header">
               <h2 className="section-title">
                 <span className="section-icon">📤</span>
-                Published Posts
+                {t('dashboard.published.title')}
                 <span className="section-count">({totalPublishedPosts})</span>
               </h2>
-              <p className="section-subtitle">Your posts that have been published to social media platforms</p>
+              <p className="section-subtitle">{t('dashboard.published.subtitle')}</p>
             </div>
             {publishedLoading ? (
               <div className="loading-section">
                 <div className="loading-spinner"></div>
-                <p>Loading published posts...</p>
+                <p>{t('dashboard.published.loading')}</p>
               </div>
             ) : publishedError ? (
               <div className="error-section">
                 <div className="error-card">
                   <div className="error-icon">⚠️</div>
-                  <h3 className="error-title">Failed to load published posts</h3>
+                  <h3 className="error-title">{t('dashboard.published.failed')}</h3>
                   <p className="error-message">{publishedError}</p>
-                  <button onClick={fetchPublishedPosts} className="retry-btn">Try Again</button>
+                  <button onClick={fetchPublishedPosts} className="retry-btn">{t('dashboard.published.tryAgain')}</button>
                 </div>
               </div>
             ) : publishedPosts.length === 0 ? (
               <div className="empty-section">
                 <div className="empty-card">
                   <div className="empty-icon">📭</div>
-                  <h3 className="empty-title">No published posts yet</h3>
-                  <p className="empty-message">Publish your first post to see it here!</p>
+                  <h3 className="empty-title">{t('dashboard.published.emptyTitle')}</h3>
+                  <p className="empty-message">{t('dashboard.published.emptyMessage')}</p>
                   <Link to="/social-media" className="create-first-btn">
                     <span className="btn-icon">✨</span>
-                    <span className="btn-text">Create Your First Post</span>
+                    <span className="btn-text">{t('dashboard.published.createFirst')}</span>
                   </Link>
         </div>
         </div>
@@ -426,7 +426,7 @@ export default function Dashboard() {
                           '--platform-color': platformColors[platform],
                           '--platform-gradient': platformGradients[platform]
                         }}
-                      >
+              >
                         <span className="tab-icon">{platformIcons[platform]}</span>
                         <span className="tab-label">{PLATFORM_LABELS[platform]}</span>
                         <span className="tab-count">{groupedPublishedPosts[platform].length}</span>
@@ -473,9 +473,9 @@ export default function Dashboard() {
                           </div>
                           <div className="published-post-meta">
                             <div className="published-date">
-                              <span className="meta-label">Published:</span>
+                              <span className="meta-label">{t('dashboard.published.publishedLabel')}:</span>
                               <span className="meta-value">
-                                {post.publishedAt ? new Date(post.publishedAt).toLocaleDateString() : 'N/A'}
+                                {post.publishedAt ? new Date(post.publishedAt).toLocaleDateString() : t('dashboard.published.na')}
                               </span>
                             </div>
                             {post.postUrl && (
@@ -487,7 +487,7 @@ export default function Dashboard() {
                                   className="view-post-link"
                                 >
                                   <span className="btn-icon">🔗</span>
-                                  <span className="btn-text">View Post</span>
+                                  <span className="btn-text">{t('dashboard.published.viewPost')}</span>
                                 </a>
                               </div>
                             )}
@@ -521,14 +521,14 @@ export default function Dashboard() {
                               disabled={!post.postUrl}
                             >
                               <span className="btn-icon">👁️</span>
-                              <span className="btn-text">View</span>
+                              <span className="btn-text">{t('dashboard.published.view')}</span>
                             </button>
                             <button
                               className="action-btn delete-btn"
                               onClick={() => handleDeletePublished(post._id)}
                             >
                               <span className="btn-icon">🗑️</span>
-                              <span className="btn-text">Delete</span>
+                              <span className="btn-text">{t('dashboard.published.delete')}</span>
                             </button>
                           </div>
                         </div>
@@ -546,20 +546,20 @@ export default function Dashboard() {
           <div className="error-section">
             <div className="error-card">
               <div className="error-icon">⚠️</div>
-              <h3 className="error-title">Oops! Something went wrong</h3>
+              <h3 className="error-title">{t('dashboard.error.title')}</h3>
               <p className="error-message">{error}</p>
-              <button onClick={fetchPosts} className="retry-btn">Try Again</button>
+              <button onClick={fetchPosts} className="retry-btn">{t('dashboard.error.tryAgain')}</button>
             </div>
           </div>
         ) : posts.length === 0 ? (
           <div className="empty-section">
             <div className="empty-card">
               <div className="empty-icon">📭</div>
-              <h3 className="empty-title">No draft posts yet</h3>
-              <p className="empty-message">Create your first post to get started with your content journey!</p>
+              <h3 className="empty-title">{t('dashboard.draft.emptyTitle')}</h3>
+              <p className="empty-message">{t('dashboard.draft.emptyMessage')}</p>
               <Link to="/social-media" className="create-first-btn">
                 <span className="btn-icon">✨</span>
-                <span className="btn-text">Create Your First Post</span>
+                <span className="btn-text">{t('dashboard.draft.createFirst')}</span>
               </Link>
             </div>
           </div>
@@ -568,10 +568,10 @@ export default function Dashboard() {
             <div className="section-header">
               <h2 className="section-title">
                 <span className="section-icon">📝</span>
-                Draft Posts
+                {t('dashboard.draft.title')}
                 <span className="section-count">({totalPosts})</span>
               </h2>
-              <p className="section-subtitle">Your saved posts that haven't been published yet</p>
+              <p className="section-subtitle">{t('dashboard.draft.subtitle')}</p>
             </div>
             {/* Platform Tabs */}
             <div className="platform-tabs">
@@ -614,7 +614,7 @@ export default function Dashboard() {
                     <div className="post-date">
                       {post.timestamp ? new Date(post.timestamp).toLocaleDateString() : ''}
                     </div>
-                  </div>
+                </div>
                   <div className="post-content">
                     <div className="content-preview">
                   {post.platform === 'instagram'
@@ -629,7 +629,7 @@ export default function Dashboard() {
                       onClick={(e) => { e.stopPropagation(); setModalPost(post); }}
                   >
                       <span className="btn-icon">👁️</span>
-                      <span className="btn-text">View</span>
+                      <span className="btn-text">{t('dashboard.draft.view')}</span>
                   </button>
                   <button
                       className="action-btn delete-btn"
@@ -638,7 +638,7 @@ export default function Dashboard() {
                   >
                       <span className="btn-icon">🗑️</span>
                       <span className="btn-text">
-                    {deletingId === post._id ? 'Deleting...' : 'Delete'}
+                    {deletingId === post._id ? t('dashboard.draft.deleting') : t('dashboard.draft.delete')}
                       </span>
                   </button>
                     <button
@@ -648,10 +648,10 @@ export default function Dashboard() {
                       style={{ background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', color: 'white' }}
                     >
                       <span className="btn-icon">📤</span>
-                      <span className="btn-text">{publishingId === post._id ? 'Publishing...' : 'Publish'}</span>
+                      <span className="btn-text">{publishingId === post._id ? t('dashboard.draft.publishing') : t('dashboard.draft.publish')}</span>
                     </button>
-                  </div>
                 </div>
+              </div>
             ))}
           </div>
           </section>

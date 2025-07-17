@@ -1400,9 +1400,81 @@
     "targetAudienceMedia": "Media",
     "targetAudienceCommunity": "Community"
   },
-  "dashboard": "Dashboard",
-  "dashboardPage": {
-    "title": "My Posts Dashboard",
-    "subtitle": "All your generated & published posts, organized by platform."
+  "dashboard": {
+    "headerTitle": "Content Dashboard",
+    "headerSubtitle": "Manage and track your social media content",
+    "newPost": "New Post",
+    "connectAccounts": "Connect Accounts",
+    "welcome": "Welcome back, {{name}}! 👋",
+    "ready": "Ready to create amazing content today?",
+    "stats": {
+      "draftPosts": "Draft Posts",
+      "publishedPosts": "Published Posts",
+      "platforms": "Platforms",
+      "publishedThisWeek": "Published This Week"
+    },
+    "tips": {
+      "consistency": "Consistency is key! Post regularly to grow your audience.",
+      "variation": "Try different tones and formats to see what engages best.",
+      "value": "Focus on value: teach, inspire, or entertain your followers.",
+      "review": "Review your post performance and iterate for success!",
+      "cta": "Great content starts with a clear message and a strong call to action."
+    },
+    "published": {
+      "title": "Published Posts",
+      "subtitle": "Your posts that have been published to social media platforms",
+      "loading": "Loading published posts...",
+      "failed": "Failed to load published posts",
+      "tryAgain": "Try Again",
+      "emptyTitle": "No published posts yet",
+      "emptyMessage": "Publish your first post to see it here!",
+      "createFirst": "Create Your First Post",
+      "view": "View",
+      "delete": "Delete",
+      "publishedLabel": "Published",
+      "na": "N/A",
+      "viewPost": "View Post"
+    },
+    "draft": {
+      "title": "Draft Posts",
+      "subtitle": "Your saved posts that haven't been published yet",
+      "emptyTitle": "No draft posts yet",
+      "emptyMessage": "Create your first post to get started with your content journey!",
+      "createFirst": "Create Your First Post",
+      "view": "View",
+      "delete": "Delete",
+      "deleting": "Deleting...",
+      "publish": "Publish",
+      "publishing": "Publishing..."
+    },
+    "error": {
+      "title": "Oops! Something went wrong",
+      "tryAgain": "Try Again"
+    }
+  },
+  "headerNav": {
+    "home": "Home",
+    "create": "Create",
+    "manage": "Manage",
+    "tools": "Tools",
+    "dashboard": "Dashboard",
+    "login": "Login",
+    "logout": "Logout",
+    "language": "Language",
+    "createGroup": {
+      "blogCreator": "Blog Creator",
+      "socialMediaPost": "Social Media Post",
+      "voiceReview": "Voice Review",
+      "llamaChat": "Llama Chat"
+    },
+    "manageGroup": {
+      "blogPosts": "Blog Posts",
+      "socialMediaHistory": "Social Media History",
+      "reviewHistory": "Review History"
+    },
+    "toolsGroup": {
+      "socialMediaIntegration": "Social Media Integration",
+      "customerService": "Customer Service"
+    }
   }
 } 

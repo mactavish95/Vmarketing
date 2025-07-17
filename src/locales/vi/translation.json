@@ -1505,9 +1505,81 @@
     "confirmPassword": "Xác nhận mật khẩu",
     "errorPasswordMatch": "Mật khẩu không khớp."
   },
-  "dashboard": "Bảng điều khiển",
-  "dashboardPage": {
-    "title": "Bảng điều khiển bài viết của tôi",
-    "subtitle": "Tất cả các bài viết đã tạo & xuất bản, được tổ chức theo nền tảng."
+  "dashboard": {
+    "headerTitle": "Bảng điều khiển nội dung",
+    "headerSubtitle": "Quản lý và theo dõi nội dung mạng xã hội của bạn",
+    "newPost": "Bài đăng mới",
+    "connectAccounts": "Kết nối tài khoản",
+    "welcome": "Chào mừng trở lại, {{name}}! 👋",
+    "ready": "Sẵn sàng tạo nội dung tuyệt vời hôm nay?",
+    "stats": {
+      "draftPosts": "Bản nháp",
+      "publishedPosts": "Đã xuất bản",
+      "platforms": "Nền tảng",
+      "publishedThisWeek": "Xuất bản tuần này"
+    },
+    "tips": {
+      "consistency": "Đăng bài đều đặn là chìa khóa để phát triển khán giả.",
+      "variation": "Thử nhiều tông giọng và định dạng để tăng tương tác.",
+      "value": "Tập trung vào giá trị: dạy, truyền cảm hứng hoặc giải trí cho người theo dõi.",
+      "review": "Xem lại hiệu suất bài đăng và cải thiện để thành công!",
+      "cta": "Nội dung tuyệt vời bắt đầu từ thông điệp rõ ràng và lời kêu gọi hành động mạnh mẽ."
+    },
+    "published": {
+      "title": "Bài đã xuất bản",
+      "subtitle": "Các bài đăng đã được xuất bản lên mạng xã hội",
+      "loading": "Đang tải bài đã xuất bản...",
+      "failed": "Không thể tải bài đã xuất bản",
+      "tryAgain": "Thử lại",
+      "emptyTitle": "Chưa có bài đã xuất bản",
+      "emptyMessage": "Hãy xuất bản bài đầu tiên để xem tại đây!",
+      "createFirst": "Tạo bài đầu tiên",
+      "view": "Xem",
+      "delete": "Xóa",
+      "publishedLabel": "Đã xuất bản",
+      "na": "N/A",
+      "viewPost": "Xem bài đăng"
+    },
+    "draft": {
+      "title": "Bản nháp",
+      "subtitle": "Các bài đã lưu nhưng chưa xuất bản",
+      "emptyTitle": "Chưa có bản nháp nào",
+      "emptyMessage": "Tạo bài đầu tiên để bắt đầu hành trình nội dung của bạn!",
+      "createFirst": "Tạo bài đầu tiên",
+      "view": "Xem",
+      "delete": "Xóa",
+      "deleting": "Đang xóa...",
+      "publish": "Xuất bản",
+      "publishing": "Đang xuất bản..."
+    },
+    "error": {
+      "title": "Đã xảy ra lỗi",
+      "tryAgain": "Thử lại"
+    }
+  },
+  "headerNav": {
+    "home": "Trang chủ",
+    "create": "Tạo mới",
+    "manage": "Quản lý",
+    "tools": "Công cụ",
+    "dashboard": "Bảng điều khiển",
+    "login": "Đăng nhập",
+    "logout": "Đăng xuất",
+    "language": "Ngôn ngữ",
+    "createGroup": {
+      "blogCreator": "Tạo Blog",
+      "socialMediaPost": "Bài đăng mạng xã hội",
+      "voiceReview": "Đánh giá giọng nói",
+      "llamaChat": "Chat Llama"
+    },
+    "manageGroup": {
+      "blogPosts": "Bài viết Blog",
+      "socialMediaHistory": "Lịch sử mạng xã hội",
+      "reviewHistory": "Lịch sử đánh giá"
+    },
+    "toolsGroup": {
+      "socialMediaIntegration": "Tích hợp mạng xã hội",
+      "customerService": "Dịch vụ khách hàng"
+    }
   }
 } 
