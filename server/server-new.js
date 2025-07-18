@@ -83,24 +83,34 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Session middleware for OAuth
-app.use(session({
+const sessionConfig = {
   secret: process.env.SESSION_SECRET || 'your-secret-key',
   resave: false,
   saveUninitialized: false,
-  store: MongoStore.create({
-    mongoUrl: process.env.MONGODB_URI,
-    collectionName: 'sessions',
-    ttl: 24 * 60 * 60, // 24 hours in seconds
-    autoRemove: 'native' // Use MongoDB's TTL index
-  }),
   cookie: {
-    secure: true, // Always use secure cookies for cross-site
-    sameSite: 'none', // Required for cross-site cookies
+    secure: process.env.NODE_ENV === 'production', // Only secure in production
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // Adjust based on environment
     maxAge: 24 * 60 * 60 * 1000, // 24 hours
     httpOnly: true, // Prevent XSS attacks
     // Don't set domain - let the browser handle it automatically
   }
-}));
+};
+
+// Add MongoDB store if URI is available
+if (process.env.MONGODB_URI) {
+  console.log('🔗 Using MongoDB session store');
+  sessionConfig.store = MongoStore.create({
+    mongoUrl: process.env.MONGODB_URI,
+    collectionName: 'sessions',
+    ttl: 24 * 60 * 60, // 24 hours in seconds
+    autoRemove: 'native' // Use MongoDB's TTL index
+  });
+} else {
+  console.log('⚠️  No MONGODB_URI found, using memory session store');
+  console.log('⚠️  Sessions will be lost on server restart');
+}
+
+app.use(session(sessionConfig));
 
 // Initialize Passport
 app.use(passport.initialize());
