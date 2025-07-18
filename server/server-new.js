@@ -29,6 +29,7 @@ const socialPublishRoutes = require('./routes/socialPublish');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+const BASE_URL = process.env.BASE_URL || `http://localhost:${PORT}`;
 
 // Trust proxy for rate limiting (fixes X-Forwarded-For warning)
 app.set('trust proxy', 1);
@@ -106,8 +107,14 @@ if (process.env.MONGODB_URI) {
     autoRemove: 'native' // Use MongoDB's TTL index
   });
 } else {
-  console.log('⚠️  No MONGODB_URI found, using memory session store');
-  console.log('⚠️  Sessions will be lost on server restart');
+  if (process.env.NODE_ENV === 'production') {
+    console.error('❌ CRITICAL: MONGODB_URI not set in production!');
+    console.error('❌ Sessions will not persist and authentication will fail!');
+    console.error('❌ Please set MONGODB_URI environment variable in Render');
+  } else {
+    console.log('⚠️  No MONGODB_URI found, using memory session store');
+    console.log('⚠️  Sessions will be lost on server restart');
+  }
 }
 
 app.use(session(sessionConfig));
@@ -151,11 +158,29 @@ app.use('*', (req, res) => {
 // Start the server
 app.listen(PORT, () => {
   console.log(`🚀 ReviewGen Backend Server running on port ${PORT}`);
-  console.log(`📊 Health check: http://localhost:${PORT}/api/health`);
-  console.log(`🤖 Llama API: http://localhost:${PORT}/api/llama`);
-  console.log(`🔗 Social Auth: http://localhost:${PORT}/api/auth`);
-  console.log(`📱 Social Publish: http://localhost:${PORT}/api/social`);
+  console.log(`📊 Health check: ${BASE_URL}/api/health`);
+  console.log(`🤖 Llama API: ${BASE_URL}/api/llama`);
+  console.log(`🔗 Social Auth: ${BASE_URL}/api/auth`);
+  console.log(`📱 Social Publish: ${BASE_URL}/api/social`);
   console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`🔗 Base URL: ${BASE_URL}`);
+  
+  // Production environment checks
+  if (process.env.NODE_ENV === 'production') {
+    console.log('🏭 Production Environment Detected');
+    if (!process.env.MONGODB_URI) {
+      console.error('❌ CRITICAL: MONGODB_URI not set in production!');
+      console.error('❌ Authentication will not work properly!');
+    } else {
+      console.log('✅ MONGODB_URI is configured');
+    }
+    if (!process.env.SESSION_SECRET) {
+      console.error('❌ CRITICAL: SESSION_SECRET not set in production!');
+    } else {
+      console.log('✅ SESSION_SECRET is configured');
+    }
+  }
+  
   if (!process.env.NVIDIA_API_KEY) {
     console.warn('⚠️  NVIDIA_API_KEY not found in environment variables');
   }
