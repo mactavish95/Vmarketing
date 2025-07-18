@@ -317,10 +317,10 @@ export default function Dashboard() {
         <section className="user-welcome">
           <div className="welcome-content">
             <div className="user-avatar">
-                  {user.name ? user.name.split(' ').map(n => n[0]).join('').toUpperCase() : (user.email ? user.email[0].toUpperCase() : '?')}
+                  {user?.name ? user.name.split(' ').map(n => n[0]).join('').toUpperCase() : (user?.email ? user.email[0].toUpperCase() : (user?.displayName ? user.displayName[0].toUpperCase() : '?'))}
                 </div>
             <div className="welcome-text">
-              <h2 className="welcome-title">{t('dashboard.welcome', { name: user.name || user.email.split('@')[0] })}</h2>
+              <h2 className="welcome-title">{t('dashboard.welcome', { name: user?.name || (user?.email ? user.email.split('@')[0] : (user?.displayName || t('dashboard.user')) ) })}</h2>
               <p className="welcome-subtitle">{t('dashboard.ready')}</p>
             </div>
           </div>

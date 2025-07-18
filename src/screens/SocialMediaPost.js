@@ -1049,7 +1049,7 @@ ${content}`;
     try {
       const isNetlify = window.location.hostname.includes('netlify.app') || window.location.hostname.includes('vmarketing.netlify.app');
       const baseURL = isNetlify ? 'https://vmarketing-backend-server.onrender.com/api' : apiConfig.baseURL;
-      const response = await fetch(`${baseURL}/social-posts`);
+      const response = await fetch(`${baseURL}/social-posts`, { credentials: 'include' });
       const data = await response.json();
       if (data.success) {
         setGlobalHistory(data.posts || []);
@@ -1076,6 +1076,7 @@ ${content}`;
       await fetch(`${baseURL}/social-posts`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify(historyItem)
       });
       // Re-fetch global history after saving

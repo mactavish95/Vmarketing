@@ -11,6 +11,7 @@
     "eject": "react-scripts eject"
   },
   "dependencies": {
+    "connect-mongo": "^5.1.0",
     "i18next": "^21.6.16",
     "i18next-browser-languagedetector": "^6.1.5",
     "react": "^19.1.0",

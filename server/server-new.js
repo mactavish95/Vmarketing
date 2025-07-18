@@ -2,10 +2,11 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const session = require('express-session');
+const MongoStore = require('connect-mongo');
 const passport = require('./config/passport');
 
 // Import modules
-const { connectToMongoDB } = require('./config/database');
+const { connectToMongoDB, mongoose } = require('./config/database');
 const { 
   securityMiddleware, 
   limiter, 
@@ -86,9 +87,18 @@ app.use(session({
   secret: process.env.SESSION_SECRET || 'your-secret-key',
   resave: false,
   saveUninitialized: false,
+  store: MongoStore.create({
+    mongoUrl: process.env.MONGODB_URI,
+    collectionName: 'sessions',
+    ttl: 24 * 60 * 60, // 24 hours in seconds
+    autoRemove: 'native' // Use MongoDB's TTL index
+  }),
   cookie: {
-    secure: process.env.NODE_ENV === 'production',
-    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    secure: true, // Always use secure cookies for cross-site
+    sameSite: 'none', // Required for cross-site cookies
+    maxAge: 24 * 60 * 60 * 1000, // 24 hours
+    httpOnly: true, // Prevent XSS attacks
+    // Don't set domain - let the browser handle it automatically
   }
 }));
 
@@ -105,7 +115,8 @@ app.use('/api', enhancedLLMRoutes);
 app.use('/api', modelsRoutes);
 app.use('/api', blogRoutes);
 app.use('/api', socialMediaPostsRoutes);
-app.use('/api/auth', socialAuthRoutes);
+//app.use('/api/auth', socialAuthRoutes);
+app.use('/api/auth', require('./routes/socialAuth'));
 app.use('/api/social', socialPublishRoutes);
 
 // Error handling middleware

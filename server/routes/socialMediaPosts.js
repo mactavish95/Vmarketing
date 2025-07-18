@@ -15,7 +15,8 @@ router.post('/social-posts', ensureAuthenticated, async (req, res) => {
   try {
     const postData = req.body;
     // Attach user ID to the post
-    postData.userId = req.user?.id;
+    postData.userId = req.user?._id?.toString() || req.user?.id;
+    console.log('DEBUG req.user:', req.user);
     
     if (!isMongoDBAvailable()) {
       console.warn('⚠️  MongoDB not available, cannot save post');

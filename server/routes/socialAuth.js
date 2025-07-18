@@ -21,6 +21,30 @@ router.get('/debug', (req, res) => {
   });
 });
 
+// Cookie test endpoint
+router.get('/test-cookie', (req, res) => {
+  console.log('🍪 Cookie test request:', {
+    origin: req.headers.origin,
+    cookies: req.headers.cookie,
+    userAgent: req.headers['user-agent']?.substring(0, 50)
+  });
+  
+  // Set a test cookie
+  res.cookie('test-cookie', 'test-value', {
+    secure: true,
+    sameSite: 'none',
+    httpOnly: true,
+    maxAge: 60 * 60 * 1000 // 1 hour
+  });
+  
+  res.json({
+    message: 'Test cookie set',
+    receivedCookies: req.headers.cookie || 'none',
+    origin: req.headers.origin,
+    timestamp: new Date().toISOString()
+  });
+});
+
 // OAuth Configuration
 const oauthConfig = {
   facebook: {
@@ -80,7 +104,7 @@ router.get('/facebook/callback',
         { upsert: true, new: true }
       );
 
-      res.redirect('http://localhost:3000/social-media-integration?connected=facebook');
+      res.redirect('http://localhost:3000/dashboard');
     } catch (error) {
       console.error('Facebook OAuth error:', error);
       res.redirect('http://localhost:3000/social-media-integration?error=facebook_auth_failed');
@@ -121,7 +145,7 @@ router.get('/instagram/callback',
         { upsert: true, new: true }
       );
 
-      res.redirect('http://localhost:3000/social-media-integration?connected=instagram');
+      res.redirect('http://localhost:3000/dashboard');
     } catch (error) {
       console.error('Instagram OAuth error:', error);
       res.redirect('http://localhost:3000/social-media-integration?error=instagram_auth_failed');
@@ -155,7 +179,7 @@ router.get('/twitter/callback',
         { upsert: true, new: true }
       );
 
-      res.redirect('http://localhost:3000/social-media-integration?connected=twitter');
+      res.redirect('http://localhost:3000/dashboard');
     } catch (error) {
       console.error('Twitter OAuth error:', error);
       res.redirect('http://localhost:3000/social-media-integration?error=twitter_auth_failed');
@@ -201,7 +225,7 @@ router.get('/linkedin/callback',
         { upsert: true, new: true }
       );
 
-      res.redirect('http://localhost:3000/social-media-integration?connected=linkedin');
+      res.redirect('http://localhost:3000/dashboard');
     } catch (error) {
       console.error('LinkedIn OAuth error:', error);
       res.redirect('http://localhost:3000/social-media-integration?error=linkedin_auth_failed');
@@ -243,36 +267,79 @@ router.post('/register', async (req, res) => {
 // Local login endpoint
 router.post('/login', async (req, res) => {
   try {
+    console.log('🔐 Login attempt:', {
+      email: req.body.email,
+      hasPassword: !!req.body.password,
+      origin: req.headers.origin,
+      cookies: req.headers.cookie ? 'present' : 'missing'
+    });
+    
     const { email, password } = req.body;
     if (!email || !password) {
       return res.status(400).json({ success: false, error: 'Email and password are required.' });
     }
     const user = await User.findOne({ email });
     if (!user) {
+      console.log('❌ User not found:', email);
       return res.status(401).json({ success: false, error: 'Invalid email or password.' });
     }
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
+      console.log('❌ Password mismatch for user:', email);
       return res.status(401).json({ success: false, error: 'Invalid email or password.' });
     }
     // Ensure user object has 'id' field for session compatibility
     user.id = user._id.toString();
+    
+    console.log('✅ Login successful for user:', { id: user.id, email: user.email });
+    
     req.login(user, (err) => {
       if (err) {
-        console.error('Login error:', err);
+        console.error('❌ Login error:', err);
         return res.status(500).json({ success: false, error: 'Failed to log in.' });
       }
-      res.json({ success: true });
+      
+      console.log('✅ Session created:', {
+        sessionID: req.sessionID,
+        userID: req.user?.id,
+        cookie: req.session.cookie
+      });
+      
+      res.json({ 
+        success: true,
+        debug: {
+          sessionID: req.sessionID,
+          userID: req.user?.id
+        }
+      });
     });
   } catch (error) {
-    console.error('Local login error:', error);
+    console.error('❌ Local login error:', error);
     res.status(500).json({ success: false, error: 'Failed to log in.' });
   }
 });
 
 // Session check endpoint for frontend
 router.get('/session', (req, res) => {
-  res.json({ user: req.user || null, authenticated: !!req.user });
+  console.log('🔍 Session check request:', {
+    sessionID: req.sessionID,
+    hasUser: !!req.user,
+    user: req.user ? { id: req.user.id, email: req.user.email } : null,
+    cookies: req.headers.cookie ? 'present' : 'missing',
+    origin: req.headers.origin,
+    userAgent: req.headers['user-agent']?.substring(0, 50)
+  });
+  
+  res.json({ 
+    user: req.user || null, 
+    authenticated: !!req.user,
+    sessionID: req.sessionID,
+    debug: {
+      hasSession: !!req.session,
+      hasUser: !!req.user,
+      cookiesPresent: !!req.headers.cookie
+    }
+  });
 });
 
 // Get connected accounts

@@ -34,7 +34,15 @@ export const getApiUrl = (endpoint) => {
     console.warn('⚠️ API URL not configured. Please set REACT_APP_API_URL environment variable.');
     return null;
   }
-  return `${apiConfig.baseURL}${endpoint}`;
+  // Ensure only one slash between baseURL and endpoint
+  let base = apiConfig.baseURL;
+  let ep = endpoint || '';
+  if (base.endsWith('/') && ep.startsWith('/')) {
+    ep = ep.substring(1);
+  } else if (!base.endsWith('/') && !ep.startsWith('/')) {
+    base += '/';
+  }
+  return base + ep;
 };
 
 // Default export
