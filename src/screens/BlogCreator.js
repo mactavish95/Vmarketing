@@ -35,8 +35,50 @@ const BlogCreator = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedBlog, setEditedBlog] = useState('');
   const [syncSuccess, setSyncSuccess] = useState(false);
+  
+  // Step-by-step wizard states
+  const [currentStep, setCurrentStep] = useState(1);
+  const [completedSteps, setCompletedSteps] = useState(new Set());
+  const [showStepValidation, setShowStepValidation] = useState(false);
 
   const { t } = useTranslation();
+
+  // Check step completion on mount and when blogData changes
+  useEffect(() => {
+    checkStepCompletion();
+  }, [blogData]);
+
+  // Step definitions
+  const steps = [
+    {
+      id: 1,
+      title: 'Basic Information',
+      icon: '📝',
+      description: 'Topic and business details',
+      fields: ['topic', 'mainName', 'type', 'industry', 'location']
+    },
+    {
+      id: 2,
+      title: 'Content Style',
+      icon: '🎨',
+      description: 'Audience, tone, and length',
+      fields: ['targetAudience', 'tone', 'length']
+    },
+    {
+      id: 3,
+      title: 'Key Content',
+      icon: '✨',
+      description: 'Key points and special features',
+      fields: ['keyPoints', 'specialFeatures']
+    },
+    {
+      id: 4,
+      title: 'Images & Review',
+      icon: '📸',
+      description: 'Add images and review details',
+      fields: ['images']
+    }
+  ];
 
   // Quick start templates
   const quickStartTemplates = [
@@ -316,6 +358,59 @@ const BlogCreator = () => {
       ...prev,
       [field]: value
     }));
+    
+    // Check if step is completed when field changes
+    checkStepCompletion();
+  };
+
+  // Check if current step is completed
+  const isStepCompleted = (stepId) => {
+    const step = steps.find(s => s.id === stepId);
+    if (!step) return false;
+    
+    return step.fields.every(field => {
+      if (field === 'images') return true; // Images are optional
+      return blogData[field] && blogData[field].toString().trim() !== '';
+    });
+  };
+
+  // Check step completion and update completed steps
+  const checkStepCompletion = () => {
+    const newCompletedSteps = new Set(completedSteps);
+    steps.forEach(step => {
+      if (isStepCompleted(step.id)) {
+        newCompletedSteps.add(step.id);
+      } else {
+        newCompletedSteps.delete(step.id);
+      }
+    });
+    setCompletedSteps(newCompletedSteps);
+  };
+
+  // Navigate to next step
+  const nextStep = () => {
+    if (isStepCompleted(currentStep) && currentStep < steps.length) {
+      setCurrentStep(currentStep + 1);
+      setShowStepValidation(false);
+    } else {
+      setShowStepValidation(true);
+    }
+  };
+
+  // Navigate to previous step
+  const prevStep = () => {
+    if (currentStep > 1) {
+      setCurrentStep(currentStep - 1);
+      setShowStepValidation(false);
+    }
+  };
+
+  // Navigate to specific step
+  const goToStep = (stepId) => {
+    if (stepId <= currentStep || completedSteps.has(stepId - 1)) {
+      setCurrentStep(stepId);
+      setShowStepValidation(false);
+    }
   };
 
   // API key is now handled securely on the server
@@ -817,10 +912,10 @@ const BlogCreator = () => {
     // Topic-based tips
     if (topic.includes('menu') || type === 'restaurant') {
       tips.push('🍽️ Highlight your signature dishes and what makes your menu unique.');
-      tips.push('👨‍🍳 Mention your chef’s background or cooking philosophy.');
+      tips.push('👨‍🍳 Mention your chef\'s background or cooking philosophy.');
     }
     if (topic.includes('launch') || topic.includes('new')) {
-      tips.push('🚀 Announce what’s new and why it matters to your audience.');
+      tips.push('🚀 Announce what\'s new and why it matters to your audience.');
       tips.push('🎉 Share any launch events, promotions, or special offers.');
     }
     if (topic.includes('event') || type === 'event') {
@@ -886,6 +981,33 @@ const BlogCreator = () => {
         <span className="blogcreator-header-icon">📝</span>
         <h1 className="blogcreator-header-title">{t('restaurantBlogCreator')}</h1>
         <p className="blogcreator-header-desc">{t('generateEngagingBlogContent')}</p>
+        
+        {/* Step Navigation */}
+        <div className="blogcreator-step-navigation">
+          {steps.map((step, index) => (
+            <div
+              key={step.id}
+              className={`blogcreator-step-nav-item ${
+                currentStep === step.id ? 'active' : ''
+              } ${completedSteps.has(step.id) ? 'completed' : ''} ${
+                step.id < currentStep ? 'visited' : ''
+              }`}
+              onClick={() => goToStep(step.id)}
+            >
+              <div className="blogcreator-step-nav-icon">
+                {completedSteps.has(step.id) ? '✅' : step.icon}
+              </div>
+              <div className="blogcreator-step-nav-content">
+                <div className="blogcreator-step-nav-title">{step.title}</div>
+                <div className="blogcreator-step-nav-desc">{step.description}</div>
+              </div>
+              {index < steps.length - 1 && (
+                <div className="blogcreator-step-nav-arrow">→</div>
+              )}
+            </div>
+          ))}
+        </div>
+        
         <div className="blogcreator-header-actions">
           <button
             onClick={() => setShowTips(!showTips)}
@@ -905,6 +1027,28 @@ const BlogCreator = () => {
         <div className="blogcreator-main-grid">
           {/* Left: Form Section */}
           <section className="blogcreator-form-panel">
+            {/* Step Header */}
+            <div className="blogcreator-step-header">
+              <div className="blogcreator-step-header-content">
+                <h2 className="blogcreator-step-title">
+                  {steps[currentStep - 1].icon} {steps[currentStep - 1].title}
+                </h2>
+                <p className="blogcreator-step-description">
+                  {steps[currentStep - 1].description}
+                </p>
+              </div>
+              <div className="blogcreator-step-progress">
+                Step {currentStep} of {steps.length}
+              </div>
+            </div>
+
+            {/* Step Validation Message */}
+            {showStepValidation && !isStepCompleted(currentStep) && (
+              <div className="blogcreator-step-validation">
+                <span className="blogcreator-step-validation-icon">⚠️</span>
+                Please complete all required fields in this step before continuing.
+              </div>
+            )}
             {/* Guidance Panel */}
             {showTips && !generatedBlog && (
               <div className="blogcreator-guidance-panel">
@@ -1002,336 +1146,412 @@ const BlogCreator = () => {
             
             {!generatedBlog && (
               <form className="blogcreator-form" autoComplete="off" onSubmit={e => { e.preventDefault(); generateBlogPost(); }}>
-                {/* Image Upload Section */}
-                <fieldset className="blogcreator-fieldset">
-                  <legend className="blogcreator-legend">{t('blogImages')}</legend>
-                  <div className="blogcreator-upload-area">
-                    <input
-                      type="file"
-                      multiple
-                      accept="image/*"
-                      onChange={handleImageUpload}
-                      style={{ display: 'none' }}
-                      id="image-upload"
-                    />
-                    <label htmlFor="image-upload" className="blogcreator-upload-label">
-                      <span className="blogcreator-upload-icon">📤</span> {t('chooseImages')}
-                    </label>
-                    <span className="blogcreator-upload-support">{t('supportsJpegPngGifWebp')}</span>
-                  </div>
-                  {isUploading && (
-                    <div className="blogcreator-upload-progress">
-                      <div className="blogcreator-upload-bar-bg">
-                        <div className="blogcreator-upload-bar" style={{ width: `${uploadProgress}%` }}></div>
+                {/* Step 1: Basic Information */}
+                {currentStep === 1 && (
+                  <div className="blogcreator-step-content">
+                    <fieldset className="blogcreator-fieldset">
+                      <legend className="blogcreator-legend">
+                        {t('basicInformation')}
+                        <span className="blogcreator-fieldset-tip">💡 Start with the basics</span>
+                      </legend>
+                      
+                      <div className="blogcreator-field-group">
+                        <label className="blogcreator-label" htmlFor="topic">
+                          {t('blogTopic')} *
+                          <span className="blogcreator-field-hint">What will your blog post be about?</span>
+                        </label>
+                        <input
+                          id="topic"
+                          className="blogcreator-input"
+                          type="text"
+                          value={blogData.topic}
+                          onChange={e => handleInputChange('topic', e.target.value)}
+                          placeholder={topicTip || "e.g., Our New Seasonal Menu Launch, Behind the Scenes: Local Ingredients, 5 Tips for First-Time Visitors"}
+                          required
+                        />
+                        <FieldTipLLM field="topic" value={blogData.topic} />
+                        <div className="blogcreator-field-help">
+                          <strong>💡 Tip:</strong> Be specific and engaging. Instead of "Menu", try "Our Chef's New Spring Menu Featuring Local Farm Ingredients"
+                        </div>
                       </div>
+                      
+                      <div className="blogcreator-field-group">
+                        <label className="blogcreator-label" htmlFor="mainName">
+                          Project/Business/Topic Name *
+                          <span className="blogcreator-field-hint">The name of your business, project, or main subject</span>
+                        </label>
+                        <input
+                          id="mainName"
+                          className="blogcreator-input"
+                          type="text"
+                          value={blogData.mainName}
+                          onChange={e => handleInputChange('mainName', e.target.value)}
+                          placeholder={mainNameTip || "e.g., Downtown Bistro, TechStart Inc., Community Garden Project"}
+                          required
+                        />
+                        <FieldTipLLM field="mainName" value={blogData.mainName} />
+                      </div>
+                      
+                      <div className="blogcreator-field-group">
+                        <label className="blogcreator-label" htmlFor="type">
+                          Type or Category
+                          <span className="blogcreator-field-hint">What type of content is this?</span>
+                        </label>
+                        <select
+                          id="type"
+                          className="blogcreator-input"
+                          value={blogData.type}
+                          onChange={e => handleInputChange('type', e.target.value)}
+                          placeholder={typeTip || undefined}
+                        >
+                          <option value="business">Business</option>
+                          <option value="project">Project</option>
+                          <option value="event">Event</option>
+                          <option value="product">Product</option>
+                          <option value="organization">Organization</option>
+                          <option value="community">Community</option>
+                          <option value="other">Other</option>
+                        </select>
+                        <FieldTipLLM field="type" value={blogData.type} />
+                      </div>
+                      
+                      <div className="blogcreator-field-group">
+                        <label className="blogcreator-label" htmlFor="industry">
+                          Industry or Field
+                          <span className="blogcreator-field-hint">What industry or field does this belong to?</span>
+                        </label>
+                        <input
+                          id="industry"
+                          className="blogcreator-input"
+                          type="text"
+                          value={blogData.industry}
+                          onChange={e => handleInputChange('industry', e.target.value)}
+                          placeholder={industryTip || "e.g., Food & Beverage, Technology, Education, Healthcare, Art & Culture"}
+                        />
+                        <FieldTipLLM field="industry" value={blogData.industry} />
+                      </div>
+                      
+                      <div className="blogcreator-field-group">
+                        <label className="blogcreator-label" htmlFor="location">
+                          {t('location')}
+                          <span className="blogcreator-field-hint">Where is this located? (optional)</span>
+                        </label>
+                        <input
+                          id="location"
+                          className="blogcreator-input"
+                          type="text"
+                          value={blogData.location}
+                          onChange={e => handleInputChange('location', e.target.value)}
+                          placeholder={locationTip || "e.g., Downtown Seattle, West Village, Online, Global"}
+                        />
+                        <FieldTipLLM field="location" value={blogData.location} />
+                      </div>
+                    </fieldset>
+                    
+                    {/* Step Navigation */}
+                    <div className="blogcreator-step-actions">
+                      <button
+                        type="button"
+                        className="blogcreator-step-btn blogcreator-step-next"
+                        onClick={nextStep}
+                      >
+                        Next: Content Style →
+                      </button>
                     </div>
-                  )}
-                  {images.length > 0 && (
-                    <div className="blogcreator-image-grid">
-                      {images.map((image, index) => (
-                        <div key={image.id} className="blogcreator-image-preview">
-                          <img src={image.dataUrl} alt={image.name} />
-                          <div className="blogcreator-image-name">{image.name.length > 12 ? image.name.substring(0, 12) + '...' : image.name}</div>
-                          <div className="blogcreator-image-size">{formatFileSize(image.size)}</div>
-                          <div className="blogcreator-image-actions">
-                            <button type="button" className="remove" onClick={() => removeImage(image.id)}>🗑️</button>
-                            {index > 0 && <button type="button" onClick={() => reorderImages(index, index - 1)}>⬆️</button>}
-                            {index < images.length - 1 && <button type="button" onClick={() => reorderImages(index, index + 1)}>⬇️</button>}
+                  </div>
+                )}
+
+                {/* Step 2: Content Style */}
+                {currentStep === 2 && (
+                  <div className="blogcreator-step-content">
+                    <fieldset className="blogcreator-fieldset">
+                      <legend className="blogcreator-legend">
+                        {t('contentPreferences')}
+                        <span className="blogcreator-fieldset-tip">🎨 Customize your content style</span>
+                      </legend>
+                      
+                      <div className="blogcreator-choice-group">
+                        <div className="blogcreator-choice-header">
+                          <span className="blogcreator-label">{t('targetAudience')}</span>
+                          <span className="blogcreator-choice-hint">Who will read this blog post?</span>
+                        </div>
+                        <div className="blogcreator-choice-row">
+                          {targetAudiences.map(audience => (
+                            <button
+                              key={audience.value}
+                              type="button"
+                              className={`blogcreator-choice-btn${blogData.targetAudience === audience.value ? ' selected' : ''}`}
+                              onClick={() => handleInputChange('targetAudience', audience.value)}
+                              aria-pressed={blogData.targetAudience === audience.value}
+                              title={audience.label}
+                            >
+                              <span className="blogcreator-choice-icon">{audience.icon}</span>
+                              <span>{audience.label}</span>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                      
+                      <div className="blogcreator-choice-group">
+                        <div className="blogcreator-choice-header">
+                          <span className="blogcreator-label">{t('writingTone')}</span>
+                          <span className="blogcreator-choice-hint">What mood should the writing convey?</span>
+                        </div>
+                        <div className="blogcreator-choice-row">
+                          {tones.map(tone => (
+                            <button
+                              key={tone.value}
+                              type="button"
+                              className={`blogcreator-choice-btn${blogData.tone === tone.value ? ' selected' : ''}`}
+                              onClick={() => handleInputChange('tone', tone.value)}
+                              aria-pressed={blogData.tone === tone.value}
+                              title={tone.label}
+                            >
+                              <span className="blogcreator-choice-icon">{tone.icon}</span>
+                              <span>{tone.label}</span>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                      
+                      <div className="blogcreator-choice-group">
+                        <div className="blogcreator-choice-header">
+                          <span className="blogcreator-label">{t('blogLength')}</span>
+                          <span className="blogcreator-choice-hint">How detailed should the content be?</span>
+                        </div>
+                        <div className="blogcreator-choice-row">
+                          {lengths.map(length => (
+                            <button
+                              key={length.value}
+                              type="button"
+                              className={`blogcreator-choice-btn${blogData.length === length.value ? ' selected' : ''}`}
+                              onClick={() => handleInputChange('length', length.value)}
+                              aria-pressed={blogData.length === length.value}
+                              title={length.label}
+                            >
+                              <span className="blogcreator-choice-icon">{length.icon}</span>
+                              <span>{length.label}</span>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </fieldset>
+                    
+                    {/* Step Navigation */}
+                    <div className="blogcreator-step-actions">
+                      <button
+                        type="button"
+                        className="blogcreator-step-btn blogcreator-step-prev"
+                        onClick={prevStep}
+                      >
+                        ← Previous: Basic Information
+                      </button>
+                      <button
+                        type="button"
+                        className="blogcreator-step-btn blogcreator-step-next"
+                        onClick={nextStep}
+                      >
+                        Next: Key Content →
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Step 3: Key Content */}
+                {currentStep === 3 && (
+                  <div className="blogcreator-step-content">
+                    <fieldset className="blogcreator-fieldset">
+                      <legend className="blogcreator-legend">
+                        {t('additionalDetails')}
+                        <span className="blogcreator-fieldset-tip">✨ Add the finishing touches</span>
+                      </legend>
+                      
+                      <div className="blogcreator-field-group">
+                        <label className="blogcreator-label" htmlFor="keyPoints">
+                          {t('keyPointsToInclude')} *
+                          <span className="blogcreator-field-hint">What are the main points you want to emphasize? This guides the AI to focus on what matters most.</span>
+                        </label>
+                        <textarea
+                          id="keyPoints"
+                          className="blogcreator-input"
+                          value={blogData.keyPoints}
+                          onChange={e => handleInputChange('keyPoints', e.target.value)}
+                          placeholder="• Highlight our commitment to local ingredients&#10;• Mention our award-winning chef&#10;• Include customer testimonials&#10;• Emphasize our unique atmosphere&#10;• Explain our signature dishes&#10;• Share our story and mission"
+                          rows={4}
+                          required
+                        />
+                        <div className="blogcreator-field-help">
+                          <strong>🎯 Key Points Guide:</strong>
+                          <ul style={{ marginTop: '8px', paddingLeft: '20px' }}>
+                            <li>Start with your main message or value proposition</li>
+                            <li>Include specific details about your offerings</li>
+                            <li>Mention unique aspects that set you apart</li>
+                            <li>Add customer benefits and outcomes</li>
+                            <li>Include any calls-to-action you want</li>
+                          </ul>
+                        </div>
+                      </div>
+                      
+                      <div className="blogcreator-field-group">
+                        <label className="blogcreator-label" htmlFor="specialFeatures">
+                          {t('specialFeaturesOrHighlights')} *
+                          <span className="blogcreator-field-hint">What makes this special or unique? These details will be woven into your blog story.</span>
+                        </label>
+                        <textarea
+                          id="specialFeatures"
+                          className="blogcreator-input"
+                          value={blogData.specialFeatures}
+                          onChange={e => handleInputChange('specialFeatures', e.target.value)}
+                          placeholder="• Recently won 'Best New Restaurant 2024' award&#10;• Only restaurant in the area with rooftop dining&#10;• Family-owned for 3 generations&#10;• Sustainable practices and zero-waste kitchen&#10;• Chef trained in Michelin-starred restaurants&#10;• Source 90% of ingredients from local farms"
+                          rows={4}
+                          required
+                        />
+                        <div className="blogcreator-field-help">
+                          <strong>✨ Special Features Guide:</strong>
+                          <ul style={{ marginTop: '8px', paddingLeft: '20px' }}>
+                            <li>Awards, recognitions, or certifications</li>
+                            <li>Unique location, atmosphere, or amenities</li>
+                            <li>Family history, traditions, or heritage</li>
+                            <li>Environmental practices or sustainability</li>
+                            <li>Expertise, training, or qualifications</li>
+                            <li>Community involvement or partnerships</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </fieldset>
+                    
+                    {/* Step Navigation */}
+                    <div className="blogcreator-step-actions">
+                      <button
+                        type="button"
+                        className="blogcreator-step-btn blogcreator-step-prev"
+                        onClick={prevStep}
+                      >
+                        ← Previous: Content Style
+                      </button>
+                      <button
+                        type="button"
+                        className="blogcreator-step-btn blogcreator-step-next"
+                        onClick={nextStep}
+                      >
+                        Next: Images & Review →
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Step 4: Images & Review */}
+                {currentStep === 4 && (
+                  <div className="blogcreator-step-content">
+                    <fieldset className="blogcreator-fieldset">
+                      <legend className="blogcreator-legend">{t('blogImages')}</legend>
+                      <div className="blogcreator-upload-area">
+                        <input
+                          type="file"
+                          multiple
+                          accept="image/*"
+                          onChange={handleImageUpload}
+                          style={{ display: 'none' }}
+                          id="image-upload"
+                        />
+                        <label htmlFor="image-upload" className="blogcreator-upload-label">
+                          <span className="blogcreator-upload-icon">📤</span> {t('chooseImages')}
+                        </label>
+                        <span className="blogcreator-upload-support">{t('supportsJpegPngGifWebp')}</span>
+                      </div>
+                      {isUploading && (
+                        <div className="blogcreator-upload-progress">
+                          <div className="blogcreator-upload-bar-bg">
+                            <div className="blogcreator-upload-bar" style={{ width: `${uploadProgress}%` }}></div>
                           </div>
                         </div>
-                      ))}
-                    </div>
-                  )}
-                </fieldset>
+                      )}
+                      {images.length > 0 && (
+                        <div className="blogcreator-image-grid">
+                          {images.map((image, index) => (
+                            <div key={image.id} className="blogcreator-image-preview">
+                              <img src={image.dataUrl} alt={image.name} />
+                              <div className="blogcreator-image-name">{image.name.length > 12 ? image.name.substring(0, 12) + '...' : image.name}</div>
+                              <div className="blogcreator-image-size">{formatFileSize(image.size)}</div>
+                              <div className="blogcreator-image-actions">
+                                <button type="button" className="remove" onClick={() => removeImage(image.id)}>🗑️</button>
+                                {index > 0 && <button type="button" onClick={() => reorderImages(index, index - 1)}>⬆️</button>}
+                                {index < images.length - 1 && <button type="button" onClick={() => reorderImages(index, index + 1)}>⬇️</button>}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </fieldset>
 
-                {/* Basic Information */}
-                <fieldset className="blogcreator-fieldset">
-                  <legend className="blogcreator-legend">
-                    {t('basicInformation')}
-                    <span className="blogcreator-fieldset-tip">💡 Start with the basics</span>
-                  </legend>
-                  
-                  <div className="blogcreator-field-group">
-                    <label className="blogcreator-label" htmlFor="topic">
-                      {t('blogTopic')} *
-                      <span className="blogcreator-field-hint">What will your blog post be about?</span>
-                    </label>
-                  <input
-                    id="topic"
-                    className="blogcreator-input"
-                    type="text"
-                    value={blogData.topic}
-                    onChange={e => handleInputChange('topic', e.target.value)}
-                    placeholder={topicTip || "e.g., Our New Seasonal Menu Launch, Behind the Scenes: Local Ingredients, 5 Tips for First-Time Visitors"}
-                    required
-                  />
-                    <FieldTipLLM field="topic" value={blogData.topic} />
-                    <div className="blogcreator-field-help">
-                      <strong>💡 Tip:</strong> Be specific and engaging. Instead of "Menu", try "Our Chef's New Spring Menu Featuring Local Farm Ingredients"
-                    </div>
-                  </div>
-                  
-                  <div className="blogcreator-field-group">
-                    <label className="blogcreator-label" htmlFor="mainName">
-                      Project/Business/Topic Name *
-                      <span className="blogcreator-field-hint">The name of your business, project, or main subject</span>
-                    </label>
-                  <input
-                    id="mainName"
-                    className="blogcreator-input"
-                    type="text"
-                    value={blogData.mainName}
-                    onChange={e => handleInputChange('mainName', e.target.value)}
-                    placeholder={mainNameTip || "e.g., Downtown Bistro, TechStart Inc., Community Garden Project"}
-                    required
-                  />
-                    <FieldTipLLM field="mainName" value={blogData.mainName} />
-                  </div>
-                  
-                  <div className="blogcreator-field-group">
-                    <label className="blogcreator-label" htmlFor="type">
-                      Type or Category
-                      <span className="blogcreator-field-hint">What type of content is this?</span>
-                    </label>
-                    <select
-                    id="type"
-                    className="blogcreator-input"
-                    value={blogData.type}
-                    onChange={e => handleInputChange('type', e.target.value)}
-                    placeholder={typeTip || undefined}
-                    >
-                      <option value="business">Business</option>
-                      <option value="project">Project</option>
-                      <option value="event">Event</option>
-                      <option value="product">Product</option>
-                      <option value="organization">Organization</option>
-                      <option value="community">Community</option>
-                      <option value="other">Other</option>
-                    </select>
-                    <FieldTipLLM field="type" value={blogData.type} />
-                  </div>
-                  
-                  <div className="blogcreator-field-group">
-                    <label className="blogcreator-label" htmlFor="industry">
-                      Industry or Field
-                      <span className="blogcreator-field-hint">What industry or field does this belong to?</span>
-                    </label>
-                  <input
-                    id="industry"
-                    className="blogcreator-input"
-                    type="text"
-                    value={blogData.industry}
-                    onChange={e => handleInputChange('industry', e.target.value)}
-                    placeholder={industryTip || "e.g., Food & Beverage, Technology, Education, Healthcare, Art & Culture"}
-                  />
-                    <FieldTipLLM field="industry" value={blogData.industry} />
-                  </div>
-                  
-                  <div className="blogcreator-field-group">
-                    <label className="blogcreator-label" htmlFor="location">
-                      {t('location')}
-                      <span className="blogcreator-field-hint">Where is this located? (optional)</span>
-                    </label>
-                  <input
-                    id="location"
-                    className="blogcreator-input"
-                    type="text"
-                    value={blogData.location}
-                    onChange={e => handleInputChange('location', e.target.value)}
-                    placeholder={locationTip || "e.g., Downtown Seattle, West Village, Online, Global"}
-                  />
-                    <FieldTipLLM field="location" value={blogData.location} />
-                  </div>
-                </fieldset>
-
-                {/* Content Preferences */}
-                <fieldset className="blogcreator-fieldset">
-                  <legend className="blogcreator-legend">
-                    {t('contentPreferences')}
-                    <span className="blogcreator-fieldset-tip">🎨 Customize your content style</span>
-                  </legend>
-                  
-                  <div className="blogcreator-choice-group">
-                    <div className="blogcreator-choice-header">
-                    <span className="blogcreator-label">{t('targetAudience')}</span>
-                      <span className="blogcreator-choice-hint">Who will read this blog post?</span>
-                    </div>
-                    <div className="blogcreator-choice-row">
-                      {targetAudiences.map(audience => (
-                        <button
-                          key={audience.value}
-                          type="button"
-                          className={`blogcreator-choice-btn${blogData.targetAudience === audience.value ? ' selected' : ''}`}
-                          onClick={() => handleInputChange('targetAudience', audience.value)}
-                          aria-pressed={blogData.targetAudience === audience.value}
-                          title={audience.label}
-                        >
-                          <span className="blogcreator-choice-icon">{audience.icon}</span>
-                          <span>{audience.label}</span>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                  
-                  <div className="blogcreator-choice-group">
-                    <div className="blogcreator-choice-header">
-                    <span className="blogcreator-label">{t('writingTone')}</span>
-                      <span className="blogcreator-choice-hint">What mood should the writing convey?</span>
-                    </div>
-                    <div className="blogcreator-choice-row">
-                      {tones.map(tone => (
-                        <button
-                          key={tone.value}
-                          type="button"
-                          className={`blogcreator-choice-btn${blogData.tone === tone.value ? ' selected' : ''}`}
-                          onClick={() => handleInputChange('tone', tone.value)}
-                          aria-pressed={blogData.tone === tone.value}
-                          title={tone.label}
-                        >
-                          <span className="blogcreator-choice-icon">{tone.icon}</span>
-                          <span>{tone.label}</span>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                  
-                  <div className="blogcreator-choice-group">
-                    <div className="blogcreator-choice-header">
-                    <span className="blogcreator-label">{t('blogLength')}</span>
-                      <span className="blogcreator-choice-hint">How detailed should the content be?</span>
-                    </div>
-                    <div className="blogcreator-choice-row">
-                      {lengths.map(length => (
-                        <button
-                          key={length.value}
-                          type="button"
-                          className={`blogcreator-choice-btn${blogData.length === length.value ? ' selected' : ''}`}
-                          onClick={() => handleInputChange('length', length.value)}
-                          aria-pressed={blogData.length === length.value}
-                          title={length.label}
-                        >
-                          <span className="blogcreator-choice-icon">{length.icon}</span>
-                          <span>{length.label}</span>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </fieldset>
-
-                {/* Additional Details */}
-                <fieldset className="blogcreator-fieldset">
-                  <legend className="blogcreator-legend">
-                    {t('additionalDetails')}
-                    <span className="blogcreator-fieldset-tip">✨ Add the finishing touches</span>
-                  </legend>
-                  
-                  <div className="blogcreator-field-group">
-                    <label className="blogcreator-label" htmlFor="keyPoints">
-                      {t('keyPointsToInclude')} *
-                      <span className="blogcreator-field-hint">What are the main points you want to emphasize? This guides the AI to focus on what matters most.</span>
-                    </label>
-                  <textarea
-                    id="keyPoints"
-                    className="blogcreator-input"
-                    value={blogData.keyPoints}
-                    onChange={e => handleInputChange('keyPoints', e.target.value)}
-                      placeholder="• Highlight our commitment to local ingredients&#10;• Mention our award-winning chef&#10;• Include customer testimonials&#10;• Emphasize our unique atmosphere&#10;• Explain our signature dishes&#10;• Share our story and mission"
-                      rows={4}
-                      required
-                    />
-                    <div className="blogcreator-field-help">
-                      <strong>🎯 Key Points Guide:</strong>
-                      <ul style={{ marginTop: '8px', paddingLeft: '20px' }}>
-                        <li>Start with your main message or value proposition</li>
-                        <li>Include specific details about your offerings</li>
-                        <li>Mention unique aspects that set you apart</li>
-                        <li>Add customer benefits and outcomes</li>
-                        <li>Include any calls-to-action you want</li>
-                      </ul>
-                    </div>
-                  </div>
-                  
-                  <div className="blogcreator-field-group">
-                    <label className="blogcreator-label" htmlFor="specialFeatures">
-                      {t('specialFeaturesOrHighlights')} *
-                      <span className="blogcreator-field-hint">What makes this special or unique? These details will be woven into your blog story.</span>
-                    </label>
-                  <textarea
-                    id="specialFeatures"
-                    className="blogcreator-input"
-                    value={blogData.specialFeatures}
-                    onChange={e => handleInputChange('specialFeatures', e.target.value)}
-                      placeholder="• Recently won 'Best New Restaurant 2024' award&#10;• Only restaurant in the area with rooftop dining&#10;• Family-owned for 3 generations&#10;• Sustainable practices and zero-waste kitchen&#10;• Chef trained in Michelin-starred restaurants&#10;• Source 90% of ingredients from local farms"
-                      rows={4}
-                      required
-                  />
-                    <div className="blogcreator-field-help">
-                      <strong>✨ Special Features Guide:</strong>
-                      <ul style={{ marginTop: '8px', paddingLeft: '20px' }}>
-                        <li>Awards, recognitions, or certifications</li>
-                        <li>Unique location, atmosphere, or amenities</li>
-                        <li>Family history, traditions, or heritage</li>
-                        <li>Environmental practices or sustainability</li>
-                        <li>Expertise, training, or qualifications</li>
-                        <li>Community involvement or partnerships</li>
-                      </ul>
-                    </div>
-                  </div>
-                </fieldset>
-
-                <div className="blogcreator-form-actions">
-                  <div className="blogcreator-submit-guidance">
-                    <div className="blogcreator-submit-checklist">
-                      <h4>✅ Before you generate, make sure you have:</h4>
-                      <ul>
-                        <li className={blogData.topic.trim() ? 'completed' : ''}>
-                          {blogData.topic.trim() ? '✅' : '⭕'} A clear, engaging topic
-                        </li>
-                        <li className={blogData.mainName.trim() ? 'completed' : ''}>
-                          {blogData.mainName.trim() ? '✅' : '⭕'} Business/project name
-                        </li>
-                        <li className={blogData.industry.trim() ? 'completed' : ''}>
-                          {blogData.industry.trim() ? '✅' : '⭕'} Industry or field specified
-                        </li>
-                        <li className={blogData.keyPoints.trim() ? 'completed' : ''}>
-                          {blogData.keyPoints.trim() ? '✅' : '⭕'} Key points to include (required)
-                        </li>
-                        <li className={blogData.specialFeatures.trim() ? 'completed' : ''}>
-                          {blogData.specialFeatures.trim() ? '✅' : '⭕'} Special features/highlights (required)
-                        </li>
-                      </ul>
+                    {/* Review Section */}
+                    <fieldset className="blogcreator-fieldset">
+                      <legend className="blogcreator-legend">
+                        Review Your Blog Details
+                        <span className="blogcreator-fieldset-tip">📋 Double-check everything before generating</span>
+                      </legend>
+                      
+                      <div className="blogcreator-review-grid">
+                        <div className="blogcreator-review-item">
+                          <strong>Topic:</strong> {blogData.topic || 'Not specified'}
+                        </div>
+                        <div className="blogcreator-review-item">
+                          <strong>Business/Project:</strong> {blogData.mainName || 'Not specified'}
+                        </div>
+                        <div className="blogcreator-review-item">
+                          <strong>Type:</strong> {blogData.type || 'Not specified'}
+                        </div>
+                        <div className="blogcreator-review-item">
+                          <strong>Industry:</strong> {blogData.industry || 'Not specified'}
+                        </div>
+                        <div className="blogcreator-review-item">
+                          <strong>Location:</strong> {blogData.location || 'Not specified'}
+                        </div>
+                        <div className="blogcreator-review-item">
+                          <strong>Target Audience:</strong> {blogData.targetAudience || 'Not specified'}
+                        </div>
+                        <div className="blogcreator-review-item">
+                          <strong>Tone:</strong> {blogData.tone || 'Not specified'}
+                        </div>
+                        <div className="blogcreator-review-item">
+                          <strong>Length:</strong> {blogData.length || 'Not specified'}
+                        </div>
+                        <div className="blogcreator-review-item">
+                          <strong>Images:</strong> {images.length} selected
+                        </div>
+                      </div>
+                    </fieldset>
+                    
+                    {/* Step Navigation */}
+                    <div className="blogcreator-step-actions">
+                      <button
+                        type="button"
+                        className="blogcreator-step-btn blogcreator-step-prev"
+                        onClick={prevStep}
+                      >
+                        ← Previous: Key Content
+                      </button>
+                      <button
+                        type="submit"
+                        className="blogcreator-submit-btn"
+                        disabled={isGenerating || !blogData.topic.trim() || !blogData.mainName.trim() || !blogData.keyPoints.trim() || !blogData.specialFeatures.trim()}
+                      >
+                        {isGenerating ? (
+                          <span className="blogcreator-spinner"></span>
+                        ) : (
+                          <span className="blogcreator-submit-label">🚀 Generate Blog Post</span>
+                        )}
+                      </button>
                     </div>
                     
-                    <div className="blogcreator-submit-tips">
-                      <h4>💡 Pro Tips:</h4>
-                      <ul>
-                        <li>The more specific your topic, the better the results</li>
-                        <li>Include key points to guide the AI's focus</li>
-                        <li>Choose the right tone for your audience</li>
-                        <li>Add images to make your blog more engaging</li>
-                      </ul>
-                    </div>
-                  </div>
-                  
-                  <button
-                    type="submit"
-                    className="blogcreator-submit-btn"
-                    disabled={isGenerating || !blogData.topic.trim() || !blogData.mainName.trim() || !blogData.keyPoints.trim() || !blogData.specialFeatures.trim()}
-                  >
-                    {isGenerating ? (
-                      <span className="blogcreator-spinner"></span>
-                    ) : (
-                      <span className="blogcreator-submit-label">🚀 {t('generateBlogPost')}</span>
+                    {isGenerating && (
+                      <div className="blogcreator-generating-info">
+                        <p>🤖 AI is crafting your blog post...</p>
+                        <p>This usually takes 30-60 seconds. We're analyzing your inputs and creating engaging content!</p>
+                      </div>
                     )}
-                  </button>
-                  
-                  {isGenerating && (
-                    <div className="blogcreator-generating-info">
-                      <p>🤖 AI is crafting your blog post...</p>
-                      <p>This usually takes 30-60 seconds. We're analyzing your inputs and creating engaging content!</p>
-                    </div>
-                  )}
-                </div>
+                  </div>
+                )}
               </form>
             )}
           </section>
