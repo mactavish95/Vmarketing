@@ -26,6 +26,7 @@ const blogRoutes = require('./routes/blog');
 const socialMediaPostsRoutes = require('./routes/socialMediaPosts');
 const socialAuthRoutes = require('./routes/socialAuth');
 const socialPublishRoutes = require('./routes/socialPublish');
+const fieldTipRoutes = require('./routes/fieldTip');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -135,6 +136,7 @@ app.use('/api', socialMediaPostsRoutes);
 //app.use('/api/auth', socialAuthRoutes);
 app.use('/api/auth', require('./routes/socialAuth'));
 app.use('/api/social', socialPublishRoutes);
+app.use('/api', fieldTipRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

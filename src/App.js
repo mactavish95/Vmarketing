@@ -20,6 +20,7 @@ import Login from './screens/account/Login';
 import Signup from './screens/account/Signup';
 import Dashboard from './screens/Dashboard';
 import CookieDebug from './components/CookieDebug';
+import LetterCreator from './screens/LetterCreator';
 
 // Dummy useAuth hook (replace with real auth logic)
 function useAuth() {
@@ -54,6 +55,7 @@ function App() {
           <Route path="/review-history" element={<ReviewHistory />} />
           <Route path="/history" element={<ReviewHistory />} />
           <Route path="/blog-creator" element={<BlogCreator />} />
+          <Route path="/letter-creator" element={<LetterCreator />} />
           <Route path="/blog-index" element={<BlogIndex />} />
           <Route path="/blog" element={<BlogIndex />} />
           <Route path="/blog-post/:slug" element={<BlogPost />} />

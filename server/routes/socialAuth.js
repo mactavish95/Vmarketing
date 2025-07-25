@@ -83,6 +83,10 @@ router.get('/facebook/callback',
     try {
       const { user } = req;
       const accessToken = user.accessToken;
+
+      //Get Facebook info
+      const accountResponse = await fetch(`https://graph.facebook.com/v23.0/user_id/accounts?access_token=user_access_token`);
+      const accountData = await accountResponse.json();
       
       // Save account info with basic permissions first
       await SocialAccount.findOneAndUpdate(

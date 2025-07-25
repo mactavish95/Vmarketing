@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import apiConfig from '../config/api';
 import { useTranslation } from 'react-i18next';
 import './BlogCreator.css';
+import { FieldTipLLM, useFieldTipLLM } from './FieldTipLLM';
 
 const BlogCreator = () => {
   const [blogData, setBlogData] = useState({
@@ -16,6 +17,10 @@ const BlogCreator = () => {
     keyPoints: '',
     specialFeatures: ''
   });
+  const [showTips, setShowTips] = useState(true);
+  const [activeTip, setActiveTip] = useState('getting-started');
+  const [showExamples, setShowExamples] = useState(false);
+  const [templateApplied, setTemplateApplied] = useState(false);
   const [generatedBlog, setGeneratedBlog] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState('');
@@ -27,7 +32,164 @@ const BlogCreator = () => {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [imageAnalysis, setImageAnalysis] = useState(null);
 
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedBlog, setEditedBlog] = useState('');
+  const [syncSuccess, setSyncSuccess] = useState(false);
+
   const { t } = useTranslation();
+
+  // Quick start templates
+  const quickStartTemplates = [
+    {
+      name: 'Restaurant Menu Launch',
+      icon: '🍽️',
+      data: {
+        topic: 'Our New Seasonal Menu Launch',
+        mainName: 'Downtown Bistro',
+        type: 'business',
+        industry: 'Food & Beverage',
+        location: 'Downtown Seattle',
+        targetAudience: 'customers',
+        tone: 'enthusiastic',
+        length: 'medium',
+        keyPoints: '• Highlight our commitment to local ingredients\n• Mention our award-winning chef\n• Include customer testimonials\n• Emphasize our unique atmosphere',
+        specialFeatures: '• Recently won "Best New Restaurant 2024" award\n• Only restaurant in the area with rooftop dining\n• Family-owned for 3 generations\n• Sustainable practices and zero-waste kitchen'
+      }
+    },
+    {
+      name: 'Product Launch',
+      icon: '📦',
+      data: {
+        topic: 'Introducing Our Revolutionary New Product',
+        mainName: 'TechStart Inc.',
+        type: 'product',
+        industry: 'Technology',
+        location: 'San Francisco',
+        targetAudience: 'customers',
+        tone: 'modern',
+        length: 'medium',
+        keyPoints: '• Explain the problem it solves\n• Highlight key features and benefits\n• Include early user feedback\n• Mention pricing and availability',
+        specialFeatures: '• Patented technology\n• Award-winning design\n• 30-day money-back guarantee\n• 24/7 customer support'
+      }
+    },
+    {
+      name: 'Event Announcement',
+      icon: '🎉',
+      data: {
+        topic: 'Join Us for Our Annual Community Event',
+        mainName: 'Community Center',
+        type: 'event',
+        industry: 'Community',
+        location: 'Local Community',
+        targetAudience: 'community',
+        tone: 'casual',
+        length: 'short',
+        keyPoints: '• Event date, time, and location\n• What to expect and activities\n• How to register or attend\n• Special highlights or guests',
+        specialFeatures: '• Free admission for families\n• Live entertainment and food\n• Charity fundraiser component\n• Rain date scheduled'
+      }
+    },
+    {
+      name: 'Company Update',
+      icon: '🏢',
+      data: {
+        topic: 'Exciting Updates About Our Company Growth',
+        mainName: 'Your Company Name',
+        type: 'business',
+        industry: 'Your Industry',
+        location: 'Your Location',
+        targetAudience: 'customers',
+        tone: 'professional',
+        length: 'medium',
+        keyPoints: '• Recent achievements and milestones\n• New team members or leadership\n• Upcoming plans and goals\n• How this benefits customers',
+        specialFeatures: '• 50% growth in the last year\n• New office opening\n• Industry recognition awards\n• Enhanced customer service initiatives'
+      }
+    }
+  ];
+
+  // Tips and guidance content
+  const tips = {
+    'getting-started': {
+      title: '🚀 Getting Started',
+      content: 'Start by entering your blog topic and business/project name. Be specific about what you want to write about - this helps AI generate more relevant content.',
+      examples: [
+        'Topic: "Our New Seasonal Menu Launch"',
+        'Topic: "Behind the Scenes: How We Source Local Ingredients"',
+        'Topic: "5 Tips for First-Time Visitors"'
+      ]
+    },
+    'topic-ideas': {
+      title: '💡 Topic Ideas',
+      content: 'Great blog topics engage your audience and showcase your expertise. Consider writing about:',
+      examples: [
+        'Behind-the-scenes stories',
+        'Industry insights and tips',
+        'Customer success stories',
+        'Product/service highlights',
+        'Seasonal or trending topics',
+        'Company culture and team',
+        'How-to guides and tutorials'
+      ]
+    },
+    'target-audience': {
+      title: '👥 Target Audience',
+      content: 'Choose your target audience to tailor the content style and messaging:',
+      examples: [
+        'General: Broad appeal, easy to understand',
+        'Customers: Focus on benefits and value',
+        'Investors: Emphasize growth and potential',
+        'Partners: Highlight collaboration opportunities',
+        'Employees: Internal communication style',
+        'Media: Professional, newsworthy angle',
+        'Community: Local focus and engagement'
+      ]
+    },
+    'writing-tone': {
+      title: '🎭 Writing Tone',
+      content: 'The tone sets the mood and personality of your blog post:',
+      examples: [
+        'Professional: Formal, authoritative, business-focused',
+        'Casual: Friendly, conversational, approachable',
+        'Enthusiastic: Energetic, exciting, motivational',
+        'Elegant: Sophisticated, refined, premium feel',
+        'Rustic: Warm, cozy, authentic, down-to-earth',
+        'Modern: Trendy, innovative, cutting-edge'
+      ]
+    },
+    'content-length': {
+      title: '📏 Content Length',
+      content: 'Choose the length based on your topic complexity and audience preferences:',
+      examples: [
+        'Short (300-500 words): Quick reads, announcements, simple topics',
+        'Medium (600-800 words): Standard blog posts, detailed explanations',
+        'Long (900-1200 words): Comprehensive guides, in-depth analysis',
+        'Extra Long (1500-3000 words): Ultimate guides, detailed case studies'
+      ]
+    },
+    'key-points': {
+      title: '🎯 Key Points',
+      content: 'Include specific points you want to highlight in your blog post:',
+      examples: [
+        'Main benefits or features to emphasize',
+        'Specific examples or case studies',
+        'Important statistics or data points',
+        'Call-to-action messages',
+        'Unique selling propositions',
+        'Customer testimonials or quotes'
+      ]
+    },
+    'images': {
+      title: '📸 Images',
+      content: 'Images make your blog more engaging and help tell your story:',
+      examples: [
+        'Product photos or service demonstrations',
+        'Team photos or behind-the-scenes shots',
+        'Location photos or venue images',
+        'Infographics or charts',
+        'Customer photos (with permission)',
+        'Process or workflow images'
+      ]
+    }
+  };
 
   // Image handling functions
   const handleImageUpload = (event) => {
@@ -437,43 +599,42 @@ const BlogCreator = () => {
     if (!content) return null;
 
     const lines = content.split('\n');
-    
     return lines.map((line, index) => {
       const trimmedLine = line.trim();
       
       // H1 - Main title (usually not used in blog content, but handle it)
       if (trimmedLine.startsWith('# ') && !trimmedLine.startsWith('##')) {
         return (
-          <h1 key={index} className="blog-post-heading">
+          <div key={index} className="blog-h1">
             {trimmedLine.substring(2)}
-          </h1>
+          </div>
         );
       }
       
       // H2 - Major sections
       if (trimmedLine.startsWith('## ')) {
         return (
-          <h2 key={index} className="blog-post-heading">
+          <div key={index} className="blog-h2">
             {trimmedLine.substring(3)}
-          </h2>
+          </div>
         );
       }
       
       // H3 - Subsections
       if (trimmedLine.startsWith('### ')) {
         return (
-          <h3 key={index} className="blog-post-heading">
+          <div key={index} className="blog-h3">
             {trimmedLine.substring(4)}
-          </h3>
+          </div>
         );
       }
       
       // H4 - Detailed points
       if (trimmedLine.startsWith('#### ')) {
         return (
-          <h4 key={index} className="blog-post-heading">
+          <div key={index} className="blog-h4">
             {trimmedLine.substring(5)}
-          </h4>
+          </div>
         );
       }
       
@@ -635,17 +796,196 @@ const BlogCreator = () => {
     );
   };
 
+  // Contextual tips based on blogData
+  const getContextualTips = (blogData) => {
+    const tips = [];
+    const topic = blogData.topic.toLowerCase();
+    const industry = blogData.industry.toLowerCase();
+    const type = blogData.type.toLowerCase();
+    const location = blogData.location.toLowerCase();
+
+    // Topic-based tips
+    if (topic.includes('menu') || type === 'restaurant') {
+      tips.push('🍽️ Highlight your signature dishes and what makes your menu unique.');
+      tips.push('👨‍🍳 Mention your chef’s background or cooking philosophy.');
+    }
+    if (topic.includes('launch') || topic.includes('new')) {
+      tips.push('🚀 Announce what’s new and why it matters to your audience.');
+      tips.push('🎉 Share any launch events, promotions, or special offers.');
+    }
+    if (topic.includes('event') || type === 'event') {
+      tips.push('📅 Clearly state the event date, time, and location.');
+      tips.push('🎟️ Tell readers how to register or participate.');
+    }
+    if (topic.includes('update') || topic.includes('news')) {
+      tips.push('📰 Summarize the most important updates at the top.');
+      tips.push('📈 Explain how these updates benefit your audience.');
+    }
+
+    // Industry-based tips
+    if (industry.includes('technology')) {
+      tips.push('💡 Explain how your product solves a real-world problem.');
+      tips.push('🔬 Mention any innovative features or technical breakthroughs.');
+    }
+    if (industry.includes('food') || industry.includes('beverage')) {
+      tips.push('🥗 Describe the ingredients and sourcing for your dishes.');
+      tips.push('🏆 Mention any awards or recognitions.');
+    }
+    if (industry.includes('community')) {
+      tips.push('🤝 Highlight community involvement or partnerships.');
+      tips.push('🏘️ Share stories that connect with local readers.');
+    }
+
+    // Type/category-based tips
+    if (type === 'product') {
+      tips.push('📦 List key features and benefits of your product.');
+      tips.push('🛠️ Include testimonials or early user feedback.');
+    }
+    if (type === 'event') {
+      tips.push('🎤 Mention guest speakers, performers, or special guests.');
+      tips.push('📸 Suggest sharing photos or highlights after the event.');
+    }
+    if (type === 'business') {
+      tips.push('🏢 Share your business mission and values.');
+      tips.push('📊 Include recent achievements or milestones.');
+    }
+
+    // Location-based tips
+    if (location) {
+      tips.push('📍 Mention what makes your location special or unique.');
+      tips.push('🌎 Highlight any local partnerships or community events.');
+    }
+
+    // General fallback
+    if (tips.length === 0) {
+      tips.push('💡 Be specific and authentic—share what makes your story unique!');
+    }
+
+    return tips;
+  };
+
+  const { tip: topicTip } = useFieldTipLLM('topic', blogData.topic);
+  const { tip: mainNameTip } = useFieldTipLLM('mainName', blogData.mainName);
+  const { tip: typeTip } = useFieldTipLLM('type', blogData.type);
+  const { tip: industryTip } = useFieldTipLLM('industry', blogData.industry);
+  const { tip: locationTip } = useFieldTipLLM('location', blogData.location);
+
   return (
     <div className="blogcreator-root">
       <header className="blogcreator-header">
         <span className="blogcreator-header-icon">📝</span>
         <h1 className="blogcreator-header-title">{t('restaurantBlogCreator')}</h1>
         <p className="blogcreator-header-desc">{t('generateEngagingBlogContent')}</p>
+        <div className="blogcreator-header-actions">
+          <button
+            onClick={() => setShowTips(!showTips)}
+            className="blogcreator-tips-toggle"
+          >
+            {showTips ? '🙈 Hide Tips' : '💡 Show Tips'}
+          </button>
+          <button
+            onClick={() => setShowExamples(!showExamples)}
+            className="blogcreator-examples-toggle"
+          >
+            {showExamples ? '📖 Hide Examples' : '📚 Show Examples'}
+          </button>
+        </div>
       </header>
       <main className="blogcreator-main">
         <div className="blogcreator-main-grid">
           {/* Left: Form Section */}
           <section className="blogcreator-form-panel">
+            {/* Guidance Panel */}
+            {showTips && !generatedBlog && (
+              <div className="blogcreator-guidance-panel">
+                <div className="blogcreator-guidance-header">
+                  <h3>🎯 Blog Creation Guide</h3>
+                  <p>Follow these steps to create engaging blog content</p>
+                </div>
+                
+                {/* Quick Start Templates */}
+                <div className="blogcreator-templates-section">
+                  <h4>🚀 Quick Start Templates</h4>
+                  <p>Choose a template to get started quickly, then customize it for your needs:</p>
+                  <div className="blogcreator-templates-grid">
+                    {quickStartTemplates.map((template, index) => (
+                      <button
+                        key={index}
+                        onClick={() => {
+                          setBlogData(template.data);
+                          setTemplateApplied(true);
+                          setTimeout(() => setTemplateApplied(false), 3000);
+                        }}
+                        className="blogcreator-template-btn"
+                        title={`Use ${template.name} template`}
+                      >
+                        <span className="blogcreator-template-icon">{template.icon}</span>
+                        <span className="blogcreator-template-name">{template.name}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                
+                <div className="blogcreator-tips-navigation">
+                  {Object.keys(tips).map(tipKey => (
+                    <button
+                      key={tipKey}
+                      onClick={() => setActiveTip(tipKey)}
+                      className={`blogcreator-tip-nav-btn ${activeTip === tipKey ? 'active' : ''}`}
+                    >
+                      {tips[tipKey].title}
+                    </button>
+                  ))}
+                </div>
+                
+                <div className="blogcreator-tip-content">
+                  <h4>{tips[activeTip].title}</h4>
+                  <p>{tips[activeTip].content}</p>
+                  
+                  {showExamples && (
+                    <div className="blogcreator-tip-examples">
+                      <h5>💡 Examples:</h5>
+                      <ul>
+                        {tips[activeTip].examples.map((example, index) => (
+                          <li key={index}>{example}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+                {/* Contextual Tips Section */}
+                <div className="blogcreator-contextual-tips">
+                  <h5>🔎 Contextual Tips for Your Blog</h5>
+                  <ul>
+                    {getContextualTips(blogData).map((tip, idx) => (
+                      <li key={idx}>{tip}</li>
+                    ))}
+                  </ul>
+                </div>
+                
+                <div className="blogcreator-progress-indicator">
+                  <div className="blogcreator-progress-steps">
+                    <div className={`blogcreator-step ${blogData.topic ? 'completed' : ''}`}>
+                      <span className="blogcreator-step-icon">📝</span>
+                      <span className="blogcreator-step-text">Topic</span>
+                    </div>
+                    <div className={`blogcreator-step ${blogData.mainName ? 'completed' : ''}`}>
+                      <span className="blogcreator-step-icon">🏢</span>
+                      <span className="blogcreator-step-text">Name</span>
+                    </div>
+                    <div className={`blogcreator-step ${blogData.industry ? 'completed' : ''}`}>
+                      <span className="blogcreator-step-icon">🎯</span>
+                      <span className="blogcreator-step-text">Industry</span>
+                    </div>
+                    <div className={`blogcreator-step ${blogData.keyPoints ? 'completed' : ''}`}>
+                      <span className="blogcreator-step-icon">✨</span>
+                      <span className="blogcreator-step-text">Key Points</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+            
             {!generatedBlog && (
               <form className="blogcreator-form" autoComplete="off" onSubmit={e => { e.preventDefault(); generateBlogPost(); }}>
                 {/* Image Upload Section */}
@@ -692,61 +1032,116 @@ const BlogCreator = () => {
 
                 {/* Basic Information */}
                 <fieldset className="blogcreator-fieldset">
-                  <legend className="blogcreator-legend">{t('basicInformation')}</legend>
-                  <label className="blogcreator-label" htmlFor="topic">{t('blogTopic')} *</label>
+                  <legend className="blogcreator-legend">
+                    {t('basicInformation')}
+                    <span className="blogcreator-fieldset-tip">💡 Start with the basics</span>
+                  </legend>
+                  
+                  <div className="blogcreator-field-group">
+                    <label className="blogcreator-label" htmlFor="topic">
+                      {t('blogTopic')} *
+                      <span className="blogcreator-field-hint">What will your blog post be about?</span>
+                    </label>
                   <input
                     id="topic"
                     className="blogcreator-input"
                     type="text"
                     value={blogData.topic}
                     onChange={e => handleInputChange('topic', e.target.value)}
-                    placeholder={t('e.g.,OurNewSeasonalMenuBehindTheScenesLocalIngredients')}
+                    placeholder={topicTip || "e.g., Our New Seasonal Menu Launch, Behind the Scenes: Local Ingredients, 5 Tips for First-Time Visitors"}
                     required
                   />
-                  <label className="blogcreator-label" htmlFor="mainName">Project/Business/Topic Name *</label>
+                    <FieldTipLLM field="topic" value={blogData.topic} />
+                    <div className="blogcreator-field-help">
+                      <strong>💡 Tip:</strong> Be specific and engaging. Instead of "Menu", try "Our Chef's New Spring Menu Featuring Local Farm Ingredients"
+                    </div>
+                  </div>
+                  
+                  <div className="blogcreator-field-group">
+                    <label className="blogcreator-label" htmlFor="mainName">
+                      Project/Business/Topic Name *
+                      <span className="blogcreator-field-hint">The name of your business, project, or main subject</span>
+                    </label>
                   <input
                     id="mainName"
                     className="blogcreator-input"
                     type="text"
                     value={blogData.mainName}
                     onChange={e => handleInputChange('mainName', e.target.value)}
-                    placeholder="Project/Business/Topic Name"
+                    placeholder={mainNameTip || "e.g., Downtown Bistro, TechStart Inc., Community Garden Project"}
                     required
                   />
-                  <label className="blogcreator-label" htmlFor="type">Type or Category (e.g., business, event, product)</label>
-                  <input
+                    <FieldTipLLM field="mainName" value={blogData.mainName} />
+                  </div>
+                  
+                  <div className="blogcreator-field-group">
+                    <label className="blogcreator-label" htmlFor="type">
+                      Type or Category
+                      <span className="blogcreator-field-hint">What type of content is this?</span>
+                    </label>
+                    <select
                     id="type"
                     className="blogcreator-input"
-                    type="text"
                     value={blogData.type}
                     onChange={e => handleInputChange('type', e.target.value)}
-                    placeholder="e.g., Business, Event, Product"
-                  />
-                  <label className="blogcreator-label" htmlFor="industry">Industry or Field (e.g., technology, education)</label>
+                    placeholder={typeTip || undefined}
+                    >
+                      <option value="business">Business</option>
+                      <option value="project">Project</option>
+                      <option value="event">Event</option>
+                      <option value="product">Product</option>
+                      <option value="organization">Organization</option>
+                      <option value="community">Community</option>
+                      <option value="other">Other</option>
+                    </select>
+                    <FieldTipLLM field="type" value={blogData.type} />
+                  </div>
+                  
+                  <div className="blogcreator-field-group">
+                    <label className="blogcreator-label" htmlFor="industry">
+                      Industry or Field
+                      <span className="blogcreator-field-hint">What industry or field does this belong to?</span>
+                    </label>
                   <input
                     id="industry"
                     className="blogcreator-input"
                     type="text"
                     value={blogData.industry}
                     onChange={e => handleInputChange('industry', e.target.value)}
-                    placeholder="e.g., Technology, Education, Food, Art"
+                    placeholder={industryTip || "e.g., Food & Beverage, Technology, Education, Healthcare, Art & Culture"}
                   />
-                  <label className="blogcreator-label" htmlFor="location">{t('location')}</label>
+                    <FieldTipLLM field="industry" value={blogData.industry} />
+                  </div>
+                  
+                  <div className="blogcreator-field-group">
+                    <label className="blogcreator-label" htmlFor="location">
+                      {t('location')}
+                      <span className="blogcreator-field-hint">Where is this located? (optional)</span>
+                    </label>
                   <input
                     id="location"
                     className="blogcreator-input"
                     type="text"
                     value={blogData.location}
                     onChange={e => handleInputChange('location', e.target.value)}
-                    placeholder={t('e.g.,DowntownSeattleWestVillageEtc')}
+                    placeholder={locationTip || "e.g., Downtown Seattle, West Village, Online, Global"}
                   />
+                    <FieldTipLLM field="location" value={blogData.location} />
+                  </div>
                 </fieldset>
 
                 {/* Content Preferences */}
                 <fieldset className="blogcreator-fieldset">
-                  <legend className="blogcreator-legend">{t('contentPreferences')}</legend>
+                  <legend className="blogcreator-legend">
+                    {t('contentPreferences')}
+                    <span className="blogcreator-fieldset-tip">🎨 Customize your content style</span>
+                  </legend>
+                  
                   <div className="blogcreator-choice-group">
+                    <div className="blogcreator-choice-header">
                     <span className="blogcreator-label">{t('targetAudience')}</span>
+                      <span className="blogcreator-choice-hint">Who will read this blog post?</span>
+                    </div>
                     <div className="blogcreator-choice-row">
                       {targetAudiences.map(audience => (
                         <button
@@ -755,6 +1150,7 @@ const BlogCreator = () => {
                           className={`blogcreator-choice-btn${blogData.targetAudience === audience.value ? ' selected' : ''}`}
                           onClick={() => handleInputChange('targetAudience', audience.value)}
                           aria-pressed={blogData.targetAudience === audience.value}
+                          title={audience.label}
                         >
                           <span className="blogcreator-choice-icon">{audience.icon}</span>
                           <span>{audience.label}</span>
@@ -762,8 +1158,12 @@ const BlogCreator = () => {
                       ))}
                     </div>
                   </div>
+                  
                   <div className="blogcreator-choice-group">
+                    <div className="blogcreator-choice-header">
                     <span className="blogcreator-label">{t('writingTone')}</span>
+                      <span className="blogcreator-choice-hint">What mood should the writing convey?</span>
+                    </div>
                     <div className="blogcreator-choice-row">
                       {tones.map(tone => (
                         <button
@@ -772,6 +1172,7 @@ const BlogCreator = () => {
                           className={`blogcreator-choice-btn${blogData.tone === tone.value ? ' selected' : ''}`}
                           onClick={() => handleInputChange('tone', tone.value)}
                           aria-pressed={blogData.tone === tone.value}
+                          title={tone.label}
                         >
                           <span className="blogcreator-choice-icon">{tone.icon}</span>
                           <span>{tone.label}</span>
@@ -779,8 +1180,12 @@ const BlogCreator = () => {
                       ))}
                     </div>
                   </div>
+                  
                   <div className="blogcreator-choice-group">
+                    <div className="blogcreator-choice-header">
                     <span className="blogcreator-label">{t('blogLength')}</span>
+                      <span className="blogcreator-choice-hint">How detailed should the content be?</span>
+                    </div>
                     <div className="blogcreator-choice-row">
                       {lengths.map(length => (
                         <button
@@ -789,6 +1194,7 @@ const BlogCreator = () => {
                           className={`blogcreator-choice-btn${blogData.length === length.value ? ' selected' : ''}`}
                           onClick={() => handleInputChange('length', length.value)}
                           aria-pressed={blogData.length === length.value}
+                          title={length.label}
                         >
                           <span className="blogcreator-choice-icon">{length.icon}</span>
                           <span>{length.label}</span>
@@ -800,28 +1206,79 @@ const BlogCreator = () => {
 
                 {/* Additional Details */}
                 <fieldset className="blogcreator-fieldset">
-                  <legend className="blogcreator-legend">{t('additionalDetails')}</legend>
-                  <label className="blogcreator-label" htmlFor="keyPoints">{t('keyPointsToInclude')}</label>
+                  <legend className="blogcreator-legend">
+                    {t('additionalDetails')}
+                    <span className="blogcreator-fieldset-tip">✨ Add the finishing touches</span>
+                  </legend>
+                  
+                  <div className="blogcreator-field-group">
+                    <label className="blogcreator-label" htmlFor="keyPoints">
+                      {t('keyPointsToInclude')}
+                      <span className="blogcreator-field-hint">What are the main points you want to emphasize?</span>
+                    </label>
                   <textarea
                     id="keyPoints"
                     className="blogcreator-input"
                     value={blogData.keyPoints}
                     onChange={e => handleInputChange('keyPoints', e.target.value)}
-                    placeholder={t('listSpecificPointsEventsOrFeaturesYouWantHighlightedInTheBlogPost')}
-                    rows={3}
-                  />
-                  <label className="blogcreator-label" htmlFor="specialFeatures">{t('specialFeaturesOrHighlights')}</label>
+                      placeholder="• Highlight our commitment to local ingredients&#10;• Mention our award-winning chef&#10;• Include customer testimonials&#10;• Emphasize our unique atmosphere"
+                      rows={4}
+                    />
+                    <div className="blogcreator-field-help">
+                      <strong>💡 Tip:</strong> Use bullet points to organize your key points. This helps AI understand what's most important.
+                    </div>
+                  </div>
+                  
+                  <div className="blogcreator-field-group">
+                    <label className="blogcreator-label" htmlFor="specialFeatures">
+                      {t('specialFeaturesOrHighlights')}
+                      <span className="blogcreator-field-hint">What makes this special or unique?</span>
+                    </label>
                   <textarea
                     id="specialFeatures"
                     className="blogcreator-input"
                     value={blogData.specialFeatures}
                     onChange={e => handleInputChange('specialFeatures', e.target.value)}
-                    placeholder={t('mentionAnySpecialFeaturesAwardsUniqueAspectsOrRecentNewsAboutYourRestaurant')}
-                    rows={3}
+                      placeholder="• Recently won 'Best New Restaurant 2024' award&#10;• Only restaurant in the area with rooftop dining&#10;• Family-owned for 3 generations&#10;• Sustainable practices and zero-waste kitchen"
+                      rows={4}
                   />
+                    <div className="blogcreator-field-help">
+                      <strong>💡 Tip:</strong> Include awards, unique features, history, or recent news that makes your story compelling.
+                    </div>
+                  </div>
                 </fieldset>
 
                 <div className="blogcreator-form-actions">
+                  <div className="blogcreator-submit-guidance">
+                    <div className="blogcreator-submit-checklist">
+                      <h4>✅ Before you generate, make sure you have:</h4>
+                      <ul>
+                        <li className={blogData.topic.trim() ? 'completed' : ''}>
+                          {blogData.topic.trim() ? '✅' : '⭕'} A clear, engaging topic
+                        </li>
+                        <li className={blogData.mainName.trim() ? 'completed' : ''}>
+                          {blogData.mainName.trim() ? '✅' : '⭕'} Business/project name
+                        </li>
+                        <li className={blogData.industry.trim() ? 'completed' : ''}>
+                          {blogData.industry.trim() ? '✅' : '⭕'} Industry or field specified
+                        </li>
+                        <li className={blogData.keyPoints.trim() ? 'completed' : ''}>
+                          {blogData.keyPoints.trim() ? '✅' : '⭕'} Key points to include
+                        </li>
+                      </ul>
+                    </div>
+                    
+                    <div className="blogcreator-submit-tips">
+                      <h4>💡 Pro Tips:</h4>
+                      <ul>
+                        <li>The more specific your topic, the better the results</li>
+                        <li>Include key points to guide the AI's focus</li>
+                        <li>Choose the right tone for your audience</li>
+                        <li>Add images to make your blog more engaging</li>
+                      </ul>
+                    </div>
+                  </div>
+                  
                   <button
                     type="submit"
                     className="blogcreator-submit-btn"
@@ -833,6 +1290,13 @@ const BlogCreator = () => {
                       <span className="blogcreator-submit-label">🚀 {t('generateBlogPost')}</span>
                     )}
                   </button>
+                  
+                  {isGenerating && (
+                    <div className="blogcreator-generating-info">
+                      <p>🤖 AI is crafting your blog post...</p>
+                      <p>This usually takes 30-60 seconds. We're analyzing your inputs and creating engaging content!</p>
+                    </div>
+                  )}
                 </div>
               </form>
             )}
@@ -847,7 +1311,83 @@ const BlogCreator = () => {
                 </header>
                 <div className="blogcreator-preview-content-scroll">
                   <div className="blogcreator-preview-content">
+                    {isEditing ? (
+                      <>
+                        <textarea
+                          className="blogcreator-edit-textarea"
+                          value={editedBlog}
+                          onChange={e => setEditedBlog(e.target.value)}
+                          rows={16}
+                          style={{ width: '100%', fontSize: '15px', padding: '12px', borderRadius: '8px', border: '1.5px solid #e2e8f0', marginBottom: '12px', fontFamily: 'inherit', background: '#f8fafc' }}
+                        />
+                        <div style={{ display: 'flex', gap: '12px', marginBottom: '8px' }}>
+                          <button
+                            className="blogcreator-submit-btn"
+                            style={{ maxWidth: 180 }}
+                            onClick={async () => {
+                              setGeneratedBlog(editedBlog);
+                              setIsEditing(false);
+
+                              // Update localStorage by unique id
+                              const blogHistory = JSON.parse(localStorage.getItem('blogHistory') || '[]');
+                              let updated = false;
+                              if (blogHistory.length > 0) {
+                                // Try to match by id (if available)
+                                const currentId = blogHistory[0].id || null;
+                                const idx = blogHistory.findIndex(post => post.id === currentId);
+                                if (idx !== -1) {
+                                  blogHistory[idx] = { ...blogHistory[idx], blogPost: editedBlog };
+                                  updated = true;
+                                }
+                              }
+                              if (!updated && blogHistory.length > 0) {
+                                // fallback: update most recent
+                                blogHistory[0].blogPost = editedBlog;
+                              }
+                              localStorage.setItem('blogHistory', JSON.stringify(blogHistory));
+
+                              // Update backend
+                              try {
+                                const isNetlify = window.location.hostname.includes('netlify.app') || window.location.hostname.includes('vmarketing.netlify.app');
+                                const baseURL = isNetlify ? 'https://vmarketing-backend-server.onrender.com/api' : apiConfig.baseURL;
+                                await fetch(`${baseURL}/blog/save`, {
+                                  method: 'POST',
+                                  headers: { 'Content-Type': 'application/json' },
+                                  body: JSON.stringify({
+                                    ...blogData,
+                                    blogPost: editedBlog,
+                                    images: images,
+                                    imageAnalysis: imageAnalysis,
+                                  })
+                                });
+                                setSyncSuccess(true);
+                                setTimeout(() => setSyncSuccess(false), 2500);
+                              } catch (err) {
+                                // Optionally handle error
+                              }
+                            }}
+                          >💾 Save</button>
+                          <button
+                            className="blogcreator-submit-btn"
+                            style={{ background: '#e2e8f0', color: '#374151', maxWidth: 180 }}
+                            onClick={() => setIsEditing(false)}
+                            type="button"
+                          >❌ Cancel</button>
+                        </div>
+                      </>
+                    ) : (
+                      <>
                     {renderHierarchicalContent(generatedBlog)}
+                        <div style={{ marginTop: '18px', textAlign: 'right' }}>
+                          <button
+                            className="blogcreator-submit-btn"
+                            style={{ maxWidth: 180 }}
+                            onClick={() => { setIsEditing(true); setEditedBlog(generatedBlog); }}
+                            type="button"
+                          >✏️ Edit Blog</button>
+                        </div>
+                      </>
+                    )}
                   </div>
                 </div>
                 <footer className="blogcreator-preview-info">
@@ -896,10 +1436,20 @@ const BlogCreator = () => {
             )}
           </section>
         </div>
-        {/* Error Display (keep outside grid for now) */}
+        {/* Success/Error Messages */}
+        {templateApplied && (
+          <div className="blog-creator-success-message">
+            <span className="blog-creator-success-icon">✅</span> Template applied! You can now customize the content for your needs.
+          </div>
+        )}
         {error && (
           <div className="blog-creator-error-message">
             <span className="blog-creator-error-icon">⚠️</span> {error}
+          </div>
+        )}
+        {syncSuccess && (
+          <div className="blog-creator-success-message">
+            <span className="blog-creator-success-icon">✅</span> Blog post updated and synchronized!
           </div>
         )}
       </main>

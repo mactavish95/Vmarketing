@@ -183,6 +183,13 @@ const Header = () => {
                             📝 {t('headerNav.createGroup.blogCreator')}
                         </Link>
                         <Link 
+                            to="/letter-creator" 
+                            className={`nav-link ${location.pathname === '/letter-creator' ? 'active' : ''}`}
+                            onClick={closeMenu}
+                        >
+                            ✉️ Letter Creator
+                        </Link>
+                        <Link 
                             to="/social-media" 
                             className={`nav-link ${location.pathname === '/social-media' ? 'active' : ''}`}
                             onClick={closeMenu}
