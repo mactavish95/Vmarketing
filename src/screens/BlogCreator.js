@@ -52,8 +52,8 @@ const BlogCreator = () => {
         targetAudience: 'customers',
         tone: 'enthusiastic',
         length: 'medium',
-        keyPoints: '• Highlight our commitment to local ingredients\n• Mention our award-winning chef\n• Include customer testimonials\n• Emphasize our unique atmosphere',
-        specialFeatures: '• Recently won "Best New Restaurant 2024" award\n• Only restaurant in the area with rooftop dining\n• Family-owned for 3 generations\n• Sustainable practices and zero-waste kitchen'
+        keyPoints: '• Highlight our commitment to local ingredients and seasonal cooking\n• Mention our award-winning chef and culinary philosophy\n• Include customer testimonials and feedback\n• Emphasize our unique atmosphere and dining experience\n• Explain our signature dishes and their stories\n• Share our mission to support local farmers',
+        specialFeatures: '• Recently won "Best New Restaurant 2024" award from Seattle Food Magazine\n• Only restaurant in the area with rooftop dining and city views\n• Family-owned for 3 generations with traditional recipes\n• Sustainable practices and zero-waste kitchen operations\n• Chef trained in Michelin-starred restaurants in France\n• Source 90% of ingredients from local farms within 50 miles'
       }
     },
     {
@@ -68,8 +68,8 @@ const BlogCreator = () => {
         targetAudience: 'customers',
         tone: 'modern',
         length: 'medium',
-        keyPoints: '• Explain the problem it solves\n• Highlight key features and benefits\n• Include early user feedback\n• Mention pricing and availability',
-        specialFeatures: '• Patented technology\n• Award-winning design\n• 30-day money-back guarantee\n• 24/7 customer support'
+        keyPoints: '• Explain the problem it solves and why it matters\n• Highlight key features and their practical benefits\n• Include early user feedback and testimonials\n• Mention pricing, availability, and how to get started\n• Share the development story and innovation process\n• Explain how it improves users\' daily lives',
+        specialFeatures: '• Patented AI technology with 5 pending patents\n• Award-winning design recognized by IDSA 2024\n• 30-day money-back guarantee with no questions asked\n• 24/7 customer support with live chat and phone\n• Founded by ex-Google engineers with 15+ years experience\n• Backed by $10M in venture capital funding'
       }
     },
     {
@@ -84,8 +84,8 @@ const BlogCreator = () => {
         targetAudience: 'community',
         tone: 'casual',
         length: 'short',
-        keyPoints: '• Event date, time, and location\n• What to expect and activities\n• How to register or attend\n• Special highlights or guests',
-        specialFeatures: '• Free admission for families\n• Live entertainment and food\n• Charity fundraiser component\n• Rain date scheduled'
+        keyPoints: '• Event date, time, and location details\n• What to expect and planned activities\n• How to register or attend the event\n• Special highlights, guests, or performances\n• What attendees should bring or prepare\n• How the event benefits the community',
+        specialFeatures: '• Free admission for families with children under 12\n• Live entertainment featuring local musicians and artists\n• Charity fundraiser component supporting local schools\n• Rain date scheduled for the following weekend\n• Sponsored by 15 local businesses and organizations\n• 10-year tradition with over 5,000 attendees annually'
       }
     },
     {
@@ -100,8 +100,8 @@ const BlogCreator = () => {
         targetAudience: 'customers',
         tone: 'professional',
         length: 'medium',
-        keyPoints: '• Recent achievements and milestones\n• New team members or leadership\n• Upcoming plans and goals\n• How this benefits customers',
-        specialFeatures: '• 50% growth in the last year\n• New office opening\n• Industry recognition awards\n• Enhanced customer service initiatives'
+        keyPoints: '• Recent achievements and milestones we\'ve reached\n• New team members or leadership changes\n• Upcoming plans and strategic goals\n• How these changes benefit our customers\n• Our commitment to continued excellence\n• What customers can expect in the coming months',
+        specialFeatures: '• 50% growth in revenue and team size in the last year\n• New office opening in downtown with modern facilities\n• Industry recognition awards from leading publications\n• Enhanced customer service initiatives with 24/7 support\n• Expanded product line with 5 new offerings\n• Strategic partnerships with Fortune 500 companies'
       }
     }
   ];
@@ -329,6 +329,16 @@ const BlogCreator = () => {
 
     if (!blogData.mainName.trim()) {
       setError(t('pleaseEnterMainName'));
+      return;
+    }
+
+    if (!blogData.keyPoints.trim()) {
+      setError('Please provide key points to include. This helps AI focus on what matters most to your audience.');
+      return;
+    }
+
+    if (!blogData.specialFeatures.trim()) {
+      setError('Please describe your special features or highlights. These unique details make your story compelling.');
       return;
     }
 
@@ -981,6 +991,10 @@ const BlogCreator = () => {
                       <span className="blogcreator-step-icon">✨</span>
                       <span className="blogcreator-step-text">Key Points</span>
                     </div>
+                    <div className={`blogcreator-step ${blogData.specialFeatures ? 'completed' : ''}`}>
+                      <span className="blogcreator-step-icon">🏆</span>
+                      <span className="blogcreator-step-text">Features</span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1213,37 +1227,54 @@ const BlogCreator = () => {
                   
                   <div className="blogcreator-field-group">
                     <label className="blogcreator-label" htmlFor="keyPoints">
-                      {t('keyPointsToInclude')}
-                      <span className="blogcreator-field-hint">What are the main points you want to emphasize?</span>
+                      {t('keyPointsToInclude')} *
+                      <span className="blogcreator-field-hint">What are the main points you want to emphasize? This guides the AI to focus on what matters most.</span>
                     </label>
                   <textarea
                     id="keyPoints"
                     className="blogcreator-input"
                     value={blogData.keyPoints}
                     onChange={e => handleInputChange('keyPoints', e.target.value)}
-                      placeholder="• Highlight our commitment to local ingredients&#10;• Mention our award-winning chef&#10;• Include customer testimonials&#10;• Emphasize our unique atmosphere"
+                      placeholder="• Highlight our commitment to local ingredients&#10;• Mention our award-winning chef&#10;• Include customer testimonials&#10;• Emphasize our unique atmosphere&#10;• Explain our signature dishes&#10;• Share our story and mission"
                       rows={4}
+                      required
                     />
                     <div className="blogcreator-field-help">
-                      <strong>💡 Tip:</strong> Use bullet points to organize your key points. This helps AI understand what's most important.
+                      <strong>🎯 Key Points Guide:</strong>
+                      <ul style={{ marginTop: '8px', paddingLeft: '20px' }}>
+                        <li>Start with your main message or value proposition</li>
+                        <li>Include specific details about your offerings</li>
+                        <li>Mention unique aspects that set you apart</li>
+                        <li>Add customer benefits and outcomes</li>
+                        <li>Include any calls-to-action you want</li>
+                      </ul>
                     </div>
                   </div>
                   
                   <div className="blogcreator-field-group">
                     <label className="blogcreator-label" htmlFor="specialFeatures">
-                      {t('specialFeaturesOrHighlights')}
-                      <span className="blogcreator-field-hint">What makes this special or unique?</span>
+                      {t('specialFeaturesOrHighlights')} *
+                      <span className="blogcreator-field-hint">What makes this special or unique? These details will be woven into your blog story.</span>
                     </label>
                   <textarea
                     id="specialFeatures"
                     className="blogcreator-input"
                     value={blogData.specialFeatures}
                     onChange={e => handleInputChange('specialFeatures', e.target.value)}
-                      placeholder="• Recently won 'Best New Restaurant 2024' award&#10;• Only restaurant in the area with rooftop dining&#10;• Family-owned for 3 generations&#10;• Sustainable practices and zero-waste kitchen"
+                      placeholder="• Recently won 'Best New Restaurant 2024' award&#10;• Only restaurant in the area with rooftop dining&#10;• Family-owned for 3 generations&#10;• Sustainable practices and zero-waste kitchen&#10;• Chef trained in Michelin-starred restaurants&#10;• Source 90% of ingredients from local farms"
                       rows={4}
+                      required
                   />
                     <div className="blogcreator-field-help">
-                      <strong>💡 Tip:</strong> Include awards, unique features, history, or recent news that makes your story compelling.
+                      <strong>✨ Special Features Guide:</strong>
+                      <ul style={{ marginTop: '8px', paddingLeft: '20px' }}>
+                        <li>Awards, recognitions, or certifications</li>
+                        <li>Unique location, atmosphere, or amenities</li>
+                        <li>Family history, traditions, or heritage</li>
+                        <li>Environmental practices or sustainability</li>
+                        <li>Expertise, training, or qualifications</li>
+                        <li>Community involvement or partnerships</li>
+                      </ul>
                     </div>
                   </div>
                 </fieldset>
@@ -1263,7 +1294,10 @@ const BlogCreator = () => {
                           {blogData.industry.trim() ? '✅' : '⭕'} Industry or field specified
                         </li>
                         <li className={blogData.keyPoints.trim() ? 'completed' : ''}>
-                          {blogData.keyPoints.trim() ? '✅' : '⭕'} Key points to include
+                          {blogData.keyPoints.trim() ? '✅' : '⭕'} Key points to include (required)
+                        </li>
+                        <li className={blogData.specialFeatures.trim() ? 'completed' : ''}>
+                          {blogData.specialFeatures.trim() ? '✅' : '⭕'} Special features/highlights (required)
                         </li>
                       </ul>
                     </div>
@@ -1282,7 +1316,7 @@ const BlogCreator = () => {
                   <button
                     type="submit"
                     className="blogcreator-submit-btn"
-                    disabled={isGenerating || !blogData.topic.trim() || !blogData.mainName.trim()}
+                    disabled={isGenerating || !blogData.topic.trim() || !blogData.mainName.trim() || !blogData.keyPoints.trim() || !blogData.specialFeatures.trim()}
                   >
                     {isGenerating ? (
                       <span className="blogcreator-spinner"></span>

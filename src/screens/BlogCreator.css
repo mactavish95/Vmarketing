@@ -468,6 +468,16 @@
   line-height: 1.5;
 }
 
+.blogcreator-field-help ul {
+  margin: 0.5rem 0;
+  padding-left: 1rem;
+}
+
+.blogcreator-field-help li {
+  margin: 0.25rem 0;
+  line-height: 1.4;
+}
+
 .blogcreator-field-tip {
   background: #f0f9ff;
   border-left: 4px solid #38bdf8;
