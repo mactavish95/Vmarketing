@@ -1,19 +1,15 @@
+/* Dashboard Layout */
+.dashboard-layout {
+  display: flex;
+  min-height: 100vh;
+  background: #f8fafc;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  position: relative;
+}
+
+/* Responsive Design */
 @media (max-width: 768px) {
-  .mobile-header-actions {
-    display: flex;
+  .dashboard-layout {
     flex-direction: column;
-    gap: 12px;
-    width: 100%;
-    margin-top: 12px;
-    margin-bottom: 16px;
-  }
-  .mobile-header-actions .new-post-btn,
-  .mobile-header-actions .integration-btn {
-    width: 100%;
-    margin: 0;
-    box-sizing: border-box;
-  }
-  .dashboard-header {
-    margin-bottom: 16px;
   }
 } 
