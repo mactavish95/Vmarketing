@@ -83,6 +83,16 @@ app.use(compressionMiddleware);
 // Apply logging
 app.use(loggingMiddleware);
 
+// Request logging middleware for debugging
+app.use((req, res, next) => {
+  console.log(`📥 ${req.method} ${req.originalUrl}`, {
+    origin: req.headers.origin || 'no-origin',
+    userAgent: req.headers['user-agent']?.substring(0, 50) || 'no-user-agent',
+    timestamp: new Date().toISOString()
+  });
+  next();
+});
+
 // Body parsing middleware
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
@@ -127,6 +137,23 @@ app.use(session(sessionConfig));
 app.use(passport.initialize());
 app.use(passport.session());
 
+// Root route for health checks and basic info
+app.get('/', (req, res) => {
+  res.json({
+    success: true,
+    message: 'ReviewGen Backend API Server',
+    version: '1.0.0',
+    environment: process.env.NODE_ENV || 'development',
+    timestamp: new Date().toISOString(),
+    endpoints: {
+      health: '/api/health',
+      auth: '/api/auth',
+      social: '/api/social',
+      llama: '/api/llama'
+    }
+  });
+});
+
 // Mount routes
 app.use('/api', llamaRoutes);
 app.use('/api', voiceRoutes);
@@ -151,12 +178,20 @@ app.use((err, req, res, next) => {
   });
 });
 
-// 404 handler
+// 404 handler with better logging
 app.use('*', (req, res) => {
+  console.log(`❌ 404 Not Found: ${req.method} ${req.originalUrl}`, {
+    origin: req.headers.origin,
+    userAgent: req.headers['user-agent'],
+    timestamp: new Date().toISOString()
+  });
+  
   res.status(404).json({
     success: false,
     error: 'Endpoint not found',
-    code: 'NOT_FOUND'
+    code: 'NOT_FOUND',
+    path: req.originalUrl,
+    method: req.method
   });
 });
 
