@@ -81,11 +81,17 @@ router.get('/facebook/callback',
   passport.authenticate('facebook', { failureRedirect: '/auth/failed' }),
   async (req, res) => {
     try {
+      console.log('🔍 Facebook callback hit:', {
+        hasUser: !!req.user,
+        userId: req.user?.id,
+        sessionID: req.sessionID
+      });
+      
       const { user } = req;
       const accessToken = user.accessToken;
 
-      //Get Facebook info
-      const accountResponse = await fetch(`https://graph.facebook.com/v23.0/user_id/accounts?access_token=user_access_token`);
+      //Get Facebook info - Fixed the API call
+      const accountResponse = await fetch(`https://graph.facebook.com/v18.0/me?fields=id,name,email,picture&access_token=${accessToken}`);
       const accountData = await accountResponse.json();
       
       // Save account info with basic permissions first
@@ -108,10 +114,14 @@ router.get('/facebook/callback',
         { upsert: true, new: true }
       );
 
-      res.redirect('http://localhost:3000/dashboard');
+      // Use dynamic redirect based on environment
+      const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+      console.log('✅ Facebook OAuth successful, redirecting to:', `${frontendUrl}/dashboard`);
+      res.redirect(`${frontendUrl}/dashboard`);
     } catch (error) {
-      console.error('Facebook OAuth error:', error);
-      res.redirect('http://localhost:3000/social-media-integration?error=facebook_auth_failed');
+      console.error('❌ Facebook OAuth error:', error);
+      const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+      res.redirect(`${frontendUrl}/social-media-integration?error=facebook_auth_failed`);
     }
   }
 );
@@ -149,10 +159,14 @@ router.get('/instagram/callback',
         { upsert: true, new: true }
       );
 
-      res.redirect('http://localhost:3000/dashboard');
+      // Use dynamic redirect based on environment
+      const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+      console.log('✅ Instagram OAuth successful, redirecting to:', `${frontendUrl}/dashboard`);
+      res.redirect(`${frontendUrl}/dashboard`);
     } catch (error) {
-      console.error('Instagram OAuth error:', error);
-      res.redirect('http://localhost:3000/social-media-integration?error=instagram_auth_failed');
+      console.error('❌ Instagram OAuth error:', error);
+      const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+      res.redirect(`${frontendUrl}/social-media-integration?error=instagram_auth_failed`);
     }
   }
 );
@@ -183,10 +197,14 @@ router.get('/twitter/callback',
         { upsert: true, new: true }
       );
 
-      res.redirect('http://localhost:3000/dashboard');
+      // Use dynamic redirect based on environment
+      const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+      console.log('✅ Twitter OAuth successful, redirecting to:', `${frontendUrl}/dashboard`);
+      res.redirect(`${frontendUrl}/dashboard`);
     } catch (error) {
-      console.error('Twitter OAuth error:', error);
-      res.redirect('http://localhost:3000/social-media-integration?error=twitter_auth_failed');
+      console.error('❌ Twitter OAuth error:', error);
+      const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+      res.redirect(`${frontendUrl}/social-media-integration?error=twitter_auth_failed`);
     }
   }
 );
@@ -229,10 +247,14 @@ router.get('/linkedin/callback',
         { upsert: true, new: true }
       );
 
-      res.redirect('http://localhost:3000/dashboard');
+      // Use dynamic redirect based on environment
+      const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+      console.log('✅ LinkedIn OAuth successful, redirecting to:', `${frontendUrl}/dashboard`);
+      res.redirect(`${frontendUrl}/dashboard`);
     } catch (error) {
-      console.error('LinkedIn OAuth error:', error);
-      res.redirect('http://localhost:3000/social-media-integration?error=linkedin_auth_failed');
+      console.error('❌ LinkedIn OAuth error:', error);
+      const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+      res.redirect(`${frontendUrl}/social-media-integration?error=linkedin_auth_failed`);
     }
   }
 );

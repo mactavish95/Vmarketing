@@ -6,7 +6,7 @@ const MongoStore = require('connect-mongo');
 const passport = require('./config/passport');
 
 // Import modules
-const { connectToMongoDB, mongoose } = require('./config/database');
+const { connectToMongoDB, mongoose, runMigrations } = require('./config/database');
 const { 
   securityMiddleware, 
   limiter, 
@@ -35,8 +35,11 @@ const BASE_URL = process.env.BASE_URL || `http://localhost:${PORT}`;
 // Trust proxy for rate limiting (fixes X-Forwarded-For warning)
 app.set('trust proxy', 1);
 
-// Connect to MongoDB
-connectToMongoDB();
+// Connect to MongoDB and run migrations
+connectToMongoDB().then(() => {
+  // Run migrations after successful connection
+  runMigrations();
+});
 
 // Apply security middleware
 app.use(securityMiddleware);

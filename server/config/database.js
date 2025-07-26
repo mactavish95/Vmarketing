@@ -69,26 +69,67 @@ socialMediaPostSchema.index({ userId: 1 });
 
 const SocialMediaPost = mongoose.model('SocialMediaPost', socialMediaPostSchema);
 
-// Blog Post Schema and Model
+// Blog Post Schema and Model - Updated for frontend compatibility
 const blogPostSchema = new mongoose.Schema({
+  // Core blog information
   topic: { type: String, required: true },
-  restaurantName: { type: String, required: true },
-  restaurantType: { type: String },
-  cuisine: { type: String },
-  location: { type: String },
-  targetAudience: { type: String },
-  tone: { type: String },
-  length: { type: String },
-  keyPoints: { type: String },
-  specialFeatures: { type: String },
+  mainName: { type: String, required: true }, // New field name (was restaurantName)
+  type: { type: String, default: 'business' }, // New field name (was restaurantType)
+  industry: { type: String, default: '' }, // New field name (was cuisine)
+  location: { type: String, default: '' },
+  targetAudience: { type: String, default: 'general' },
+  tone: { type: String, default: 'professional' },
+  length: { type: String, default: 'medium' },
+  keyPoints: { type: String, default: '' },
+  specialFeatures: { type: String, default: '' },
+  
+  // Generated content
   blogPost: { type: String, required: true },
-  images: { type: Array }, // Array of image objects (name, type, size, dataUrl)
-  imageAnalysis: { type: Object },
-  model: { type: String },
-  wordCount: { type: Number },
-  metadata: { type: Object },
+  
+  // Media and analysis
+  images: { 
+    type: Array, 
+    default: [] 
+  }, // Array of image objects: { id, name, type, size, dataUrl }
+  imageAnalysis: { 
+    type: Object, 
+    default: null 
+  }, // Image analysis results
+  
+  // Generation metadata
+  model: { type: String, default: 'nvidia/llama-3.3-nemotron-super-49b-v1' },
+  wordCount: { type: Number, default: 0 },
+  metadata: { 
+    type: Object, 
+    default: {} 
+  }, // Additional generation metadata
+  
+  // Timestamps
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
+}, {
+  timestamps: true, // Automatically manage createdAt and updatedAt
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true }
+});
+
+// Add indexes for better query performance
+blogPostSchema.index({ topic: 1, createdAt: -1 });
+blogPostSchema.index({ mainName: 1, createdAt: -1 });
+blogPostSchema.index({ type: 1, industry: 1 });
+blogPostSchema.index({ createdAt: -1 });
+
+// Virtual for backward compatibility
+blogPostSchema.virtual('restaurantName').get(function() {
+  return this.mainName;
+});
+
+blogPostSchema.virtual('restaurantType').get(function() {
+  return this.type;
+});
+
+blogPostSchema.virtual('cuisine').get(function() {
+  return this.industry;
 });
 
 const BlogPost = mongoose.model('BlogPost', blogPostSchema);
@@ -139,6 +180,71 @@ const safeSave = async (model, data) => {
   }
 };
 
+// Migration function to update existing blog posts to new schema
+const migrateBlogPosts = async () => {
+  if (!isMongoDBAvailable()) {
+    console.warn('⚠️  MongoDB not available, skipping migration');
+    return;
+  }
+
+  try {
+    console.log('🔄 Starting blog posts migration...');
+    
+    // Get all blog posts to check for migration needs
+    const allBlogPosts = await BlogPost.find({});
+    console.log(`📊 Found ${allBlogPosts.length} total blog posts to check`);
+
+    let migratedCount = 0;
+
+    for (const blog of allBlogPosts) {
+      const updateData = {};
+
+      // Check if we need to set defaults for new required fields
+      if (!blog.targetAudience) updateData.targetAudience = 'general';
+      if (!blog.tone) updateData.tone = 'professional';
+      if (!blog.length) updateData.length = 'medium';
+      if (!blog.keyPoints) updateData.keyPoints = '';
+      if (!blog.specialFeatures) updateData.specialFeatures = '';
+      if (!blog.images) updateData.images = [];
+      if (!blog.imageAnalysis) updateData.imageAnalysis = null;
+      if (!blog.model) updateData.model = 'nvidia/llama-3.3-nemotron-super-49b-v1';
+      if (!blog.wordCount) updateData.wordCount = 0;
+      if (!blog.metadata) updateData.metadata = {};
+
+      // Check for legacy field migration (using raw document access)
+      const blogDoc = blog.toObject();
+      
+      // Migrate old field names to new ones if they exist in the document
+      if (blogDoc.restaurantName && !blog.mainName) {
+        updateData.mainName = blogDoc.restaurantName;
+      }
+      if (blogDoc.restaurantType && !blog.type) {
+        updateData.type = blogDoc.restaurantType;
+      }
+      if (blogDoc.cuisine && !blog.industry) {
+        updateData.industry = blogDoc.cuisine;
+      }
+
+      if (Object.keys(updateData).length > 0) {
+        await BlogPost.findByIdAndUpdate(blog._id, updateData);
+        migratedCount++;
+        console.log(`✅ Migrated blog post: ${blog.topic}`);
+      }
+    }
+
+    console.log(`✅ Blog posts migration completed successfully. Migrated ${migratedCount} posts.`);
+  } catch (error) {
+    console.error('❌ Migration failed:', error.message);
+  }
+};
+
+// Auto-run migration on startup
+const runMigrations = async () => {
+  if (isMongoDBAvailable()) {
+    await migrateBlogPosts();
+  }
+};
+
 module.exports = {
   connectToMongoDB,
   Review,
@@ -147,5 +253,7 @@ module.exports = {
   BlogPost,
   isMongoDBAvailable,
   safeSave,
+  migrateBlogPosts,
+  runMigrations,
   User // Export User model
 }; 
