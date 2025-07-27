@@ -20,6 +20,17 @@ const BlogCreatorGuidance = ({ onGenerateBlog, isGenerating }) => {
     specialFeatures: ''
   });
 
+  // Strategic planning state
+  const [strategicPlan, setStrategicPlan] = useState('');
+  const [isPlanning, setIsPlanning] = useState(false);
+  const [planError, setPlanError] = useState('');
+  const [planGenerated, setPlanGenerated] = useState(false);
+
+  // Topic recommendation state
+  const [isGeneratingTopic, setIsGeneratingTopic] = useState(false);
+  const [topicRecommendations, setTopicRecommendations] = useState([]);
+  const [showTopicRecommendations, setShowTopicRecommendations] = useState(false);
+
   // Step-by-step wizard states
   const [currentStep, setCurrentStep] = useState(1);
   const [completedSteps, setCompletedSteps] = useState(new Set());
@@ -66,6 +77,13 @@ const BlogCreatorGuidance = ({ onGenerateBlog, isGenerating }) => {
     },
     {
       id: 4,
+      title: 'Strategic Planning',
+      icon: '🧠',
+      description: 'Goal-driven content strategy and structure',
+      fields: ['strategicPlan']
+    },
+    {
+      id: 5,
       title: 'Images & Review',
       icon: '📸',
       description: 'Add images and review details',
@@ -364,6 +382,7 @@ const BlogCreatorGuidance = ({ onGenerateBlog, isGenerating }) => {
     
     return step.fields.every(field => {
       if (field === 'images') return true; // Images are optional
+      if (field === 'strategicPlan') return planGenerated && strategicPlan; // Strategic plan step
       return blogData[field] && blogData[field].toString().trim() !== '';
     });
   };
@@ -403,9 +422,169 @@ const BlogCreatorGuidance = ({ onGenerateBlog, isGenerating }) => {
     }
   };
 
+  // Generate strategic plan function
+  const generateStrategicPlan = async () => {
+    try {
+      setIsPlanning(true);
+      setPlanError('');
+      
+      // Validate required fields for planning
+      if (!blogData.topic || !blogData.mainName) {
+        setPlanError('Please complete the Basic Information step first');
+        return;
+      }
+
+      const isNetlify = window.location.hostname.includes('netlify.app') || window.location.hostname.includes('vmarketing.netlify.app');
+      const baseURL = isNetlify ? 'https://vmarketing-backend-server.onrender.com/api' : require('../config/api').default.baseURL;
+      
+      const response = await fetch(`${baseURL}/blog/plan`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(blogData)
+      });
+
+      const data = await response.json();
+      
+      if (data.success) {
+        setStrategicPlan(data.strategicPlan);
+        setPlanGenerated(true);
+        // Mark the planning step as completed
+        setCompletedSteps(prev => new Set([...prev, 4]));
+      } else {
+        setPlanError(data.error || 'Failed to generate strategic plan');
+      }
+    } catch (error) {
+      console.error('Planning error:', error);
+      setPlanError('Network error. Please try again.');
+    } finally {
+      setIsPlanning(false);
+    }
+  };
+
+  // Generate topic recommendations
+  const generateTopicRecommendations = async () => {
+    try {
+      setIsGeneratingTopic(true);
+      setTopicRecommendations([]);
+      setShowTopicRecommendations(false);
+
+      // Always try to generate contextual recommendations based on user input
+      // Even if some fields are empty, we can still generate relevant topics
+      const isNetlify = window.location.hostname.includes('netlify.app') || window.location.hostname.includes('vmarketing.netlify.app');
+      const baseURL = isNetlify ? 'https://vmarketing-backend-server.onrender.com/api' : require('../config/api').default.baseURL;
+      
+      const response = await fetch(`${baseURL}/blog/topic-recommendations`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          mainName: blogData.mainName || 'Your Business',
+          type: blogData.type || 'business',
+          industry: blogData.industry || 'General',
+          location: blogData.location || 'Your Location'
+        })
+      });
+
+      const data = await response.json();
+      
+      if (data.success && data.recommendations && data.recommendations.length > 0) {
+        setTopicRecommendations(data.recommendations);
+        setShowTopicRecommendations(true);
+      } else {
+        // Generate contextual fallback recommendations based on available input
+        const fallbackRecommendations = generateContextualFallbacks();
+        setTopicRecommendations(fallbackRecommendations);
+        setShowTopicRecommendations(true);
+      }
+    } catch (error) {
+      console.error('Topic recommendation error:', error);
+      // Generate contextual fallback recommendations based on available input
+      const fallbackRecommendations = generateContextualFallbacks();
+      setTopicRecommendations(fallbackRecommendations);
+      setShowTopicRecommendations(true);
+    } finally {
+      setIsGeneratingTopic(false);
+    }
+  };
+
+  // Generate contextual fallback recommendations based on user input
+  const generateContextualFallbacks = () => {
+    const { mainName, type, industry, location } = blogData;
+    
+    // Base recommendations that can be customized
+    let baseRecommendations = [
+      "Our New Product Launch",
+      "Behind the Scenes: How We Work",
+      "5 Tips for Success in Our Industry",
+      "Meet Our Team",
+      "Best Practices and Insights"
+    ];
+
+    // Customize based on business type
+    if (type === 'business') {
+      baseRecommendations = [
+        `${mainName ? mainName + "'s " : "Our "}New Product Launch`,
+        `Behind the Scenes: A Day at ${mainName || "Our Business"}`,
+        `5 Tips for Success in ${industry || "Our Industry"}`,
+        `Meet the Team at ${mainName || "Our Company"}`,
+        `${mainName ? mainName + "'s " : "Our "}Best Practices and Insights`
+      ];
+    } else if (type === 'restaurant') {
+      baseRecommendations = [
+        `${mainName ? mainName + "'s " : "Our "}New Seasonal Menu`,
+        `Behind the Scenes: ${mainName || "Our"} Kitchen`,
+        `5 Tips for First-Time Visitors to ${mainName || "Our Restaurant"}`,
+        `Meet Our Award-Winning Chef at ${mainName || "Our Restaurant"}`,
+        `${mainName ? mainName + "'s " : "Our "}Sustainable Practices`
+      ];
+    } else if (type === 'project') {
+      baseRecommendations = [
+        `${mainName ? mainName + " " : "Our "}Project Update`,
+        `Behind the Scenes: ${mainName || "Our"} Development Process`,
+        `5 Key Insights from ${mainName || "Our"} Project`,
+        `Meet the Team Behind ${mainName || "Our"} Project`,
+        `${mainName ? mainName + "'s " : "Our "}Success Story`
+      ];
+    } else if (type === 'event') {
+      baseRecommendations = [
+        `${mainName ? mainName + " " : "Our "}Event Highlights`,
+        `Behind the Scenes: Planning ${mainName || "Our Event"}`,
+        `5 Things to Expect at ${mainName || "Our Event"}`,
+        `Meet the Organizers of ${mainName || "Our Event"}`,
+        `${mainName ? mainName + "'s " : "Our "}Event Success Tips`
+      ];
+    }
+
+    // Add location context if available
+    if (location) {
+      baseRecommendations = baseRecommendations.map(rec => 
+        rec.replace(/Our|our/g, `${location}'s`)
+      );
+    }
+
+    return baseRecommendations;
+  };
+
+  // Select a topic recommendation
+  const selectTopicRecommendation = (topic) => {
+    handleInputChange('topic', topic);
+    setShowTopicRecommendations(false);
+  };
+
+  // Regenerate strategic plan
+  const regenerateStrategicPlan = () => {
+    setStrategicPlan('');
+    setPlanGenerated(false);
+    setPlanError('');
+    generateStrategicPlan();
+  };
+
   // Generate blog function
   const handleGenerateBlog = () => {
-    onGenerateBlog(blogData, images);
+    onGenerateBlog(blogData, images, strategicPlan);
   };
 
   // LLM field tips
@@ -568,15 +747,63 @@ const BlogCreatorGuidance = ({ onGenerateBlog, isGenerating }) => {
                         {t('blogTopic')} *
                         <span className="blogcreator-field-hint">What will your blog post be about?</span>
                       </label>
-                      <input
-                        id="topic"
-                        className="blogcreator-input"
-                        type="text"
-                        value={blogData.topic}
-                        onChange={e => handleInputChange('topic', e.target.value)}
-                        placeholder={topicTip || "e.g., Our New Seasonal Menu Launch, Behind the Scenes: Local Ingredients, 5 Tips for First-Time Visitors"}
-                        required
-                      />
+                      <div className="blogcreator-input-with-button">
+                        <input
+                          id="topic"
+                          className="blogcreator-input"
+                          type="text"
+                          value={blogData.topic}
+                          onChange={e => handleInputChange('topic', e.target.value)}
+                          placeholder={topicTip || "e.g., Our New Seasonal Menu Launch, Behind the Scenes: Local Ingredients, 5 Tips for First-Time Visitors"}
+                          required
+                        />
+                        <button
+                          type="button"
+                          className="blogcreator-topic-recommendation-btn"
+                          onClick={generateTopicRecommendations}
+                          disabled={isGeneratingTopic}
+                        >
+                          {isGeneratingTopic ? (
+                            <>
+                              <span className="loading-spinner"></span>
+                              Generating...
+                            </>
+                          ) : (
+                            <>
+                              💡 Use Recommendation
+                            </>
+                          )}
+                        </button>
+                      </div>
+                      
+                      {/* Topic Recommendations Dropdown */}
+                      {showTopicRecommendations && topicRecommendations.length > 0 && (
+                        <div className="blogcreator-topic-recommendations">
+                          <div className="blogcreator-topic-recommendations-header">
+                            <span>🎯 Recommended Topics:</span>
+                            <button
+                              type="button"
+                              className="blogcreator-close-recommendations"
+                              onClick={() => setShowTopicRecommendations(false)}
+                            >
+                              ✕
+                            </button>
+                          </div>
+                          <div className="blogcreator-topic-recommendations-list">
+                            {topicRecommendations.map((topic, index) => (
+                              <button
+                                key={index}
+                                type="button"
+                                className="blogcreator-topic-recommendation-item"
+                                onClick={() => selectTopicRecommendation(topic)}
+                              >
+                                {topic}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      
                       <FieldTipLLM field="topic" value={blogData.topic} />
                       <div className="blogcreator-field-help">
                         <strong>💡 Tip:</strong> Be specific and engaging. Instead of "Menu", try "Our Chef's New Spring Menu Featuring Local Farm Ingredients"
@@ -842,14 +1069,129 @@ const BlogCreatorGuidance = ({ onGenerateBlog, isGenerating }) => {
                       className="blogcreator-step-btn blogcreator-step-next"
                       onClick={nextStep}
                     >
+                      Next: Strategic Planning →
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Step 4: Strategic Planning */}
+              {currentStep === 4 && (
+                <div className="blogcreator-step-content">
+                  <fieldset className="blogcreator-fieldset">
+                    <legend className="blogcreator-legend">
+                      Strategic Content Planning
+                      <span className="blogcreator-fieldset-tip">🧠 AI-powered strategy and outline generation</span>
+                    </legend>
+                    
+                    <div className="blogcreator-field-group">
+                      <div className="blogcreator-planning-header">
+                        <h3>🎯 Goal-Driven Strategic Planning</h3>
+                        <p>Define clear objectives and create a focused content strategy for maximum impact</p>
+                      </div>
+                      
+                      {!planGenerated ? (
+                        <div className="blogcreator-planning-section">
+                          <div className="blogcreator-planning-info">
+                            <h4>What will be generated:</h4>
+                            <ul>
+                              <li>🎯 Clear primary goal and business objective</li>
+                              <li>👥 Specific target audience profile and pain points</li>
+                              <li>📝 Structured content outline with key sections</li>
+                              <li>🔍 SEO strategy with primary keywords</li>
+                              <li>💡 Engagement tactics and call-to-action plan</li>
+                              <li>📊 Measurable success metrics and KPIs</li>
+                              <li>⚠️ Clarifying questions if goals need definition</li>
+                            </ul>
+                          </div>
+                          
+                          <button
+                            type="button"
+                            className="blogcreator-planning-btn"
+                            onClick={generateStrategicPlan}
+                            disabled={isPlanning}
+                          >
+                            {isPlanning ? (
+                              <>
+                                <span className="loading-spinner"></span>
+                                Generating Strategic Plan...
+                              </>
+                            ) : (
+                              <>
+                                🧠 Generate Strategic Plan
+                              </>
+                            )}
+                          </button>
+                          
+                          {planError && (
+                            <div className="blogcreator-error">
+                              <span>⚠️ {planError}</span>
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="blogcreator-planning-result">
+                          <div className="blogcreator-planning-actions">
+                            <button
+                              type="button"
+                              className="blogcreator-planning-btn secondary"
+                              onClick={regenerateStrategicPlan}
+                              disabled={isPlanning}
+                            >
+                              🔄 Regenerate Plan
+                            </button>
+                            <div className="blogcreator-planning-status">
+                              ✅ Strategic plan generated successfully
+                            </div>
+                          </div>
+                          
+                          <div className="blogcreator-planning-content">
+                            <h4>📋 Generated Strategic Plan:</h4>
+                            <div className="blogcreator-planning-text">
+                              <pre style={{
+                                whiteSpace: 'pre-wrap',
+                                fontFamily: 'inherit',
+                                fontSize: '14px',
+                                lineHeight: '1.6',
+                                background: '#f8f9fa',
+                                padding: '16px',
+                                borderRadius: '8px',
+                                border: '1px solid #e9ecef',
+                                maxHeight: '400px',
+                                overflow: 'auto'
+                              }}>
+                                {strategicPlan}
+                              </pre>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </fieldset>
+                  
+                  {/* Step Navigation */}
+                  <div className="blogcreator-step-actions">
+                    <button
+                      type="button"
+                      className="blogcreator-step-btn blogcreator-step-prev"
+                      onClick={prevStep}
+                    >
+                      ← Previous: Key Content
+                    </button>
+                    <button
+                      type="button"
+                      className="blogcreator-step-btn blogcreator-step-next"
+                      onClick={nextStep}
+                      disabled={!planGenerated}
+                    >
                       Next: Images & Review →
                     </button>
                   </div>
                 </div>
               )}
 
-              {/* Step 4: Images & Review */}
-              {currentStep === 4 && (
+              {/* Step 5: Images & Review */}
+              {currentStep === 5 && (
                 <div className="blogcreator-step-content">
                   <fieldset className="blogcreator-fieldset">
                     <legend className="blogcreator-legend">{t('blogImages')}</legend>
@@ -937,7 +1279,7 @@ const BlogCreatorGuidance = ({ onGenerateBlog, isGenerating }) => {
                       className="blogcreator-step-btn blogcreator-step-prev"
                       onClick={prevStep}
                     >
-                      ← Previous: Key Content
+                      ← Previous: Strategic Planning
                     </button>
                     <button
                       type="submit"

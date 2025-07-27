@@ -20,7 +20,7 @@ const BlogCreator = () => {
   const [imageAnalysis, setImageAnalysis] = useState(null);
 
   // Generate blog post function
-  const generateBlogPost = async (formData, formImages) => {
+  const generateBlogPost = async (formData, formImages, strategicPlan = '') => {
     // Validate input
     if (!formData.topic.trim()) {
       setError(t('pleaseEnterBlogTopic'));
@@ -64,7 +64,8 @@ const BlogCreator = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...formData,
-          images: imageData
+          images: imageData,
+          strategicPlan: strategicPlan
         }),
       });
 

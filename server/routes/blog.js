@@ -172,6 +172,418 @@ function generateIntegrationSuggestions(imageAnalysis) {
   return suggestions;
 }
 
+// Helper function to generate contextual fallback recommendations
+function generateContextualFallbacks(mainName, type, industry, location) {
+  const businessName = mainName || 'Your Business';
+  const businessType = type || 'business';
+  const businessIndustry = industry || 'General';
+  const businessLocation = location || 'Your Location';
+
+  // Base recommendations that can be customized
+  let baseRecommendations = [
+    `${businessName}'s New Product Launch`,
+    `Behind the Scenes: A Day at ${businessName}`,
+    `5 Tips for Success in ${businessIndustry}`,
+    `Meet the Team at ${businessName}`,
+    `${businessName}'s Best Practices and Insights`
+  ];
+
+  // Customize based on business type
+  if (businessType === 'restaurant' || businessIndustry.toLowerCase().includes('food')) {
+    baseRecommendations = [
+      `${businessName}'s New Seasonal Menu`,
+      `Behind the Scenes: ${businessName}'s Kitchen`,
+      `5 Tips for First-Time Visitors to ${businessName}`,
+      `Meet Our Award-Winning Chef at ${businessName}`,
+      `${businessName}'s Sustainable Practices`
+    ];
+  } else if (businessType === 'project') {
+    baseRecommendations = [
+      `${businessName} Project Update`,
+      `Behind the Scenes: ${businessName} Development Process`,
+      `5 Key Insights from ${businessName} Project`,
+      `Meet the Team Behind ${businessName} Project`,
+      `${businessName}'s Success Story`
+    ];
+  } else if (businessType === 'event') {
+    baseRecommendations = [
+      `${businessName} Event Highlights`,
+      `Behind the Scenes: Planning ${businessName}`,
+      `5 Things to Expect at ${businessName}`,
+      `Meet the Organizers of ${businessName}`,
+      `${businessName}'s Event Success Tips`
+    ];
+  } else if (businessType === 'product') {
+    baseRecommendations = [
+      `${businessName} Product Launch`,
+      `Behind the Scenes: ${businessName} Development`,
+      `5 Tips for Using ${businessName} Effectively`,
+      `Meet the Team Behind ${businessName}`,
+      `${businessName}'s Innovation Story`
+    ];
+  }
+
+  // Add location context if available and meaningful
+  if (businessLocation && businessLocation !== 'Your Location') {
+    baseRecommendations = baseRecommendations.map(rec => 
+      rec.replace(/at |to |of /g, (match) => match + `${businessLocation}'s `)
+    );
+  }
+
+  return baseRecommendations;
+}
+
+// Topic recommendations endpoint
+router.post('/blog/topic-recommendations', async (req, res) => {
+  try {
+    const {
+      mainName,
+      type,
+      industry,
+      location
+    } = req.body;
+
+    // Use API key from environment variables
+    const apiKey = process.env.QWEN_API_KEY;
+    if (!apiKey) {
+      return res.status(500).json({
+        success: false,
+        error: 'QWEN_API_KEY not configured on server',
+        code: 'API_KEY_NOT_CONFIGURED'
+      });
+    }
+
+    // Configure Qwen model for topic recommendations
+    const qwenModel = {
+      name: 'qwen/qwen3-235b-a22b',
+      baseURL: 'https://integrate.api.nvidia.com/v1',
+      temperature: 0.7,
+      maxTokens: 1024,
+      top_p: 0.9,
+      frequency_penalty: 0,
+      presence_penalty: 0
+    };
+
+    // Create intelligent topic recommendation prompt
+    const recommendationPrompt = `Generate 5 engaging blog topic suggestions for:
+
+BUSINESS: ${mainName || 'Your Business'}
+TYPE: ${type || 'business'}
+INDUSTRY: ${industry || 'General'}
+LOCATION: ${location || 'Your Location'}
+
+CONTEXT ANALYSIS:
+- Use the business name "${mainName || 'Your Business'}" in topics when relevant
+- Focus on the ${type || 'business'} type context
+- Incorporate ${industry || 'industry'} insights when applicable
+- Include ${location || 'location'} context when meaningful
+
+REQUIREMENTS:
+- Topics should be specific and engaging
+- Include variety (how-to, behind-the-scenes, tips, stories, industry insights, etc.)
+- Focus on value for the target audience
+- Use action words and be compelling
+- Keep each topic under 60 characters
+- Make them highly relevant to the business/industry/type
+- Use the actual business name when provided
+- Include location-specific content when location is provided
+
+TOPIC VARIETY:
+1. Product/Service focused topic
+2. Behind-the-scenes/process topic
+3. Tips/advice topic
+4. Team/people focused topic
+5. Industry/trend focused topic
+
+Format: Return only 5 topics, one per line, no numbering or extra text.`;
+
+    // Generate topic recommendations using Qwen model
+    try {
+      const response = await axios.post(qwenModel.baseURL + '/chat/completions', {
+        model: qwenModel.name,
+        messages: [
+          {
+            role: 'system',
+            content: `You are a content strategy expert who creates engaging blog topic suggestions. Your approach:
+
+1. **Context-Aware**: Use the provided business name, type, industry, and location to create highly relevant topics
+2. **Personalized**: Incorporate the actual business name when provided to make topics more specific
+3. **Variety**: Create a mix of different content types (how-to, behind-the-scenes, tips, stories, industry insights)
+4. **Actionable**: Focus on topics that provide clear value to the target audience
+5. **Local**: Include location-specific content when location is provided
+6. **Industry-Specific**: Use industry knowledge to create relevant topics
+
+When business information is limited, create general but engaging topics that can be customized later. Always prioritize relevance and engagement.`
+          },
+          {
+            role: 'user',
+            content: recommendationPrompt
+          }
+        ],
+        temperature: qwenModel.temperature,
+        max_tokens: qwenModel.maxTokens,
+        top_p: qwenModel.top_p,
+        frequency_penalty: qwenModel.frequency_penalty,
+        presence_penalty: qwenModel.presence_penalty,
+        stream: false
+      }, {
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      const recommendationsText = response.data.choices[0]?.message?.content;
+      
+      // Check if we got a valid response
+      if (!recommendationsText) {
+        console.error('No content received from Qwen API');
+        // Generate contextual fallback recommendations
+        const fallbackRecommendations = generateContextualFallbacks(mainName, type, industry, location);
+        return res.json({
+          success: true,
+          recommendations: fallbackRecommendations,
+          metadata: {
+            mainName,
+            type,
+            industry,
+            location,
+            generatedAt: new Date().toISOString(),
+            note: 'Using fallback recommendations due to empty API response'
+          }
+        });
+      }
+      
+      // Parse the recommendations (split by lines and clean up)
+      const recommendations = recommendationsText
+        .split('\n')
+        .map(topic => topic.trim())
+        .filter(topic => topic.length > 0)
+        .slice(0, 5); // Ensure we only get 5 recommendations
+      
+      res.json({
+        success: true,
+        recommendations,
+        metadata: {
+          mainName,
+          type,
+          industry,
+          location,
+          generatedAt: new Date().toISOString()
+        }
+      });
+    } catch (apiError) {
+      console.error('API Error:', apiError.response?.data || apiError.message);
+      // Generate contextual fallback recommendations
+      const fallbackRecommendations = generateContextualFallbacks(mainName, type, industry, location);
+      
+      res.json({
+        success: true,
+        recommendations: fallbackRecommendations,
+        metadata: {
+          mainName,
+          type,
+          industry,
+          location,
+          generatedAt: new Date().toISOString(),
+          note: 'Using fallback recommendations due to API error'
+        }
+      });
+    }
+
+  } catch (error) {
+    console.error('Topic recommendations error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Internal server error during topic recommendations'
+    });
+  }
+});
+
+// Strategic blog planning endpoint using Qwen model
+router.post('/blog/plan', async (req, res) => {
+  try {
+    // Accept both new and old field names for backward compatibility
+    const {
+      topic,
+      mainName, // new
+      type,     // new
+      industry, // new
+      location,
+      targetAudience,
+      tone,
+      length,
+      keyPoints,
+      specialFeatures,
+      // legacy fields for fallback
+      restaurantName,
+      restaurantType,
+      cuisine
+    } = req.body;
+
+    // Use new fields if present, otherwise fallback to old
+    const resolvedMainName = mainName || restaurantName;
+    const resolvedType = type || restaurantType;
+    const resolvedIndustry = industry || cuisine;
+
+    // Validate required fields
+    if (!topic || !resolvedMainName) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required fields: topic and mainName are required'
+      });
+    }
+
+    // Use API key from environment variables (more secure)
+    const apiKey = process.env.QWEN_API_KEY;
+    if (!apiKey) {
+      return res.status(500).json({
+        success: false,
+        error: 'QWEN_API_KEY key not configured on server',
+        code: 'API_KEY_NOT_CONFIGURED'
+      });
+    }
+
+    // Configure Qwen model for strategic planning
+    const qwenModel = {
+      name: 'qwen/qwen3-235b-a22b',
+      baseURL: 'https://integrate.api.nvidia.com/v1',
+      temperature: 0.3,
+      maxTokens: 2048,
+      top_p: 0.9,
+      frequency_penalty: 0,
+      presence_penalty: 0
+    };
+
+    // Use Qwen API key for strategic planning
+    const qwenApiKey = process.env.QWEN_API_KEY;
+    if (!qwenApiKey) {
+      return res.status(500).json({
+        success: false,
+        error: 'Qwen API key not configured on server',
+        code: 'QWEN_API_KEY_NOT_CONFIGURED'
+      });
+    }
+
+    // Create concise, goal-driven planning prompt
+    const planningPrompt = `Create a strategic blog content plan for:
+
+BUSINESS: ${resolvedMainName} (${resolvedType || 'Not specified'})
+INDUSTRY: ${resolvedIndustry || 'Not specified'}
+LOCATION: ${location || 'Not specified'}
+TOPIC: ${topic}
+AUDIENCE: ${targetAudience}
+TONE: ${tone}
+LENGTH: ${length}
+${keyPoints ? `KEY POINTS: ${keyPoints}\n` : ''}${specialFeatures ? `SPECIAL FEATURES: ${specialFeatures}\n` : ''}
+
+STRATEGIC PLAN STRUCTURE:
+
+🎯 **PRIMARY GOAL**
+[Define the main objective - what should this blog achieve?]
+
+👥 **TARGET AUDIENCE PROFILE**
+[Who exactly will read this? What are their pain points?]
+
+📝 **CONTENT STRUCTURE**
+1. Introduction (hook + value proposition)
+2. [Main sections based on key points]
+3. Conclusion (summary + call-to-action)
+
+🔍 **SEO STRATEGY**
+- Primary keyword: [main search term]
+- Secondary keywords: [2-3 related terms]
+- Meta description: [compelling 155-character summary]
+
+💡 **ENGAGEMENT TACTICS**
+- Hook strategy: [how to grab attention]
+- Value delivery: [how to keep readers engaged]
+- Call-to-action: [what should readers do next]
+
+📊 **SUCCESS METRICS**
+- Primary KPI: [main goal measurement]
+- Secondary KPIs: [engagement, shares, etc.]
+
+⚠️ **CLARIFICATION NEEDED**
+[If goals are unclear, ask specific questions to help define objectives]
+
+Provide a concise, actionable plan that directly supports the business goal.`;
+
+    // Generate strategic plan using Qwen model
+    try {
+      const response = await axios.post(qwenModel.baseURL + '/chat/completions', {
+        model: qwenModel.name,
+        messages: [
+          {
+            role: 'system',
+            content: `You are a strategic content planning expert who creates concise, goal-driven blog strategies. Your approach:
+
+1. **Goal-First**: Always identify the primary business objective
+2. **Audience-Centric**: Define specific reader personas and pain points
+3. **Action-Oriented**: Provide clear, actionable strategies
+4. **Clarification-Driven**: Ask specific questions when goals are unclear
+
+When goals are vague or missing, ask targeted questions like:
+- "What specific action should readers take after reading this blog?"
+- "What business outcome are you trying to achieve?"
+- "Who is your ideal reader and what problem do they have?"
+- "What makes your offering unique in this market?"
+
+Keep responses concise, structured, and focused on measurable outcomes.`
+          },
+          {
+            role: 'user',
+            content: planningPrompt
+          }
+        ],
+        temperature: qwenModel.temperature,
+        max_tokens: qwenModel.maxTokens,
+        top_p: qwenModel.top_p,
+        frequency_penalty: qwenModel.frequency_penalty,
+        presence_penalty: qwenModel.presence_penalty,
+        stream: false
+      }, {
+        headers: {
+          'Authorization': `Bearer ${qwenApiKey}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      const strategicPlan = response.data.choices[0].message.content;
+      
+      res.json({
+        success: true,
+        strategicPlan: strategicPlan,
+        model: qwenModel.name,
+        metadata: {
+          topic,
+          mainName: resolvedMainName,
+          type: resolvedType,
+          industry: resolvedIndustry,
+          location,
+          targetAudience,
+          tone,
+          length,
+          plannedAt: new Date().toISOString()
+        }
+      });
+    } catch (apiError) {
+      console.error('API Error:', apiError.response?.data || apiError.message);
+      res.status(500).json({
+        success: false,
+        error: 'Failed to generate strategic plan. Please check your API key and try again.'
+      });
+    }
+
+  } catch (error) {
+    console.error('Strategic planning error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Internal server error during strategic planning'
+    });
+  }
+});
+
 // Enhanced blog post generation endpoint with image support
 router.post('/blog/generate', async (req, res) => {
   try {
@@ -262,8 +674,14 @@ router.post('/blog/generate', async (req, res) => {
       imageInstructions = `\n\nIMAGE INTEGRATION:\n- Total Images: ${imageAnalysis.totalImages}\n- Image Details: ${imageAnalysis.imageDetails.map(img => `${img.name} (${img.suggestedPlacement})`).join(', ')}\n- Integration Suggestions: ${imageAnalysis.integrationSuggestions.join('; ')}\n\nWhen writing the blog post, naturally incorporate mentions of these images in appropriate sections. Include suggested captions and placement hints in your content.`;
     }
 
+    // Add strategic plan to the prompt if available
+    let strategicPlanInstructions = '';
+    if (req.body.strategicPlan) {
+      strategicPlanInstructions = `\n\nSTRATEGIC PLAN TO FOLLOW:\n${req.body.strategicPlan}\n\nIMPORTANT: Use this strategic plan as your guide for content structure, tone, and approach. Follow the outlined strategy, content flow, and recommendations provided in the plan.`;
+    }
+
     // Enhanced prompt for long-form content generation with improved paragraph structure
-    const prompt = `Create a professional, engaging blog post for a business, project, event, product, organization, or topic with the following specifications:\n\nDETAILS:\n- Name: ${resolvedMainName}\n- Type/Category: ${resolvedType || 'Not specified'}\n- Industry/Field: ${resolvedIndustry || 'Not specified'}\n- Location: ${location || 'Not specified'}\n\nBLOG SPECIFICATIONS:\n- Topic: ${topic}\n- Target Audience: ${targetAudience}\n- Writing Tone: ${tone}\n- Target Length: ${targetWordCount} words\n- Content Strategy: ${contentStrategy}\n\nCORE CONTENT FRAMEWORK:\n${keyPoints ? `KEY POINTS TO INCLUDE (Structure your blog around these main points):\n${keyPoints}\n\n` : ''}${specialFeatures ? `SPECIAL FEATURES & HIGHLIGHTS (Weave these unique details throughout your content):\n${specialFeatures}\n\n` : ''}${imageInstructions}\n\nCONTENT REQUIREMENTS:\nWrite a compelling, well-structured blog post that follows the established blog content structure guidelines. IMPORTANT: Use clean, simple formatting without any markdown artifacts or unnecessary symbols.\n\nDEPTH INSTRUCTIONS:\n${depthInstructions}\n\nPARAGRAPH STRUCTURE GUIDELINES:\n- **Introduction Paragraphs**: 2-3 sentences to hook readers and introduce the topic\n- **Body Paragraphs**: 3-5 sentences each, focusing on one main idea per paragraph\n- **Transition Paragraphs**: 1-2 sentences to smoothly connect sections\n- **Conclusion Paragraphs**: 2-3 sentences to summarize and provide clear next steps\n- **Paragraph Spacing**: Use single line breaks between paragraphs for clean formatting\n- **Readability**: Keep sentences varied in length (short, medium, long) for natural flow\n- **Topic Sentences**: Start each paragraph with a clear topic sentence\n- **Supporting Details**: Follow topic sentences with supporting information and examples\n\nCONTENT STRATEGY:\n1. **Use Key Points as Section Headers**: Transform each key point into a major section (H2) of your blog\n2. **Integrate Special Features**: Naturally weave special features into relevant sections to support your key points\n3. **Create Logical Flow**: Organize content so each section builds upon the previous one\n4. **Balance Information**: Mix factual details with engaging storytelling\n5. **Include Calls-to-Action**: End with clear next steps for readers\n6. **Provide Comprehensive Coverage**: ${length === 'extra_long' ? 'Ensure each section is thoroughly developed with multiple subsections, examples, and detailed explanations. This should be a definitive resource on the topic.' : length === 'long' ? 'Develop each section with substantial detail, including examples and thorough explanations.' : 'Provide appropriate detail for the target length.'}\n7. **Optimize for Blog Form**: Structure content with clear paragraphs that work well in blog layouts\n\nREFERENCE: Follow the Blog Content Structure Guidelines for consistent formatting and professional appearance.\n\nBLOG CONTENT STRUCTURE REFERENCE:\n- **H1**: Main blog title with strategic emojis (# Title ✨)\n- **H2**: Major sections based on key points with relevant emojis (## Key Point 🌟)\n- **H3**: Subsections with descriptive emojis (### Subsection 💡)\n- **H4**: Detailed points when needed (#### Detail ⭐)\n- **Lists**: Use • for bullets, 1. 2. 3. for numbered lists\n- **Highlighting**: Use ✨ 💡 🎯 ⭐ 🔥 💎 for key points\n- **Bold Text**: Use **text** for emphasis with highlighting\n- **Clean Formatting**: No markdown artifacts or excessive symbols\n- **Paragraph Breaks**: Use single line breaks between paragraphs for clean blog formatting\n\nPlease generate the complete blog post content following the established Blog Content Structure Guidelines. Ensure proper hierarchical formatting, strategic emoji usage, clear headings, engaging structure, and optimal paragraph formatting for blog readability. Focus on creating valuable content that readers will find informative, visually appealing, and enjoyable to read while maintaining the professional formatting standards.`;
+    const prompt = `Create a professional, engaging blog post for a business, project, event, product, organization, or topic with the following specifications:\n\nDETAILS:\n- Name: ${resolvedMainName}\n- Type/Category: ${resolvedType || 'Not specified'}\n- Industry/Field: ${resolvedIndustry || 'Not specified'}\n- Location: ${location || 'Not specified'}\n\nBLOG SPECIFICATIONS:\n- Topic: ${topic}\n- Target Audience: ${targetAudience}\n- Writing Tone: ${tone}\n- Target Length: ${targetWordCount} words\n- Content Strategy: ${contentStrategy}\n\nCORE CONTENT FRAMEWORK:\n${keyPoints ? `KEY POINTS TO INCLUDE (Structure your blog around these main points):\n${keyPoints}\n\n` : ''}${specialFeatures ? `SPECIAL FEATURES & HIGHLIGHTS (Weave these unique details throughout your content):\n${specialFeatures}\n\n` : ''}${imageInstructions}${strategicPlanInstructions}\n\nCONTENT REQUIREMENTS:\nWrite a compelling, well-structured blog post that follows the established blog content structure guidelines. IMPORTANT: Use clean, simple formatting without any markdown artifacts or unnecessary symbols.\n\nDEPTH INSTRUCTIONS:\n${depthInstructions}\n\nPARAGRAPH STRUCTURE GUIDELINES:\n- **Introduction Paragraphs**: 2-3 sentences to hook readers and introduce the topic\n- **Body Paragraphs**: 3-5 sentences each, focusing on one main idea per paragraph\n- **Transition Paragraphs**: 1-2 sentences to smoothly connect sections\n- **Conclusion Paragraphs**: 2-3 sentences to summarize and provide clear next steps\n- **Paragraph Spacing**: Use single line breaks between paragraphs for clean formatting\n- **Readability**: Keep sentences varied in length (short, medium, long) for natural flow\n- **Topic Sentences**: Start each paragraph with a clear topic sentence\n- **Supporting Details**: Follow topic sentences with supporting information and examples\n\nCONTENT STRATEGY:\n1. **Use Key Points as Section Headers**: Transform each key point into a major section (H2) of your blog\n2. **Integrate Special Features**: Naturally weave special features into relevant sections to support your key points\n3. **Create Logical Flow**: Organize content so each section builds upon the previous one\n4. **Balance Information**: Mix factual details with engaging storytelling\n5. **Include Calls-to-Action**: End with clear next steps for readers\n6. **Provide Comprehensive Coverage**: ${length === 'extra_long' ? 'Ensure each section is thoroughly developed with multiple subsections, examples, and detailed explanations. This should be a definitive resource on the topic.' : length === 'long' ? 'Develop each section with substantial detail, including examples and thorough explanations.' : 'Provide appropriate detail for the target length.'}\n7. **Optimize for Blog Form**: Structure content with clear paragraphs that work well in blog layouts\n\nREFERENCE: Follow the Blog Content Structure Guidelines for consistent formatting and professional appearance.\n\nBLOG CONTENT STRUCTURE REFERENCE:\n- **H1**: Main blog title with strategic emojis (# Title ✨)\n- **H2**: Major sections based on key points with relevant emojis (## Key Point 🌟)\n- **H3**: Subsections with descriptive emojis (### Subsection 💡)\n- **H4**: Detailed points when needed (#### Detail ⭐)\n- **Lists**: Use • for bullets, 1. 2. 3. for numbered lists\n- **Highlighting**: Use ✨ 💡 🎯 ⭐ 🔥 💎 for key points\n- **Bold Text**: Use **text** for emphasis with highlighting\n- **Clean Formatting**: No markdown artifacts or excessive symbols\n- **Paragraph Breaks**: Use single line breaks between paragraphs for clean blog formatting\n\nPlease generate the complete blog post content following the established Blog Content Structure Guidelines. Ensure proper hierarchical formatting, strategic emoji usage, clear headings, engaging structure, and optimal paragraph formatting for blog readability. Focus on creating valuable content that readers will find informative, visually appealing, and enjoyable to read while maintaining the professional formatting standards.`;
 
     // Generate blog post using the selected model
     try {
