@@ -471,6 +471,45 @@ const BlogCreatorResult = ({
     alert(t('blogPostCopiedToClipboard'));
   };
 
+  const exportBlog = () => {
+    // Create a comprehensive blog export with metadata
+    const exportData = {
+      title: blogData.topic || 'Generated Blog Post',
+      content: generatedBlog,
+      metadata: {
+        topic: blogData.topic,
+        mainName: blogData.mainName,
+        type: blogData.type,
+        industry: blogData.industry,
+        location: blogData.location,
+        targetAudience: blogData.targetAudience,
+        tone: blogData.tone,
+        length: blogData.length,
+        keyPoints: blogData.keyPoints,
+        specialFeatures: blogData.specialFeatures,
+        wordCount: getWordCount(),
+        images: images.map(img => img.name),
+        generatedAt: new Date().toISOString(),
+        model: 'NVIDIA Llama 3.3 Nemotron Super 49B'
+      },
+      images: images
+    };
+
+    // Create and download the export file
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], {
+      type: 'application/json'
+    });
+    
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `blog-export-${blogData.topic?.replace(/[^a-zA-Z0-9]/g, '-') || 'post'}-${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
   const handleSaveEdit = async () => {
     try {
       // Update localStorage by unique id
@@ -554,6 +593,13 @@ const BlogCreatorResult = ({
                     title="Copy to clipboard"
                   >
                     📋 Copy
+                  </button>
+                  <button
+                    onClick={exportBlog}
+                    className="blogcreator-action-btn"
+                    title="Export blog as JSON"
+                  >
+                    📤 Export
                   </button>
                   <button
                     onClick={() => {

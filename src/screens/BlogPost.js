@@ -392,6 +392,48 @@ ${t('generatedOn')}: ${new Date(generatedPost.timestamp).toLocaleString()}`;
     }
   };
 
+  const exportBlog = () => {
+    if (!generatedPost) return;
+    
+    // Create a comprehensive blog export with metadata
+    const exportData = {
+      title: generatedPost.topic || 'Blog Post',
+      content: isEditMode ? editedContent : generatedPost.blogPost,
+      metadata: {
+        topic: generatedPost.topic,
+        mainName: generatedPost.mainName || generatedPost.restaurantName,
+        type: generatedPost.type,
+        industry: generatedPost.industry || generatedPost.cuisine,
+        location: generatedPost.location,
+        targetAudience: generatedPost.targetAudience,
+        tone: generatedPost.tone,
+        length: generatedPost.length,
+        keyPoints: generatedPost.keyPoints,
+        specialFeatures: generatedPost.specialFeatures,
+        wordCount: (isEditMode ? editedContent : generatedPost.blogPost).split(/\s+/).length,
+        images: generatedPost.images ? generatedPost.images.map(img => img.name) : [],
+        generatedAt: generatedPost.timestamp || new Date().toISOString(),
+        model: generatedPost.model || 'NVIDIA Llama 3.3 Nemotron Super 49B',
+        id: generatedPost._id
+      },
+      images: generatedPost.images || []
+    };
+
+    // Create and download the export file
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], {
+      type: 'application/json'
+    });
+    
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `blog-export-${generatedPost.topic?.replace(/[^a-zA-Z0-9]/g, '-') || 'post'}-${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
   // Function to clean and format blog content
   const cleanAndFormatBlogContent = (content) => {
     if (!content) return '';
@@ -1068,6 +1110,121 @@ ${t('generatedOn')}: ${new Date(generatedPost.timestamp).toLocaleString()}`;
               </div>
             )}
           </div>
+        </div>
+      )}
+      
+      {/* Action Buttons Section */}
+      {isGenerated && (
+        <div style={{
+          marginTop: '24px',
+          padding: '20px',
+          background: '#f8f9fa',
+          border: '1px solid #e9ecef',
+          borderRadius: '12px',
+          display: 'flex',
+          justifyContent: 'center',
+          gap: '12px',
+          flexWrap: 'wrap'
+        }}>
+          <button
+            onClick={toggleEditMode}
+            style={{
+              background: isEditMode ? '#dc3545' : '#667eea',
+              color: '#fff',
+              border: 'none',
+              padding: '10px 20px',
+              borderRadius: '8px',
+              fontSize: '14px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              transition: 'all 0.2s'
+            }}
+          >
+            {isEditMode ? '❌ Cancel Edit' : '✏️ Edit Content'}
+          </button>
+          
+          {isEditMode && (
+            <button
+              onClick={saveEditedContent}
+              style={{
+                background: '#28a745',
+                color: '#fff',
+                border: 'none',
+                padding: '10px 20px',
+                borderRadius: '8px',
+                fontSize: '14px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                transition: 'all 0.2s'
+              }}
+            >
+              💾 Save Changes
+            </button>
+          )}
+          
+          <button
+            onClick={copyFullContent}
+            style={{
+              background: '#17a2b8',
+              color: '#fff',
+              border: 'none',
+              padding: '10px 20px',
+              borderRadius: '8px',
+              fontSize: '14px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              transition: 'all 0.2s'
+            }}
+          >
+            📋 Copy Content
+          </button>
+          
+          <button
+            onClick={exportBlog}
+            style={{
+              background: '#6f42c1',
+              color: '#fff',
+              border: 'none',
+              padding: '10px 20px',
+              borderRadius: '8px',
+              fontSize: '14px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              transition: 'all 0.2s'
+            }}
+          >
+            📤 Export Blog
+          </button>
+          
+          {copyStatus && (
+            <div style={{
+              position: 'fixed',
+              top: '20px',
+              right: '20px',
+              background: copyStatus.includes('failed') ? '#dc3545' : '#28a745',
+              color: '#fff',
+              padding: '12px 20px',
+              borderRadius: '8px',
+              fontSize: '14px',
+              fontWeight: '600',
+              zIndex: 1000,
+              boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
+            }}>
+              {copyStatus}
+            </div>
+          )}
         </div>
       )}
       {/* Back Button */}
