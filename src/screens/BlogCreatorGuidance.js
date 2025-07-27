@@ -78,7 +78,7 @@ const BlogCreatorGuidance = ({ onGenerateBlog, isGenerating }) => {
     {
       id: 4,
       title: 'Strategic Planning',
-      icon: '🧠',
+      icon: '📋',
       description: 'Goal-driven content strategy and structure',
       fields: ['strategicPlan']
     },
@@ -1081,12 +1081,12 @@ const BlogCreatorGuidance = ({ onGenerateBlog, isGenerating }) => {
                   <fieldset className="blogcreator-fieldset">
                     <legend className="blogcreator-legend">
                       Strategic Content Planning
-                      <span className="blogcreator-fieldset-tip">🧠 AI-powered strategy and outline generation</span>
+                      <span className="blogcreator-fieldset-tip">AI-powered strategy and outline generation</span>
                     </legend>
                     
                     <div className="blogcreator-field-group">
                       <div className="blogcreator-planning-header">
-                        <h3>🎯 Goal-Driven Strategic Planning</h3>
+                        <h3>Goal-Driven Strategic Planning</h3>
                         <p>Define clear objectives and create a focused content strategy for maximum impact</p>
                       </div>
                       
@@ -1095,13 +1095,13 @@ const BlogCreatorGuidance = ({ onGenerateBlog, isGenerating }) => {
                           <div className="blogcreator-planning-info">
                             <h4>What will be generated:</h4>
                             <ul>
-                              <li>🎯 Clear primary goal and business objective</li>
-                              <li>👥 Specific target audience profile and pain points</li>
-                              <li>📝 Structured content outline with key sections</li>
-                              <li>🔍 SEO strategy with primary keywords</li>
-                              <li>💡 Engagement tactics and call-to-action plan</li>
-                              <li>📊 Measurable success metrics and KPIs</li>
-                              <li>⚠️ Clarifying questions if goals need definition</li>
+                              <li>Clear primary goal and business objective</li>
+                              <li>Specific target audience profile and pain points</li>
+                              <li>Structured content outline with key sections</li>
+                              <li>SEO strategy with primary keywords</li>
+                              <li>Engagement tactics and call-to-action plan</li>
+                              <li>Measurable success metrics and KPIs</li>
+                              <li>Clarifying questions if goals need definition</li>
                             </ul>
                           </div>
                           
@@ -1118,7 +1118,7 @@ const BlogCreatorGuidance = ({ onGenerateBlog, isGenerating }) => {
                               </>
                             ) : (
                               <>
-                                🧠 Generate Strategic Plan
+                                Generate Strategic Plan
                               </>
                             )}
                           </button>
@@ -1138,30 +1138,31 @@ const BlogCreatorGuidance = ({ onGenerateBlog, isGenerating }) => {
                               onClick={regenerateStrategicPlan}
                               disabled={isPlanning}
                             >
-                              🔄 Regenerate Plan
+                              Regenerate Plan
                             </button>
                             <div className="blogcreator-planning-status">
-                              ✅ Strategic plan generated successfully
+                              Strategic plan generated successfully
                             </div>
                           </div>
                           
                           <div className="blogcreator-planning-content">
-                            <h4>📋 Generated Strategic Plan:</h4>
+                            <h4>Generated Strategic Plan</h4>
                             <div className="blogcreator-planning-text">
-                              <pre style={{
-                                whiteSpace: 'pre-wrap',
+                              <div style={{
                                 fontFamily: 'inherit',
                                 fontSize: '14px',
                                 lineHeight: '1.6',
-                                background: '#f8f9fa',
-                                padding: '16px',
+                                background: '#ffffff',
+                                padding: '20px',
                                 borderRadius: '8px',
                                 border: '1px solid #e9ecef',
                                 maxHeight: '400px',
-                                overflow: 'auto'
+                                overflow: 'auto',
+                                color: '#333',
+                                whiteSpace: 'pre-wrap'
                               }}>
                                 {strategicPlan}
-                              </pre>
+                              </div>
                             </div>
                           </div>
                         </div>

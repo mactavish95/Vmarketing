@@ -465,7 +465,7 @@ router.post('/blog/plan', async (req, res) => {
       });
     }
 
-    // Create concise, goal-driven planning prompt
+    // Create clean, structured planning prompt
     const planningPrompt = `Create a strategic blog content plan for:
 
 BUSINESS: ${resolvedMainName} (${resolvedType || 'Not specified'})
@@ -477,37 +477,37 @@ TONE: ${tone}
 LENGTH: ${length}
 ${keyPoints ? `KEY POINTS: ${keyPoints}\n` : ''}${specialFeatures ? `SPECIAL FEATURES: ${specialFeatures}\n` : ''}
 
-STRATEGIC PLAN STRUCTURE:
+Create a clean, structured strategic plan with these sections:
 
-🎯 **PRIMARY GOAL**
-[Define the main objective - what should this blog achieve?]
+PRIMARY GOAL
+[Clear, specific objective this blog should achieve]
 
-👥 **TARGET AUDIENCE PROFILE**
-[Who exactly will read this? What are their pain points?]
+TARGET AUDIENCE
+[Specific reader profile and their main challenges]
 
-📝 **CONTENT STRUCTURE**
-1. Introduction (hook + value proposition)
+CONTENT STRUCTURE
+1. Introduction
 2. [Main sections based on key points]
-3. Conclusion (summary + call-to-action)
+3. Conclusion
 
-🔍 **SEO STRATEGY**
+SEO STRATEGY
 - Primary keyword: [main search term]
 - Secondary keywords: [2-3 related terms]
 - Meta description: [compelling 155-character summary]
 
-💡 **ENGAGEMENT TACTICS**
+ENGAGEMENT TACTICS
 - Hook strategy: [how to grab attention]
 - Value delivery: [how to keep readers engaged]
 - Call-to-action: [what should readers do next]
 
-📊 **SUCCESS METRICS**
+SUCCESS METRICS
 - Primary KPI: [main goal measurement]
 - Secondary KPIs: [engagement, shares, etc.]
 
-⚠️ **CLARIFICATION NEEDED**
+CLARIFICATION NEEDED
 [If goals are unclear, ask specific questions to help define objectives]
 
-Provide a concise, actionable plan that directly supports the business goal.`;
+Format: Use clean section headers without emojis or markdown. Keep content concise and actionable.`;
 
     // Generate strategic plan using Qwen model
     try {
@@ -516,12 +516,12 @@ Provide a concise, actionable plan that directly supports the business goal.`;
         messages: [
           {
             role: 'system',
-            content: `You are a strategic content planning expert who creates concise, goal-driven blog strategies. Your approach:
+            content: `You are a strategic content planning expert who creates clean, structured blog strategies. Your approach:
 
-1. **Goal-First**: Always identify the primary business objective
-2. **Audience-Centric**: Define specific reader personas and pain points
-3. **Action-Oriented**: Provide clear, actionable strategies
-4. **Clarification-Driven**: Ask specific questions when goals are unclear
+1. Goal-First: Always identify the primary business objective
+2. Audience-Centric: Define specific reader personas and pain points
+3. Action-Oriented: Provide clear, actionable strategies
+4. Clarification-Driven: Ask specific questions when goals are unclear
 
 When goals are vague or missing, ask targeted questions like:
 - "What specific action should readers take after reading this blog?"
@@ -529,7 +529,7 @@ When goals are vague or missing, ask targeted questions like:
 - "Who is your ideal reader and what problem do they have?"
 - "What makes your offering unique in this market?"
 
-Keep responses concise, structured, and focused on measurable outcomes.`
+IMPORTANT: Format your response with clean section headers without emojis, markdown, or unnecessary symbols. Use simple, clear formatting that's easy to read. Keep content concise and actionable.`
           },
           {
             role: 'user',
