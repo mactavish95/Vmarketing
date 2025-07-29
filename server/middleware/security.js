@@ -43,6 +43,7 @@ const corsOptions = {
       'https://vmarketing.netlify.app',
       'https://development--vmarketing.netlify.app',
       'https://app.netlify.com',
+      'https://vmarketing-3xttt9qae-ghostwares-projects.vercel.app',
       'https://vmarketing-3xttt9qae-ghostwares-projects.vercel.app/',
       process.env.FRONTEND_URL
     ].filter(Boolean);
@@ -67,6 +68,16 @@ const corsOptions = {
     // Check for any Netlify-related domain
     const isAnyNetlifyDomain = origin.includes('netlify');
     
+    // Check for Vercel domains
+    const isVercelDomain = origin.includes('vercel.app');
+    const isVercelPreview = origin.includes('vercel.app') && (
+      origin.includes('-') || // Preview URLs with hyphens
+      origin.includes('ghostwares-projects') || // Specific Vercel project pattern
+      origin.includes('preview') || // Preview URLs
+      origin.includes('staging') || // Staging URLs
+      origin.includes('development') // Development URLs
+    );
+    
     console.log('CORS check results:', {
       origin,
       allowedOrigins,
@@ -74,11 +85,13 @@ const corsOptions = {
       isNetlifyDomain,
       isNetlifyPreview,
       isAnyNetlifyDomain,
+      isVercelDomain,
+      isVercelPreview,
       frontendUrl: process.env.FRONTEND_URL
     });
     
     // Allow if any of these conditions are met
-    if (isExactMatch || isNetlifyDomain || isNetlifyPreview || isAnyNetlifyDomain) {
+    if (isExactMatch || isNetlifyDomain || isNetlifyPreview || isAnyNetlifyDomain || isVercelDomain || isVercelPreview) {
       console.log('CORS: Allowing origin:', origin);
       callback(null, true);
     } else {
@@ -88,6 +101,8 @@ const corsOptions = {
       console.log('Is Netlify domain:', isNetlifyDomain);
       console.log('Is Netlify preview:', isNetlifyPreview);
       console.log('Is any Netlify domain:', isAnyNetlifyDomain);
+      console.log('Is Vercel domain:', isVercelDomain);
+      console.log('Is Vercel preview:', isVercelPreview);
       callback(new Error('Not allowed by CORS'));
     }
   },
