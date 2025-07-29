@@ -34,6 +34,11 @@ const publishedPostSchema = new mongoose.Schema({
     enum: ['draft', 'scheduled', 'published', 'failed', 'deleted'],
     default: 'published'
   },
+  hidden: {
+    type: Boolean,
+    default: false,
+    index: true
+  },
   publishedAt: {
     type: Date,
     default: Date.now,

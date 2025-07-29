@@ -139,6 +139,14 @@ const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true, index: true },
   password: { type: String, required: true }, // hashed
   name: { type: String },
+  role: { 
+    type: String, 
+    enum: ['user', 'admin'], 
+    default: 'user',
+    index: true
+  },
+  isActive: { type: Boolean, default: true },
+  lastLoginAt: { type: Date },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
 });

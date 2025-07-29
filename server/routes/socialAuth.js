@@ -471,4 +471,24 @@ router.post('/refresh/:platform', async (req, res) => {
   }
 });
 
+// Logout endpoint
+router.post('/logout', (req, res) => {
+  req.logout((err) => {
+    if (err) {
+      console.error('❌ Logout error:', err);
+      return res.status(500).json({ success: false, error: 'Failed to logout.' });
+    }
+    
+    req.session.destroy((err) => {
+      if (err) {
+        console.error('❌ Session destruction error:', err);
+        return res.status(500).json({ success: false, error: 'Failed to destroy session.' });
+      }
+      
+      res.clearCookie('connect.sid');
+      res.json({ success: true, message: 'Logged out successfully.' });
+    });
+  });
+});
+
 module.exports = router; 

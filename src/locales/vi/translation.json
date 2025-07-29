@@ -263,7 +263,11 @@
     "blog": "Blog",
     "blogCreator": "Tạo Blog",
     "socialMedia": "Mạng xã hội",
-    "customerService": "Dịch vụ khách hàng"
+    "customerService": "Dịch vụ khách hàng",
+    "socialMediaHistory": "Lịch sử mạng xã hội",
+    "historyPageTitle": "Lịch sử bài đăng mạng xã hội",
+    "historyPageSubtitle": "Duyệt tất cả bài đăng mạng xã hội đã tạo theo nền tảng.",
+    "failedToFetchHistory": "Không thể tải lịch sử bài đăng mạng xã hội. Vui lòng thử lại sau."
   },
   "llma": {
     "enterText": "Vui lòng nhập nội dung để xử lý",
@@ -556,6 +560,13 @@
         "description": "Tạo nội dung tối ưu cho các nền tảng mạng xã hội khác nhau"
       }
     }
+  },
+  "qualityAnalyzer": {
+    "analyzeQuality": "Phân tích chất lượng",
+    "analyzing": "Đang phân tích...",
+    "noContentToAnalyze": "Không có nội dung để phân tích",
+    "analysisFailed": "Phân tích thất bại",
+    "networkError": "Lỗi mạng xảy ra"
   },
   "socialMedia": {
     "title": "Tạo bài đăng mạng xã hội",
@@ -1233,224 +1244,246 @@
       "linkedin": ["Professionals", "Industry Leaders", "Job Seekers", "Business Decision Makers"]
     }
   },
-  "result": {
-    "platform": "Platform",
-    "type": "Type",
-    "created": "Created",
-    "tone": "Tone",
-    "audience": "Audience",
-    "length": "Length",
-    "brandVoice": "Brand Voice",
-    "engagementUrgency": "Engagement Urgency",
-    "situation": "Situation",
-    "originalContent": "Original Content",
-    "enhancedContent": "Enhanced Content",
-    "copyEnhanced": "Copy Enhanced",
-    "notAvailable": "N/A",
-    "copied": "Copied!"
-  },
-  "suggestions": {
-    "postTypes": {
-      "general": [
-        "What's the most interesting thing that happened to you today?",
-        "Share a personal story that your audience can relate to",
-        "What's something you're grateful for right now?",
-        "Tell us about a challenge you recently overcame",
-        "What's a lesson you learned this week?"
-      ],
-      "promotional": [
-        "What problem does your product/service solve?",
-        "Share a customer success story",
-        "What makes your offering unique?",
-        "What's a common misconception about your industry?",
-        "How has your product/service evolved?"
-      ],
-      "educational": [
-        "What's a common mistake people make in your field?",
-        "Share a surprising fact or statistic",
-        "What's something everyone should know about your topic?",
-        "What's a tip that changed your perspective?",
-        "What's the most important lesson you've learned?"
-      ],
-      "community": [
-        "What's happening in your local community?",
-        "How can people get involved with your cause?",
-        "What community event are you excited about?",
-        "Share a story about community support",
-        "What's a local business you want to highlight?"
-      ],
-      "celebration": [
-        "What achievement are you most proud of?",
-        "Who deserves recognition in your network?",
-        "What milestone are you celebrating?",
-        "Share a team success story",
-        "What's something worth celebrating today?"
-      ],
-      "trending": [
-        "What's your take on the current trend?",
-        "How does this trend relate to your audience?",
-        "What's the story behind this trend?",
-        "How can people participate in this trend?",
-        "What's the next big thing you're seeing?"
-      ],
-      "seasonal": [
-        "What does this season mean to you?",
-        "How are you preparing for this time of year?",
-        "What traditions are important to you?",
-        "What's your favorite thing about this season?",
-        "How can people make the most of this season?"
-      ],
-      "crisis": [
-        "How are you supporting your community during this time?",
-        "What resources can you share?",
-        "How are you adapting to the current situation?",
-        "What positive actions can people take?",
-        "How can we help each other?"
-      ]
+      "result": {
+      "platform": "Nền tảng",
+      "type": "Loại",
+      "created": "Được tạo",
+      "tone": "Giọng điệu",
+      "audience": "Đối tượng",
+      "length": "Độ dài",
+      "brandVoice": "Giọng điệu thương hiệu",
+      "engagementUrgency": "Mức độ khẩn cấp tương tác",
+      "situation": "Tình huống",
+      "originalContent": "Nội dung gốc",
+      "enhancedContent": "Nội dung đã nâng cao",
+      "copyEnhanced": "Sao chép bản nâng cao",
+      "notAvailable": "N/A",
+      "copied": "Đã sao chép!"
     },
-    "contentStructures": {
-      "story": [
-        "What's the beginning of your story?",
-        "What was the turning point?",
-        "How did it end?",
-        "What did you learn from this experience?"
-      ],
-      "problemSolution": [
-        "What problem are you addressing?",
-        "What's your solution?",
-        "How does this help others?",
-        "What results can people expect?"
-      ],
-      "list": [
-        "What are the key points you want to share?",
-        "What's the most important item on your list?",
-        "How can people apply these points?",
-        "What's your top recommendation?"
-      ],
-      "questionAnswer": [
-        "What question are you answering?",
-        "What's the most common question you get?",
-        "What's something people often misunderstand?",
-        "What's your expert advice on this topic?"
-      ],
-      "beforeAfter": [
-        "What was the situation before?",
-        "What changed?",
-        "What's the result now?",
-        "What made the difference?"
-      ],
-      "tips": [
-        "What's your best tip?",
-        "What mistake should people avoid?",
-        "What's your secret to success?",
-        "What's the easiest way to get started?"
-      ],
-      "quote": [
-        "What quote inspires you?",
-        "Who said something meaningful about this?",
-        "What's your favorite quote on this topic?",
-        "How does this quote apply to your audience?"
-      ],
-      "announcement": [
-        "What are you announcing?",
-        "Why is this important?",
-        "What should people know?",
-        "What's the next step?"
-      ]
+    "characters": "ký tự",
+    "words": "từ",
+    "copy": "Sao chép",
+    "preview": "Xem trước",
+    "savePost": "Lưu bài đăng",
+    "quickEditContent": "Chỉnh sửa nhanh",
+    "editContentPlaceholder": "Chỉnh sửa nội dung của bạn tại đây...",
+    "show": "Hiển thị",
+    "hide": "Ẩn",
+    "original": "Bản gốc",
+    "comparison": "So sánh",
+    "yourPageName": "Tên trang của bạn",
+    "justNow": "Vừa xong",
+    "like": "Thích",
+    "comment": "Bình luận",
+    "share": "Chia sẻ",
+    "comments": "bình luận",
+    "shares": "chia sẻ",
+    "yourUsername": "tên_người_dùng",
+    "viewAllComments": "Xem tất cả {{count}} bình luận",
+    "yourName": "Tên của bạn",
+    "yourHandle": "tên_handle",
+    "now": "bây giờ",
+    "yourTitleAtCompany": "Chức danh tại công ty",
+    "yourChannelName": "Tên kênh của bạn",
+      "suggestions": {
+      "postTypes": {
+        "general": [
+          "Điều thú vị nhất xảy ra với bạn hôm nay là gì?",
+          "Chia sẻ câu chuyện cá nhân mà khán giả có thể liên hệ",
+          "Bạn biết ơn điều gì ngay bây giờ?",
+          "Kể cho chúng tôi về thách thức bạn vừa vượt qua",
+          "Bài học bạn học được tuần này là gì?"
+        ],
+        "promotional": [
+          "Sản phẩm/dịch vụ của bạn giải quyết vấn đề gì?",
+          "Chia sẻ câu chuyện thành công của khách hàng",
+          "Điều gì làm cho sản phẩm của bạn độc đáo?",
+          "Quan niệm sai lầm phổ biến về ngành của bạn là gì?",
+          "Sản phẩm/dịch vụ của bạn đã phát triển như thế nào?"
+        ],
+        "educational": [
+          "Lỗi phổ biến mọi người mắc phải trong lĩnh vực của bạn là gì?",
+          "Chia sẻ một sự thật hoặc thống kê đáng ngạc nhiên",
+          "Điều gì mọi người nên biết về chủ đề của bạn?",
+          "Mẹo nào đã thay đổi quan điểm của bạn?",
+          "Bài học quan trọng nhất bạn học được là gì?"
+        ],
+        "community": [
+          "Điều gì đang xảy ra trong cộng đồng địa phương của bạn?",
+          "Làm thế nào mọi người có thể tham gia vào sự nghiệp của bạn?",
+          "Sự kiện cộng đồng nào bạn đang mong đợi?",
+          "Chia sẻ câu chuyện về sự hỗ trợ cộng đồng",
+          "Doanh nghiệp địa phương nào bạn muốn làm nổi bật?"
+        ],
+        "celebration": [
+          "Thành tựu nào bạn tự hào nhất?",
+          "Ai xứng đáng được công nhận trong mạng lưới của bạn?",
+          "Cột mốc nào bạn đang kỷ niệm?",
+          "Chia sẻ câu chuyện thành công của nhóm",
+          "Điều gì đáng để kỷ niệm hôm nay?"
+        ],
+        "trending": [
+          "Bạn nghĩ gì về xu hướng hiện tại?",
+          "Xu hướng này liên quan đến khán giả của bạn như thế nào?",
+          "Câu chuyện đằng sau xu hướng này là gì?",
+          "Làm thế nào mọi người có thể tham gia xu hướng này?",
+          "Điều lớn tiếp theo bạn đang thấy là gì?"
+        ],
+        "seasonal": [
+          "Mùa này có ý nghĩa gì với bạn?",
+          "Bạn đang chuẩn bị cho thời gian này trong năm như thế nào?",
+          "Truyền thống nào quan trọng với bạn?",
+          "Điều bạn thích nhất về mùa này là gì?",
+          "Làm thế nào mọi người có thể tận dụng tối đa mùa này?"
+        ],
+        "crisis": [
+          "Bạn đang hỗ trợ cộng đồng trong thời gian này như thế nào?",
+          "Tài nguyên nào bạn có thể chia sẻ?",
+          "Bạn đang thích nghi với tình huống hiện tại như thế nào?",
+          "Hành động tích cực nào mọi người có thể thực hiện?",
+          "Làm thế nào chúng ta có thể giúp đỡ lẫn nhau?"
+        ]
+      },
+      "contentStructures": {
+        "story": [
+          "Phần đầu câu chuyện của bạn là gì?",
+          "Điểm chuyển biến là gì?",
+          "Nó kết thúc như thế nào?",
+          "Bạn học được gì từ trải nghiệm này?"
+        ],
+        "problemSolution": [
+          "Vấn đề bạn đang giải quyết là gì?",
+          "Giải pháp của bạn là gì?",
+          "Điều này giúp người khác như thế nào?",
+          "Kết quả mọi người có thể mong đợi là gì?"
+        ],
+        "list": [
+          "Những điểm chính bạn muốn chia sẻ là gì?",
+          "Mục quan trọng nhất trong danh sách của bạn là gì?",
+          "Làm thế nào mọi người có thể áp dụng những điểm này?",
+          "Khuyến nghị hàng đầu của bạn là gì?"
+        ],
+        "questionAnswer": [
+          "Câu hỏi bạn đang trả lời là gì?",
+          "Câu hỏi phổ biến nhất bạn nhận được là gì?",
+          "Điều gì mọi người thường hiểu sai?",
+          "Lời khuyên chuyên môn của bạn về chủ đề này là gì?"
+        ],
+        "beforeAfter": [
+          "Tình huống trước đó như thế nào?",
+          "Điều gì đã thay đổi?",
+          "Kết quả bây giờ là gì?",
+          "Điều gì tạo nên sự khác biệt?"
+        ],
+        "tips": [
+          "Mẹo tốt nhất của bạn là gì?",
+          "Lỗi nào mọi người nên tránh?",
+          "Bí quyết thành công của bạn là gì?",
+          "Cách dễ nhất để bắt đầu là gì?"
+        ],
+        "quote": [
+          "Trích dẫn nào truyền cảm hứng cho bạn?",
+          "Ai đã nói điều có ý nghĩa về điều này?",
+          "Trích dẫn yêu thích của bạn về chủ đề này là gì?",
+          "Trích dẫn này áp dụng cho khán giả của bạn như thế nào?"
+        ],
+        "announcement": [
+          "Bạn đang thông báo điều gì?",
+          "Tại sao điều này quan trọng?",
+          "Mọi người nên biết gì?",
+          "Bước tiếp theo là gì?"
+        ]
+      },
+      "tones": {
+        "engaging": [
+          "Điều gì sẽ khiến khán giả muốn bình luận?",
+          "Câu hỏi nào sẽ bắt đầu cuộc trò chuyện?",
+          "Điều gì gây tranh cãi bạn có thể đề cập?",
+          "Chủ đề nóng trong ngành của bạn là gì?"
+        ],
+        "professional": [
+          "Thông tin chi tiết ngành nào bạn có thể chia sẻ?",
+          "Mẹo phát triển chuyên môn nào bạn có?",
+          "Bài học kinh doanh nào bạn đã học được?",
+          "Xu hướng nào các chuyên gia nên theo dõi?"
+        ],
+        "casual": [
+          "Điều gì vui vẻ bạn muốn chia sẻ?",
+          "Điều gì khiến bạn mỉm cười hôm nay?",
+          "Quan sát nhẹ nhàng nào?",
+          "Điều gì liên quan đến khán giả của bạn?"
+        ],
+        "humorous": [
+          "Điều gì hài hước đã xảy ra?",
+          "Cách nhìn hài hước về chủ đề của bạn là gì?",
+          "Trò đùa hoặc chơi chữ liên quan đến nội dung của bạn?",
+          "Điều gì khiến bạn cười?"
+        ],
+        "inspirational": [
+          "Điều gì thúc đẩy bạn?",
+          "Câu chuyện truyền cảm hứng nào bạn có thể chia sẻ?",
+          "Thông điệp hy vọng của bạn là gì?",
+          "Điều gì sẽ khuyến khích khán giả của bạn?"
+        ],
+        "educational": [
+          "Sự thật nào sẽ làm khán giả ngạc nhiên?",
+          "Quan niệm sai lầm phổ biến là gì?",
+          "Điều gì mọi người nên biết?",
+          "Mẹo thực tế nào bạn có thể chia sẻ?"
+        ],
+        "empathetic": [
+          "Khó khăn nào bạn có thể liên hệ?",
+          "Làm thế nào bạn có thể thể hiện sự hiểu biết?",
+          "Hỗ trợ nào bạn có thể cung cấp?",
+          "Điều gì sẽ khiến ai đó cảm thấy được lắng nghe?"
+        ],
+        "authoritative": [
+          "Ý kiến chuyên môn của bạn là gì?",
+          "Dữ liệu cho thấy gì?",
+          "Cách tiếp cận đã được chứng minh của bạn là gì?",
+          "Khuyến nghị chuyên môn của bạn là gì?"
+        ]
+      },
+      "platforms": {
+        "facebook": [
+          "Bạn muốn thảo luận gì với cộng đồng Facebook của mình?",
+          "Chia sẻ điều gì sẽ bắt đầu cuộc trò chuyện có ý nghĩa",
+          "Bạn đang nghĩ gì mà người khác có thể liên hệ?",
+          "Điều gì đang xảy ra trong thế giới của bạn đáng để chia sẻ?"
+        ],
+        "instagram": [
+          "Câu chuyện hình ảnh nào bạn muốn kể?",
+          "Chia sẻ khoảnh khắc hậu trường",
+          "Điều gì đang truyền cảm hứng cho bạn hôm nay?",
+          "Khoảnh khắc đẹp nào bạn muốn ghi lại?"
+        ],
+        "twitter": [
+          "Quan điểm nóng của bạn về chủ đề hiện tại là gì?",
+          "Chia sẻ mẹo hoặc thông tin chi tiết nhanh",
+          "Điều gì đáng chia sẻ trong 280 ký tự?",
+          "Xu hướng nào bạn có suy nghĩ về?"
+        ],
+        "linkedin": [
+          "Thông tin chi tiết chuyên môn nào bạn có thể chia sẻ?",
+          "Xu hướng ngành nào bạn đang theo dõi?",
+          "Lời khuyên nghề nghiệp nào bạn sẽ đưa ra?",
+          "Bài học kinh doanh nào bạn đã học được?"
+        ],
+        "tiktok": [
+          "Xu hướng vui nhộn nào bạn có thể tham gia?",
+          "Điều gì giải trí bạn có thể thể hiện?",
+          "Mẹo nhanh nào bạn có thể trình diễn?",
+          "Điều gì đáng viral bạn có thể chia sẻ?"
+        ],
+        "youtube": [
+          "Hướng dẫn hoặc video nào bạn có thể tạo?",
+          "Câu chuyện nào bạn có thể kể chi tiết?",
+          "Chủ đề nào bạn có thể giải thích kỹ lưỡng?",
+          "Điều gì bạn có thể thể hiện từng bước?"
+        ]
+      }
     },
-    "tones": {
-      "engaging": [
-        "What would make your audience want to comment?",
-        "What question would start a conversation?",
-        "What's something controversial you can address?",
-        "What's a hot topic in your industry?"
-      ],
-      "professional": [
-        "What industry insight can you share?",
-        "What professional development tip do you have?",
-        "What's a business lesson you've learned?",
-        "What trend should professionals watch?"
-      ],
-      "casual": [
-        "What's something fun you want to share?",
-        "What made you smile today?",
-        "What's a lighthearted observation?",
-        "What's something relatable to your audience?"
-      ],
-      "humorous": [
-        "What's something funny that happened?",
-        "What's a humorous take on your topic?",
-        "What's a joke or pun related to your content?",
-        "What's something that made you laugh?"
-      ],
-      "inspirational": [
-        "What motivates you?",
-        "What's an inspiring story you can share?",
-        "What's your message of hope?",
-        "What would encourage your audience?"
-      ],
-      "educational": [
-        "What fact would surprise your audience?",
-        "What's a common misconception?",
-        "What's something everyone should know?",
-        "What's a practical tip you can share?"
-      ],
-      "empathetic": [
-        "What struggle can you relate to?",
-        "How can you show understanding?",
-        "What support can you offer?",
-        "What would make someone feel heard?"
-      ],
-      "authoritative": [
-        "What's your expert opinion?",
-        "What's the data showing?",
-        "What's your proven approach?",
-        "What's your professional recommendation?"
-      ]
-    },
-    "platforms": {
-      "facebook": [
-        "What would you like to discuss with your Facebook community?",
-        "Share something that would start a meaningful conversation",
-        "What's on your mind that others might relate to?",
-        "What's happening in your world that's worth sharing?"
-      ],
-      "instagram": [
-        "What visual story would you like to tell?",
-        "Share a behind-the-scenes moment",
-        "What's inspiring you today?",
-        "What's a beautiful moment you want to capture?"
-      ],
-      "twitter": [
-        "What's your hot take on a current topic?",
-        "Share a quick tip or insight",
-        "What's worth sharing in 280 characters?",
-        "What's trending that you have thoughts on?"
-      ],
-      "linkedin": [
-        "What professional insight can you share?",
-        "What industry trend are you following?",
-        "What career advice would you give?",
-        "What business lesson have you learned?"
-      ],
-      "tiktok": [
-        "What's a fun trend you can participate in?",
-        "What's something entertaining you can show?",
-        "What's a quick tip you can demonstrate?",
-        "What's something viral-worthy you can share?"
-      ],
-      "youtube": [
-        "What tutorial or guide can you create?",
-        "What's a story you can tell in detail?",
-        "What's a topic you can explain thoroughly?",
-        "What's something you can show step-by-step?"
-      ]
-    }
-  },
-  "socialMediaHistory": "Lịch sử bài đăng mạng xã hội",
-  "historyPageTitle": "Lịch sử bài đăng mạng xã hội",
-  "historyPageSubtitle": "Xem tất cả các bài đăng mạng xã hội đã tạo theo nền tảng.",
-  "failedToFetchHistory": "Không thể tải lịch sử bài đăng mạng xã hội. Vui lòng thử lại sau.",
+
   "stayUpdated": "Cập nhật",
   "getLatestTipsInsights": "Nhận các mẹo và thông tin mới nhất",
   "image": "hình ảnh",
@@ -1504,6 +1537,27 @@
     "loginLink": "Đăng nhập",
     "confirmPassword": "Xác nhận mật khẩu",
     "errorPasswordMatch": "Mật khẩu không khớp."
+  },
+  "blogCreator": {
+    "mainName": "Tên dự án/doanh nghiệp/chủ đề",
+    "pleaseEnterMainName": "Vui lòng nhập tên cho dự án, doanh nghiệp hoặc chủ đề của bạn",
+    "type": "Loại/Danh mục",
+    "typeBusiness": "Doanh nghiệp",
+    "typeProject": "Dự án",
+    "typeEvent": "Sự kiện",
+    "typeProduct": "Sản phẩm",
+    "typeOrganization": "Tổ chức",
+    "typeCommunity": "Cộng đồng",
+    "typeOther": "Khác",
+    "industryType": "Ngành/Lĩnh vực",
+    "e.g.,IndustryField": "vd: Công nghệ, Giáo dục, Thực phẩm, Nghệ thuật",
+    "targetAudienceGeneral": "Đối tượng chung",
+    "targetAudienceCustomers": "Khách hàng",
+    "targetAudienceInvestors": "Nhà đầu tư",
+    "targetAudiencePartners": "Đối tác",
+    "targetAudienceEmployees": "Nhân viên",
+    "targetAudienceMedia": "Truyền thông",
+    "targetAudienceCommunity": "Cộng đồng"
   },
   "dashboard": {
     "headerTitle": "Bảng điều khiển nội dung",

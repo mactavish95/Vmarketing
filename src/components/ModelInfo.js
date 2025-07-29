@@ -13,7 +13,7 @@ const ModelInfo = ({ useCase, style = {} }) => {
       setLoading(true);
       setError('');
       try {
-        const baseURL = process.env.REACT_APP_API_URL || '/api';
+        const baseURL = '/api';
         const response = await fetch(`${baseURL}/llama/model?useCase=${useCase}`);
         const data = await response.json();
         if (data.success) {

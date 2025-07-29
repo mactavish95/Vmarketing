@@ -43,6 +43,7 @@ const corsOptions = {
       'https://vmarketing.netlify.app',
       'https://development--vmarketing.netlify.app',
       'https://app.netlify.com',
+      'https://vmarketing-3xttt9qae-ghostwares-projects.vercel.app/',
       process.env.FRONTEND_URL
     ].filter(Boolean);
     

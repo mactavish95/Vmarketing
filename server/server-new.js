@@ -25,6 +25,7 @@ const modelsRoutes = require('./routes/models');
 const blogRoutes = require('./routes/blog');
 const socialMediaPostsRoutes = require('./routes/socialMediaPosts');
 const socialAuthRoutes = require('./routes/socialAuth');
+const adminRoutes = require('./routes/admin');
 const socialPublishRoutes = require('./routes/socialPublish');
 const fieldTipRoutes = require('./routes/fieldTip');
 
@@ -165,6 +166,7 @@ app.use('/api', blogRoutes);
 app.use('/api', socialMediaPostsRoutes);
 //app.use('/api/auth', socialAuthRoutes);
 app.use('/api/auth', require('./routes/socialAuth'));
+app.use('/api/admin', adminRoutes);
 app.use('/api/social', socialPublishRoutes);
 app.use('/api', fieldTipRoutes);
 

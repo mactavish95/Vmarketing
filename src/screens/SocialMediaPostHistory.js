@@ -141,7 +141,7 @@ const SocialMediaPostHistory = () => {
     setIsHistoryLoading(true);
     setHistoryError('');
     try {
-      const res = await fetch(apiConfig.baseURL + '/social-posts');
+      const res = await fetch(apiConfig.baseURL + '/social-posts', { credentials: 'include' });
       const data = await res.json();
       if (data.success) {
         setGlobalHistory(data.posts || []);

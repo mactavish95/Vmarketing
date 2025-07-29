@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import FacebookIcon from './FacebookIcon';
 import SocialMediaIntegration from './SocialMediaIntegration';
+import QualityAnalyzer from './QualityAnalyzer';
 import './SocialMediaPostWizard.css';
 
 const SocialMediaPostWizard = ({
@@ -10,6 +11,7 @@ const SocialMediaPostWizard = ({
   tone, setTone,
   targetAudience, setTargetAudience,
   contentStructure, setContentStructure,
+  engagementGoal, setEngagementGoal,
   content, setContent,
   enhancedContent, setEnhancedContent,
   onSubmit,
@@ -19,7 +21,10 @@ const SocialMediaPostWizard = ({
   setReviewedContent,
   generateContent,
   copyToClipboard,
-  openPreviewWindow
+  openPreviewWindow,
+  brandVoiceIntensity, setBrandVoiceIntensity,
+  engagementUrgency, setEngagementUrgency,
+  situation, setSituation
 }) => {
   const { t, i18n } = useTranslation();
   
@@ -519,6 +524,29 @@ const SocialMediaPostWizard = ({
                       {enhancedContent || reviewedContent || content || t('socialMedia.wizard.placeholders.postPreview')}
                     </div>
                   </div>
+                </div>
+                
+                {/* Quality Analysis */}
+                <div className="form-group">
+                  <label className="form-label">
+                    <span className="label-icon">📊</span>
+                    {t('socialMedia.qualityAnalysis')}
+                  </label>
+                  <QualityAnalyzer
+                    content={enhancedContent || reviewedContent || content}
+                    platform={platform}
+                    postType={postType}
+                    tone={tone}
+                    targetAudience={targetAudience}
+                    contentStructure={contentStructure}
+                    engagementGoal={engagementGoal}
+                    brandVoiceIntensity={brandVoiceIntensity || "moderate"}
+                    engagementUrgency={engagementUrgency || "normal"}
+                    situation={situation || "general"}
+                    contentType="facebook_post"
+                    autoAnalyze={!!(enhancedContent || reviewedContent || content)}
+                    showUI={true}
+                  />
                 </div>
                 
                 {/* Action Buttons */}

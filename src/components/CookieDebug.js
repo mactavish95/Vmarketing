@@ -77,7 +77,7 @@ const CookieDebug = () => {
       },
       apiConfig: {
         baseURL: getApiUrl(''),
-        environment: process.env.NODE_ENV
+        environment: 'development'
       }
     });
   }, []);

@@ -11,6 +11,7 @@ import SocialMediaIntegration from '../components/SocialMediaIntegration';
 import formatInstagramContent from '../utils/formatInstagramContent';
 import SocialMediaPostWizard from '../components/SocialMediaPostWizard';
 import FacebookIcon from '../components/FacebookIcon';
+import QualityAnalyzer from '../components/QualityAnalyzer';
 
 const SocialMediaPost = () => {
   const { t } = useTranslation();
@@ -552,48 +553,14 @@ const SocialMediaPost = () => {
     }
   };
 
+  // QualityAnalyzer instance for programmatic use
+  const qualityAnalyzerRef = React.useRef();
+  
   const analyzeQuality = async (text) => {
-    if (!text.trim()) return;
-
-    try {
-      // Force production URL if we're on Netlify
-      const isNetlify = window.location.hostname.includes('netlify.app') || window.location.hostname.includes('vmarketing.netlify.app');
-      const baseURL = isNetlify ? 'https://vmarketing-backend-server.onrender.com/api' : apiConfig.baseURL;
-      
-      // Use the correct endpoint and payload for quality analysis
-      const response = await fetch(`${baseURL}/analyze-response-quality`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          response: text,
-          contentType: 'facebook_post',
-          context: {
-            platform,
-            targetAudience,
-            tone,
-            engagementGoal,
-            contentStructure,
-            postType,
-            brandVoiceIntensity,
-            engagementUrgency,
-            situation,
-            targetLength: calculateTargetLength()
-          }
-        })
-      });
-
-      const data = await response.json();
-      
-      if (data.success && data.qualityAnalysis) {
-        setQualityAnalysis(data.qualityAnalysis);
-      } else {
-        setQualityAnalysis(null);
-        console.warn('Quality analysis failed:', data.error);
-      }
-    } catch (err) {
-      console.error('Quality analysis error:', err);
-      setQualityAnalysis(null);
+    if (qualityAnalyzerRef.current) {
+      return await qualityAnalyzerRef.current.analyzeQuality(text);
     }
+    return null;
   };
 
   const copyToClipboard = (text) => {
@@ -1133,6 +1100,8 @@ ${content}`;
             setTargetAudience={setTargetAudience}
             contentStructure={contentStructure}
             setContentStructure={setContentStructure}
+            engagementGoal={engagementGoal}
+            setEngagementGoal={setEngagementGoal}
             content={content}
             setContent={setContent}
             enhancedContent={enhancedContent}
@@ -1146,6 +1115,12 @@ ${content}`;
             generateContent={generateContent}
             copyToClipboard={copyToClipboard}
             openPreviewWindow={openPreviewWindow}
+            brandVoiceIntensity={brandVoiceIntensity}
+            setBrandVoiceIntensity={setBrandVoiceIntensity}
+            engagementUrgency={engagementUrgency}
+            setEngagementUrgency={setEngagementUrgency}
+            situation={situation}
+            setSituation={setSituation}
           />
         </div>
       )}
@@ -1235,6 +1210,29 @@ ${content}`;
           </button>
         </div>
       </div>
+        {/* Quality Analyzer Component */}
+        <div className="section quality-analyzer-section" style={{ marginBottom: 16 }}>
+          <QualityAnalyzer
+            ref={qualityAnalyzerRef}
+            content={enhancedContent || reviewedContent || content}
+            platform={platform}
+            postType={postType}
+            tone={tone}
+            targetAudience={targetAudience}
+            contentStructure={contentStructure}
+            engagementGoal={engagementGoal}
+            brandVoiceIntensity={brandVoiceIntensity}
+            engagementUrgency={engagementUrgency}
+            situation={situation}
+            targetLength={calculateTargetLength()}
+            contentType="facebook_post"
+            onAnalysisComplete={(analysis) => setQualityAnalysis(analysis)}
+            onAnalysisError={(error) => console.error('Quality analysis error:', error)}
+            autoAnalyze={!!enhancedContent}
+            showUI={true}
+          />
+        </div>
+
         {/* Result Section (Enhanced Post, etc.) */}
         {enhancedContent && (
           <div className="section result-section mobile-result-section" style={{ position: 'relative' }}>

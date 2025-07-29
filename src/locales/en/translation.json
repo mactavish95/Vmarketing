@@ -578,6 +578,13 @@
       }
     }
   },
+  "qualityAnalyzer": {
+    "analyzeQuality": "Analyze Quality",
+    "analyzing": "Analyzing...",
+    "noContentToAnalyze": "No content to analyze",
+    "analysisFailed": "Analysis failed",
+    "networkError": "Network error occurred"
+  },
   "socialMedia": {
     "title": "Social Media Post Generator",
     "subtitle": "Create engaging, platform-optimized social media content with AI-powered enhancement",

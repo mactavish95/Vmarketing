@@ -21,6 +21,8 @@ import Signup from './screens/account/Signup';
 import Dashboard from './screens/Dashboard';
 import CookieDebug from './components/CookieDebug';
 import LetterCreator from './screens/LetterCreator';
+import AdminLogin from './screens/admin/AdminLogin';
+import AdminDashboard from './screens/admin/AdminDashboard';
 
 // Dummy useAuth hook (replace with real auth logic)
 function useAuth() {
@@ -66,6 +68,9 @@ function App() {
           <Route path="/social-media-integration" element={<SocialMediaIntegrationScreen />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/debug" element={<CookieDebug />} />
+          {/* Admin routes */}
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
           {/* Protected routes example */}
           <Route path="/social" element={isAuthenticated ? <SocialMediaIntegrationScreen /> : <Navigate to="/login" />} />
         </Routes>
